@@ -1,7 +1,8 @@
 
 # Datasets
-backend/datasets/*
+backend/datasets/*/
 backend/data/*
+data/*
 
 # Virtual Environment Package Files
 .venv/*
