@@ -83,8 +83,6 @@ def prepare_data(datasets_path="backend/datasets", final_filename="pt_real_estat
     # Create a new column "Id" with unique values starting from 1             
     df_final.insert(0, "Id", range(1, len(df_final) + 1))
     
-    # TODO: Remove irrelevant or redundant attributes (columns) from the dataframe (Feature Selection)
-    
     # TODO: Convert categorical attributes to numerical values
         # Feature Engineering: The "title" attribute is a categorical attribute so it will
         # be split into multiple numerical attributes, one for each unique value of the "title" attribute.
