@@ -1,4 +1,5 @@
 import pandas as pd
+import re
 from pathlib import Path
 from sklearn.model_selection import train_test_split
 
@@ -39,8 +40,9 @@ def prepare_data(datasets_path="backend/datasets", final_filename="pt_real_estat
         "Price": "Price (€)",
         
         # Gross Area
-        "gross_area": "GrossArea",
-        "area.gross": "GrossArea",
+        "gross_area": "GrossArea (m2)",
+        "area.gross": "GrossArea (m2)",
+        "Gross Area": "GrossArea (m2)",
         
         # Terrain Area
         "area.land": "Terrain Area (m2)",
@@ -78,16 +80,25 @@ def prepare_data(datasets_path="backend/datasets", final_filename="pt_real_estat
 
     # Remove duplicates and irrelevant attributes
     df_final = df_final.drop_duplicates() \
-                       .drop(columns=["Index", "Unnamed: 0", "id", "advertiser", "views", "clicks", "Sealed"])
+                       .drop(columns=["Index", "Unnamed: 0", "id", "advertiser", 
+                                      "views", "clicks", "Sealed", "category"])
                    
     # Create a new column "Id" with unique values starting from 1             
     df_final.insert(0, "Id", range(1, len(df_final) + 1))
     
     # TODO: Convert categorical attributes to numerical values
-        # Feature Engineering: The "title" attribute is a categorical attribute so it will
+        # Feature Engineering: The "title" attribute is a categorical attribute so it should
         # be split into multiple numerical attributes, one for each unique value of the "title" attribute.
     
-    # TODO: Remove outliers
+    # TODO: "title" follows this pattern: "<property_type> T<number_of_rooms> em <location>", so we can extract these substrings 
+    # and associate to the existing attributes:
+        # Type: the substring before "T"
+        # NumberOfBedrooms: the substring between "T" and "em"
+        # Location: the substring after "em"
+        
+    
+    
+    # TODO: Remove outliers (examples with abnormal price / area values)
     
     # TODO: Normalize the data (Min-Max Scaling or Standardization)
     
