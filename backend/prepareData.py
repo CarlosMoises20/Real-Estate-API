@@ -2,6 +2,7 @@ import pandas as pd
 import re
 from pathlib import Path
 from sklearn.model_selection import train_test_split
+from app.constants import ATTR_MAPPING, COLUMN_ORDER
 
 
 """
@@ -15,65 +16,17 @@ Returns:
     df_final (pd.DataFrame): The final prepared dataframe.
     
 """
-def prepare_data(datasets_path="backend/datasets", final_filename="pt_real_estate_data_final.csv"):
+def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_data_final_v1.csv", 
+                 old_filenames=["real_estate_data_final.csv"]):
     
     # Define the folder containing the CSV files
     folder = Path(datasets_path)
 
     # Include all CSV files in the folder except the final file to be generated
-    csv_files = [file for file in folder.glob("*.csv") if file.name != final_filename]
-
-    # this dictionary to map the columns names to the final ones, to remove redundancy of attributes after concatenation
-    # the property is the old name of the attribute and the value is the new name of the attribute
-    # this step is done because there are different datasets with attributes that represent the same thing but with different names
-    # for example, some datasets have "price" and others "price_int", and in both cases, this represents the Price. The idea is that in both datasets,
-    # these attributes will be renamed to an equal name (in this case "Price") so that when concatenating the datasets, there will be no redundancy of attributes.
-    COLUMN_MAPPING = {
-        
-        # Location
-        "location": "Location",
-        "Localization": "Location",
-        
-        # Price
-        "price": "Price (€)",
-        "price_int": "Price (€)",
-        "Price": "Price (€)",
-        
-        # Gross Area
-        "gross_area": "GrossArea (m2)",
-        "area.gross": "GrossArea (m2)",
-        "Gross Area": "GrossArea (m2)",
-        
-        # Terrain Area
-        "area.land": "Terrain Area (m2)",
-        
-        # Area
-        "Area": "Area (m2)",
-        
-        # Elevator
-        "Elevador": "Elevator",
-        
-        # Useful Area
-        "useful_area": "Useful Area (m2)",
-        "Useful Area": "Useful Area (m2)",
-        "area.net": "Useful Area (m2)",
-        
-        # Living Area
-        "LivingArea": "Living Area (m2)",
-        
-        # Built Area
-        "BuiltArea": "Raw Construction Area (m2)",
-        
-        # Number of Bedrooms
-        "rooms": "NumberOfBedrooms",
-        "Bedrooms": "NumberOfBedrooms",
-        
-        # Number of WC
-        "WC's": "NumberOfWC"
-    }
+    csv_files = [file for file in folder.glob("*.csv") if file.name not in old_filenames]
 
     # Read CSV files as a Pandas dataframe each
-    df_list = [pd.read_csv(file).rename(columns=COLUMN_MAPPING) for file in csv_files]
+    df_list = [pd.read_csv(file).rename(columns=ATTR_MAPPING) for file in csv_files]
 
     # Concatenate the dataframes 
     df_final = pd.concat(df_list, ignore_index=True)
@@ -86,18 +39,30 @@ def prepare_data(datasets_path="backend/datasets", final_filename="pt_real_estat
     # Create a new column "Id" with unique values starting from 1             
     df_final.insert(0, "Id", range(1, len(df_final) + 1))
     
-    # TODO: Convert categorical attributes to numerical values
+    # TODO: Finish to convert categorical attributes to numerical values
         # Feature Engineering: The "title" attribute is a categorical attribute so it should
         # be split into multiple numerical attributes, one for each unique value of the "title" attribute.
     
-    # TODO: "title" follows this pattern: "<property_type> T<number_of_rooms> em <location>", so we can extract these substrings 
-    # and associate to the existing attributes:
-        # Type: the substring before "T"
-        # NumberOfBedrooms: the substring between "T" and "em"
-        # Location: the substring after "em"
+        # TODO: "title" follows this pattern: "<property_type> T<number_of_rooms> em <location>", so we can extract these substrings 
+        # and associate to the existing attributes:
+            # Type: the substring before "T"
+            # NumberOfBedrooms: the substring between "T" and "em"
+            # Region, Location: the substring after "em"
+      
+    # Extract numeric values from attributes with values on string format but that should be numeric      
+    for attr_name in ["GrossArea (m2)", "Terrain Area (m2)", "Useful Area (m2)", 
+                      "Living Area (m2)", "Raw Construction Area (m2)",
+                      "Area (m2)", "Total Area (m2)"]:
         
-    
-    
+        # Extract the integer from the string
+        df_final[attr_name] = df_final[attr_name].astype(str)
+        df_final[attr_name] = df_final[attr_name].str.extract(r'(\d+(?:\.\d+)?)')
+        df_final[attr_name] = pd.to_numeric(df_final[attr_name], errors='coerce')
+        
+        
+    # Convert all boolean attributes to integer
+    df_final = df_final.map(lambda x: int(x) if isinstance(x, bool) else x)
+
     # TODO: Remove outliers (examples with abnormal price / area values)
     
     # TODO: Normalize the data (Min-Max Scaling or Standardization)
@@ -107,6 +72,9 @@ def prepare_data(datasets_path="backend/datasets", final_filename="pt_real_estat
     # TODO: Feature Reduction (PCA, LDA, etc.)
     
     # TODO: Bias mitigation (if necessary)
+    
+    # Sort the dataset attributes for better interpretability while visualizing the dataset
+    df_final = df_final[COLUMN_ORDER]
     
     # Save the final dataframe as a CSV file
     df_final.to_csv(f"backend/datasets/{final_filename}", index=False)
