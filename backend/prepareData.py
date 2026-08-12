@@ -2,7 +2,7 @@ import pandas as pd
 import re
 from pathlib import Path
 from sklearn.model_selection import train_test_split
-from app.constants import ATTR_MAPPING, COLUMN_ORDER
+from app.constants import COLUMN_RENAME_MAP, COLUMN_ORDER
 
 
 """
@@ -16,49 +16,28 @@ Returns:
     df_final (pd.DataFrame): The final prepared dataframe.
     
 """
-def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_data_final_v1.csv", 
-                 old_filenames=["real_estate_data_final.csv"]):
+def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_data_final.csv", 
+                 old_filenames=["real_estate_data_final.csv", 
+                                "real_estate_data_final_v0.csv"]):
     
     # Define the folder containing the CSV files
     folder = Path(datasets_path)
 
-    # Include all CSV files in the folder except the final file to be generated
+    # Include all CSV files in the specified folder, except for the final output file.
+    # This approach has the advantage of supporting multiple datasets being stored in "datasets_path",
+    # which will be useful in the future if more datasets are added to the folder to train / test the models
     csv_files = [file for file in folder.glob("*.csv") if file.name not in old_filenames]
 
     # Read CSV files as a Pandas dataframe each
-    df_list = [pd.read_csv(file).rename(columns=ATTR_MAPPING) for file in csv_files]
+    df_list = [pd.read_csv(file).rename(columns=COLUMN_RENAME_MAP) for file in csv_files]
 
     # Concatenate the dataframes 
     df_final = pd.concat(df_list, ignore_index=True)
 
-    # Remove duplicates and irrelevant attributes
-    df_final = df_final.drop_duplicates() \
-                       .drop(columns=["Index", "Unnamed: 0", "id", "advertiser", 
-                                      "views", "clicks", "Sealed", "category"])
-                   
-    # Create a new column "Id" with unique values starting from 1             
-    df_final.insert(0, "Id", range(1, len(df_final) + 1))
+    # Remove duplicated entries and irrelevant attributes
+    df_final = df_final.drop_duplicates()
     
-    # TODO: Finish to convert categorical attributes to numerical values
-        # Feature Engineering: The "title" attribute is a categorical attribute so it should
-        # be split into multiple numerical attributes, one for each unique value of the "title" attribute.
-    
-        # TODO: "title" follows this pattern: "<property_type> T<number_of_rooms> em <location>", so we can extract these substrings 
-        # and associate to the existing attributes:
-            # Type: the substring before "T"
-            # NumberOfBedrooms: the substring between "T" and "em"
-            # Region, Location: the substring after "em"
-      
-    # Extract numeric values from attributes with values on string format but that should be numeric      
-    for attr_name in ["GrossArea (m2)", "Terrain Area (m2)", "Useful Area (m2)", 
-                      "Living Area (m2)", "Raw Construction Area (m2)",
-                      "Area (m2)", "Total Area (m2)"]:
-        
-        # Extract the integer from the string
-        df_final[attr_name] = df_final[attr_name].astype(str)
-        df_final[attr_name] = df_final[attr_name].str.extract(r'(\d+(?:\.\d+)?)')
-        df_final[attr_name] = pd.to_numeric(df_final[attr_name], errors='coerce')
-        
+    # TODO: Finish to convert categorical attributes to numerical values (Dummy Coding?)
         
     # Convert all boolean attributes to integer
     df_final = df_final.map(lambda x: int(x) if isinstance(x, bool) else x)
