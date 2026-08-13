@@ -20,8 +20,7 @@ Returns:
 """
 def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_internal_data_final.csv", 
                  old_filenames=["real_estate_internal_data_final.csv", 
-                                "real_estate_internal_data_final_v0.csv",
-                                "real_estate_internal_data_final_v1.csv"]):
+                                "real_estate_internal_data_final_v0.csv"]):
     
     # Define the folder containing the CSV files
     folder = Path(datasets_path)
@@ -40,6 +39,13 @@ def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_i
     # Remove duplicated entries and irrelevant attributes
     df_final = df_final.drop_duplicates()
     
+    # Convert all boolean attributes to integer
+    df_final = df_final.map(lambda x: int(x) if isinstance(x, bool) else x)
+    
+    # Dummy Coding
+    df_final = pd.get_dummies(data=df_final, columns=CATEGORICAL_COLUMNS, dtype=int)
+    
+    # Convert "PublishDate" column to datetime and extract year, month and day to have only numeric attributes
     df_final["PublishDate"] = pd.to_datetime(
         df_final["PublishDate"],
         errors="coerce"
@@ -49,17 +55,12 @@ def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_i
     df_final["PublishMonth"] = df_final["PublishDate"].dt.month
     df_final["PublishDay"] = df_final["PublishDate"].dt.day
     
-    df_final = df_final.drop(columns=["PublishDate"])
+    df_final = df_final.drop(columns=["PublishDate", "EnergyEfficiencyLevel"])
     
-    # Convert all boolean attributes to integer
-    df_final = df_final.map(lambda x: int(x) if isinstance(x, bool) else x)
-    
-    # Dummy Coding
-    df_final = pd.get_dummies(data=df_final, columns=CATEGORICAL_COLUMNS, dtype=int)
-    
-    # TODO fix this issue with negative values
+    """# TODO fix this issue with negative values
     for attr_name in ["Living Area (m2)", "Total Area (m2)", "Built Area (m2)",
                       "NumberOfBathrooms", "NumberOfWC"]:
+        
         df_final[attr_name] = pd.to_numeric(df_final[attr_name], errors="coerce").abs()
     
     # Split data into train and test dataset
@@ -90,12 +91,55 @@ def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_i
     
     # TODO: Bias mitigation (if necessary, check this after seeing the first results of the models in test)
     
+    pd.DataFrame(X_train).head(10)
+    pd.DataFrame(X_test).head(10)"""
+        
+    # Reorder the columns in the desired order for the final dataframe 
+    # Standard column order for the final dataset.
+    # Keeping a fixed order makes the resulting dataset easier to inspect,
+    # process, and use consistently throughout the machine learning pipeline.
+    COLUMN_ORDER = [
+        # Property type
+        *sorted(col for col in df_final.columns if col.startswith("Type_")),
+
+        # Location
+        *sorted(col for col in df_final.columns if col.startswith("District_")),
+        *sorted(col for col in df_final.columns if col.startswith("City_")),
+        *sorted(col for col in df_final.columns if col.startswith("Town_")),
+
+        # Property characteristics
+        "NumberOfBedrooms", "NumberOfBathrooms", "NumberOfWC", "TotalRooms",
+
+        # Areas
+        "Built Area (m2)", "Living Area (m2)", "Total Area (m2)", "LotSize",
+
+        # Building characteristics
+        *sorted(col for col in df_final.columns if col.startswith("Floor_")),
+        "Elevator", "Garage", "ConstructionYear", "Parking",
+
+        # Energy
+        *sorted(col for col in df_final.columns if col.startswith("EnergyCertificate_")),
+        "ElectricCarsCharging",
+
+        # Conservation
+        *sorted(col for col in df_final.columns if col.startswith("ConservationStatus_")),
+
+        # Publication date
+        "PublishYear", "PublishMonth", "PublishDay",
+
+        # Target
+        "Price (euros)"
+    ]
+    
+    df_final = df_final[COLUMN_ORDER]
+    
     # Save the final dataframe as a CSV file
     df_final.to_csv(f"backend/datasets/{final_filename}", index=False)
     
     # Split the data into training and testing sets (Train-Test Split)
-    return X_train, X_test, y_train, y_test
+    #return X_train, X_test, y_train, y_test
 
 
 if __name__ == "__main__":
-    X_train, X_test, y_train, y_test = prepare_data()
+    #X_train, X_test, y_train, y_test = prepare_data()
+    prepare_data()
