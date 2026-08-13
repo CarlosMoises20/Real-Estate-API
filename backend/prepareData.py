@@ -1,8 +1,10 @@
 import pandas as pd
-import re
 from pathlib import Path
 from sklearn.model_selection import train_test_split
-from app.constants import COLUMN_RENAME_MAP, COLUMN_ORDER
+from sklearn.impute import SimpleImputer
+from sklearn.decomposition import PCA
+from app.constants import COLUMN_RENAME_MAP, CATEGORICAL_COLUMNS
+from sklearn.preprocessing import StandardScaler
 
 
 """
@@ -16,9 +18,10 @@ Returns:
     df_final (pd.DataFrame): The final prepared dataframe.
     
 """
-def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_data_final.csv", 
-                 old_filenames=["real_estate_data_final.csv", 
-                                "real_estate_data_final_v0.csv"]):
+def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_internal_data_final.csv", 
+                 old_filenames=["real_estate_internal_data_final.csv", 
+                                "real_estate_internal_data_final_v0.csv",
+                                "real_estate_internal_data_final_v1.csv"]):
     
     # Define the folder containing the CSV files
     folder = Path(datasets_path)
@@ -37,30 +40,62 @@ def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_d
     # Remove duplicated entries and irrelevant attributes
     df_final = df_final.drop_duplicates()
     
-    # TODO: Finish to convert categorical attributes to numerical values (Dummy Coding?)
-        
+    df_final["PublishDate"] = pd.to_datetime(
+        df_final["PublishDate"],
+        errors="coerce"
+    )
+    
+    df_final["PublishYear"] = df_final["PublishDate"].dt.year
+    df_final["PublishMonth"] = df_final["PublishDate"].dt.month
+    df_final["PublishDay"] = df_final["PublishDate"].dt.day
+    
+    df_final = df_final.drop(columns=["PublishDate"])
+    
     # Convert all boolean attributes to integer
     df_final = df_final.map(lambda x: int(x) if isinstance(x, bool) else x)
+    
+    # Dummy Coding
+    df_final = pd.get_dummies(data=df_final, columns=CATEGORICAL_COLUMNS, dtype=int)
+    
+    # TODO fix this issue with negative values
+    for attr_name in ["Living Area (m2)", "Total Area (m2)", "Built Area (m2)",
+                      "NumberOfBathrooms", "NumberOfWC"]:
+        df_final[attr_name] = pd.to_numeric(df_final[attr_name], errors="coerce").abs()
+    
+    # Split data into train and test dataset
+    X = df_final.drop("Price (euros)", axis=1)
+    y = df_final["Price (euros)"]
+    
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, shuffle=True
+    )
+    
+    # Handle missing values (Imputation or Removal); TODO: review this
+    imputer = SimpleImputer(strategy="median")
+    
+    X_train = imputer.fit_transform(X_train)
+    X_test = imputer.transform(X_test)
 
-    # TODO: Remove outliers (examples with abnormal price / area values)
+    # Normalize the data
+    scaler = StandardScaler()
     
-    # TODO: Normalize the data (Min-Max Scaling or Standardization)
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
     
-    # TODO: Handle missing values (Imputation or Removal)
+    # Feature Reduction (PCA, LDA, etc.); verify if it's necessary
+    pca = PCA()
     
-    # TODO: Feature Reduction (PCA, LDA, etc.)
+    X_train = pca.fit_transform(X_train)
+    X_test = pca.transform(X_test)
     
-    # TODO: Bias mitigation (if necessary)
-    
-    # Sort the dataset attributes for better interpretability while visualizing the dataset
-    df_final = df_final[COLUMN_ORDER]
+    # TODO: Bias mitigation (if necessary, check this after seeing the first results of the models in test)
     
     # Save the final dataframe as a CSV file
     df_final.to_csv(f"backend/datasets/{final_filename}", index=False)
     
     # Split the data into training and testing sets (Train-Test Split)
-    return train_test_split(df_final, test_size=0.2, random_state=42)
+    return X_train, X_test, y_train, y_test
 
 
 if __name__ == "__main__":
-    df_train, df_test = prepare_data()
+    X_train, X_test, y_train, y_test = prepare_data()
