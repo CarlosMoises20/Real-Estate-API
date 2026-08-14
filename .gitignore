@@ -1,6 +1,8 @@
 
 # Datasets
 backend/datasets/*/
+!backend/datasets/internal/
+!backend/datasets/external/
 backend/data/*
 data/*
 
