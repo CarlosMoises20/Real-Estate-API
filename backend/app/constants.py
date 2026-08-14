@@ -30,17 +30,3 @@ COLUMN_RENAME_MAP = {
 # Columns that represent categorical attributes
 CATEGORICAL_COLUMNS = ["Type", "District", "City", "Town", 
                        "EnergyCertificate", "ConservationStatus", "Floor"]
-
-
-
-# Standard column order for the final dataset.
-# Keeping a fixed order makes the resulting dataset easier to inspect,
-# process, and use consistently throughout the machine learning pipeline.
-COLUMN_ORDER = ["Type", "District", "City", "Town",
-                "NumberOfBedrooms", "NumberOfBathrooms", "NumberOfWC", "TotalRooms",
-                "Built Area (m2)", "Living Area (m2)", "Total Area (m2)",
-                "Floor", "Elevator", "Garage", "ConstructionYear",
-                "Parking", "EnergyCertificate",
-                "PublishDate", "PublishYear", "PublishMonth", "PublishDay", 
-                "ElectricCarsCharging", "ConservationStatus", "LotSize",
-                "Price (euros)"]

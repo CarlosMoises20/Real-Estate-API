@@ -20,7 +20,8 @@ Returns:
 """
 def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_internal_data_final.csv", 
                  old_filenames=["real_estate_internal_data_final.csv", 
-                                "real_estate_internal_data_final_v0.csv"]):
+                                "real_estate_internal_data_final_v0.csv"],
+                 save_new_dataset_as_csv_file=True):
     
     # Define the folder containing the CSV files
     folder = Path(datasets_path)
@@ -42,7 +43,7 @@ def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_i
     # Convert all boolean attributes to integer
     df_final = df_final.map(lambda x: int(x) if isinstance(x, bool) else x)
     
-    # Dummy Coding
+    # Dummy Coding to encode categorical attributes
     df_final = pd.get_dummies(data=df_final, columns=CATEGORICAL_COLUMNS, dtype=int)
     
     # Convert "PublishDate" column to datetime and extract year, month and day to have only numeric attributes
@@ -57,11 +58,11 @@ def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_i
     
     df_final = df_final.drop(columns=["PublishDate", "EnergyEfficiencyLevel"])
     
-    """# TODO fix this issue with negative values
+    # for some negative values, transform those into positive values by applying the absolute value
     for attr_name in ["Living Area (m2)", "Total Area (m2)", "Built Area (m2)",
                       "NumberOfBathrooms", "NumberOfWC"]:
         
-        df_final[attr_name] = pd.to_numeric(df_final[attr_name], errors="coerce").abs()
+        df_final[attr_name] = df_final[attr_name].abs()
     
     # Split data into train and test dataset
     X = df_final.drop("Price (euros)", axis=1)
@@ -71,28 +72,68 @@ def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_i
         X, y, test_size=0.2, random_state=42, shuffle=True
     )
     
-    # Handle missing values (Imputation or Removal); TODO: review this
+    print("Number of training samples before removing 'outliers':", X_train.shape[0])
+    
+    # Remove price outliers using only training data; TODO analyze how this affects the model's results
+    mean_price = y_train.mean()
+    std_price = y_train.std()
+
+    lower_bound = mean_price - 3 * std_price
+    upper_bound = mean_price + 3 * std_price
+
+    outlier_mask = (
+        (y_train < lower_bound) |
+        (y_train > upper_bound)
+    )
+
+    X_train = X_train.loc[~outlier_mask]
+    y_train = y_train.loc[~outlier_mask]
+    
+    print("Number of training samples after removing 'outliers':", X_train.shape[0])
+    
+    # Handle missing values (Imputation or Removal)
     imputer = SimpleImputer(strategy="median")
     
-    X_train = imputer.fit_transform(X_train)
-    X_test = imputer.transform(X_test)
+    X_train = pd.DataFrame(
+        imputer.fit_transform(X_train),
+        columns=X.columns,
+        index=X_train.index
+    )
+    X_test = pd.DataFrame(
+        imputer.transform(X_test),
+        columns=X.columns,
+        index=X_test.index
+    )
 
-    # Normalize the data
+    # Normalize the data; TODO analyze later how this affects the model efficacy)
     scaler = StandardScaler()
     
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
+    X_train = pd.DataFrame(
+        scaler.fit_transform(X_train),
+        columns=X.columns,
+        index=X_train.index
+    )
+    X_test = pd.DataFrame(
+        scaler.transform(X_test),
+        columns=X.columns,
+        index=X_test.index
+    )
     
-    # Feature Reduction (PCA, LDA, etc.); verify if it's necessary
+    # Feature Reduction (PCA); TODO analyze later how this affects the model efficacy)
     pca = PCA()
     
-    X_train = pca.fit_transform(X_train)
-    X_test = pca.transform(X_test)
+    X_train = pd.DataFrame(
+        pca.fit_transform(X_train),
+        columns=X.columns,
+        index=X_train.index
+    )
+    X_test = pd.DataFrame(
+        pca.transform(X_test),
+        columns=X.columns,
+        index=X_test.index
+    )
     
     # TODO: Bias mitigation (if necessary, check this after seeing the first results of the models in test)
-    
-    pd.DataFrame(X_train).head(10)
-    pd.DataFrame(X_test).head(10)"""
         
     # Reorder the columns in the desired order for the final dataframe 
     # Standard column order for the final dataset.
@@ -133,13 +174,19 @@ def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_i
     
     df_final = df_final[COLUMN_ORDER]
     
-    # Save the final dataframe as a CSV file
-    df_final.to_csv(f"backend/datasets/{final_filename}", index=False)
+    # Save the final dataframe as a CSV file if the flag is True
+    if save_new_dataset_as_csv_file:
+        df_final.to_csv(f"backend/datasets/{final_filename}", index=False)
+        
+    # NOTE: uncomment this to print some examples of the training and testing datasets
+    """print(pd.DataFrame(X_train).head(20))
+    print(pd.DataFrame(X_test).head(20))
+    print(pd.DataFrame(y_train).head(20))
+    print(pd.DataFrame(y_test).head(20))"""
     
     # Split the data into training and testing sets (Train-Test Split)
-    #return X_train, X_test, y_train, y_test
+    return X_train, X_test, y_train, y_test
 
 
 if __name__ == "__main__":
-    #X_train, X_test, y_train, y_test = prepare_data()
-    prepare_data()
+    X_train, X_test, y_train, y_test = prepare_data(save_new_dataset_as_csv_file=False)
