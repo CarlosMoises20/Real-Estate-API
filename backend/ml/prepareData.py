@@ -3,7 +3,7 @@ from pathlib import Path
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.decomposition import PCA
-from app.constants import COLUMN_RENAME_MAP, CATEGORICAL_COLUMNS
+from backend.app.constants import COLUMN_RENAME_MAP, CATEGORICAL_COLUMNS
 from sklearn.preprocessing import StandardScaler
 
 
@@ -119,7 +119,7 @@ def prepare_data(datasets_path="backend/datasets", final_filename="real_estate_i
         index=X_test.index
     )
     
-    # Feature Reduction (PCA); TODO analyze later how this affects the model efficacy)
+    # Feature Reduction (PCA); TODO analyze later how this affects the model efficacy
     pca = PCA()
     
     X_train = pd.DataFrame(
