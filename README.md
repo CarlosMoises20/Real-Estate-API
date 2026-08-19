@@ -10,8 +10,4 @@ pip install -r requirements.txt -> install all packages inside the file "require
 
 Datasets Source:
 
-- https://www.kaggle.com/datasets/luvathoms/portugal-real-estate-2024 (portugal_listings.csv)
-
-real_estate_internal_data_final_v0.csv -> dataset with internal factors generated before applying most of the pre-processing steps
-
-real_estate_internal_data_final.csv -> dataset with internal factors generated after applying every pre-processing steps, which was used to train and test the models
+- https://www.kaggle.com/datasets/luvathoms/portugal-real-estate-2024 (portugal_listnigs.csv)
