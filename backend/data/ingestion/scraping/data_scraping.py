@@ -83,6 +83,8 @@ def aggregate_external_data():
     #print(pt_bank_data)
     
     # TODO review the URI, the Swagger UI contains several GET requests, consider those in the class GovData implementation
+    # References: https://dados.gov.pt/pt/dataservices
+    # https://dados.gov.pt/pt/recursos/desenvolvimento/referencia-api 
     gov = GovData(url="https://dados.gov.pt/api/1/",
                     headers={'Accept':'application/json'})
     
