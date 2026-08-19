@@ -24,6 +24,7 @@ def aggregate_external_data():
 
     ine_data = ine.get_api_data()
     
+    # TODO fix URL
     """osm = OpenStreetMap(url="https://api.openstreetmap.org/api/0.6/map?bbox=-0.489,-0.123,0.236,51.569",
             headers={
                     "User-Agent": "Mozilla/5.0",
@@ -33,7 +34,7 @@ def aggregate_external_data():
 
     osm_data = osm.get_api_data()"""
     
-    
+    # TODO fix URL
     """ecb = EuropeanCentralBank(url="https://sdw-wsrest.ecb.europa.eu/service/data/",
             headers={'Accept':'application/json'}
             )

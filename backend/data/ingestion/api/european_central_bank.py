@@ -1,6 +1,10 @@
 
 from backend.data.ingestion.api.base_api_data_retrieval import BaseApiDataRetrieval
 
+"""
+This class is used to retrieve relevant data from the API of European Central Bank (ECB)
+
+"""
 class EuropeanCentralBank(BaseApiDataRetrieval):
     
     """Retrive JSON data from the API of INE"""

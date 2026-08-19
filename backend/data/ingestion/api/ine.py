@@ -2,7 +2,7 @@
 from backend.data.ingestion.api.base_api_data_retrieval import BaseApiDataRetrieval
 
 """
-This class is used to get data from the API of INE (Instituto Nacional de Estatística)
+This class is used to retrieve relevant data from the API of INE (Instituto Nacional de Estatística)
 
 """
 class INE(BaseApiDataRetrieval):

@@ -1,6 +1,10 @@
 
 from backend.data.ingestion.api.base_api_data_retrieval import BaseApiDataRetrieval
 
+"""
+This class is used to retrieve relevant data from the API of Idealista
+
+"""
 class Idealista(BaseApiDataRetrieval):
     # TODO extract necessary data from the API starting from self.get_json_data    
     
