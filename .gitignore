@@ -11,6 +11,9 @@ backend/datasets/real_estate_*_data_final*.csv
 # Keep external-factor datasets
 !backend/datasets/external/
 
+# Ignore JSON datasets inside folder "external" (we will only use CSV)
+backend/datasets/external/*.json
+
 # Virtual Environment Package Files
 .venv/*
 

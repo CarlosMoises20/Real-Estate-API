@@ -11,12 +11,7 @@ from dotenv import load_dotenv
 
 def aggregate_external_data():
 
-    ine = INE(url="https://www.ine.pt/ine/json_indicador/pindica.jsp",
-            params={
-                    "op": 2,
-                    "varcd": "0014639",
-                    "lang": "PT"
-                }, 
+    ine = INE(url="https://www.ine.pt/ine/json_indicador/pindica.jsp", 
             headers={
                     "User-Agent": "Mozilla/5.0",
                     "Content-Type": "application/json"
@@ -25,6 +20,9 @@ def aggregate_external_data():
 
 
     ine_data = ine.get_api_data()
+    
+    # NOTE this must be the data from all sources (extract relevant data)
+    #print(ine_data)
     
     
     # API Reference: https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-detailed-guidelines/api-statistics
@@ -43,8 +41,11 @@ def aggregate_external_data():
     
     eurostat_data = eurostat.get_api_data()
     
+    """with open("./backend/datasets/external/eurostat_data.json", "w") as f:
+            json.dump(eurostat_data, f, indent=2)"""
+    
     # References: https://publicapis.io/open-street-map-api
-    osm = OpenStreetMap(url="https://api.openstreetmap.org/api/0.6/map",
+    """osm = OpenStreetMap(url="https://api.openstreetmap.org/api/0.6/map",
             headers={
                     "User-Agent": "Mozilla/5.0",
                     "Content-Type": "application/json"
@@ -53,11 +54,13 @@ def aggregate_external_data():
 
     osm_data = osm.get_api_data(min_lon=-0.15, min_lat=51.50, max_lon=-0.14, max_lat=51.51)
     
+    #print(osm_data)"""
+    
     # References: https://data.ecb.europa.eu/help/api/data 
     # https://fgeerolf.com/data/ecb/api.html
     # https://analisemacro.com.br/data-science/como-coletar-dados-do-banco-central-europeu-ecb-usando-a-api-com-o-python/
     # TODO review the URI according to the type of data that is supposed to be returned
-    ecb = EuropeanCentralBank(url="https://data-api.ecb.europa.eu/service/data/FM/M.U2.EUR.RT.MM.EURIBOR1YD_.HSTA",
+    """ecb = EuropeanCentralBank(url="https://data-api.ecb.europa.eu/service/data/FM/M.U2.EUR.RT.MM.EURIBOR1YD_.HSTA",
                               params={
                                   "startPeriod": "2010",
                                   "format": "jsondata",
@@ -66,12 +69,12 @@ def aggregate_external_data():
 
     ecb_data = ecb.get_api_data()
     
-    #print(ecb_data)
+    #print(ecb_data)"""
     
     
     # References: https://bpstat.bportugal.pt/api-de-dados
     # TODO: redefine the URI according to the correct domain and dataset
-    pt_bank = BancoDePortugal(url="https://bpstat.bportugal.pt/data/v1/domains/29/datasets/23e0cdd56bddb4ad3016a9c3ad63a539",
+    """pt_bank = BancoDePortugal(url="https://bpstat.bportugal.pt/data/v1/domains/29/datasets/23e0cdd56bddb4ad3016a9c3ad63a539",
                                 params={
                                     "lang": "PT",
                                     "series_ids": "12531971",
@@ -80,15 +83,15 @@ def aggregate_external_data():
 
     pt_bank_data = pt_bank.get_api_data()
     
-    #print(pt_bank_data)
+    #print(pt_bank_data)"""
     
     # TODO review the URI, the Swagger UI contains several GET requests, consider those in the class GovData implementation
     # References: https://dados.gov.pt/pt/dataservices
     # https://dados.gov.pt/pt/recursos/desenvolvimento/referencia-api 
-    gov = GovData(url="https://dados.gov.pt/api/1/",
+    """gov = GovData(url="https://dados.gov.pt/api/1/",
                     headers={'Accept':'application/json'})
     
-    #gov_data = gov.get_api_data()
+    #gov_data = gov.get_api_data()"""
 
 
     load_dotenv(dotenv_path="./compose/.env")
