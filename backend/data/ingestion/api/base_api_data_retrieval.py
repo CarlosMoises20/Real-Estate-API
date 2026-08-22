@@ -22,11 +22,7 @@ class BaseApiDataRetrieval(ABC):
         self._params = params
         self._headers = headers
     
-    """Retrieve data from an API.
-    NOTE: If, in the future, new APIs are added and these use a different data format than JSON,
-    this method is adaptable to retrieve the data.
-    
-    """
+    """Retrieve data from an API."""
     def get_api_data(self, timeout=45):
         response = requests.get(url=self._url, params=self._params, headers=self._headers, timeout=timeout)
         response.raise_for_status()

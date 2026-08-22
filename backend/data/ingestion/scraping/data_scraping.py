@@ -21,7 +21,6 @@ def aggregate_external_data():
 
     ine_data = ine.get_api_data()
     
-    # NOTE this must be the data from all sources (extract relevant data)
     #print(ine_data)
     
     
