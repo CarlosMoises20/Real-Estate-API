@@ -1,6 +1,7 @@
 
 from backend.data.ingestion.api.base_api_data_retrieval import BaseApiDataRetrieval
 from backend.utils import transform_data_to_range
+from datetime import date
 import json
 
 """
@@ -12,42 +13,58 @@ class INE(BaseApiDataRetrieval):
     """Retrieve JSON data from specific 'varcd' of the API of INE"""
     def __extract_data_from_varcd(self, varcd, data_type, id_cols, name_cols, value):
         
-        self._params = {"op": 2, 
-                        "varcd": varcd, 
-                        "Dim1": "S3A202402",        # TODO review this for all possible 'Dim1', to extract old data to associate with older real estate on 'portugal-listings.csv' 
-                        "lang": "PT"}
+        # TODO this still has to be reviewed
+        dim1_values = [f"S7A{year}" for year in range(2010, date.today().year + 1)]
         
-        data = super().get_api_data().json()
-        
-        # NOTE optional, if you want to generate the dataset
-        with open("./backend/datasets/external/ine_data_v0.json", "w") as f:
-            json.dump(data, f, indent=2)
-        
-        last_update_time = data[0]["DataUltimoAtualizacao"] 
-        
-        period = next(iter(data[0]["Dados"]))
-        
-        extracted_data = data[0]["Dados"][period]
-        
-        #print(data[0]["Dados"].keys())
-        
-        last_period_start, last_period_end = transform_data_to_range(period)  
-       
         final_data = {
             "Type of Data": data_type, 
-            "Last Update Time": last_update_time,
-            "Data Period": period,
-            "Data Period Start": last_period_start,
-            "Data Period End": last_period_end,
-            "Data": [{"id": "".join(elem[id] for id in id_cols if elem.get(id)), 
-                      "name": " - ".join(elem[name] for name in name_cols if elem.get(name)), 
-                      "value": float(elem.get(value))} 
-                     for elem in extracted_data if elem.get(value)]
+            "Data": []
         }
         
-        # Optional: Check if there are duplicated IDs
-        """ids = [elem["id"] for elem in final_data["Data"]]
-        assert len(set(ids)) == len(ids), 'There are duplicated ids'"""
+        for dim_1 in dim1_values:
+        
+            self._params = {
+                "op": 2, 
+                "varcd": varcd, 
+                "Dim1": dim_1,
+                "lang": "PT"
+            }
+        
+            data = super().get_api_data().json()
+        
+            # NOTE optional, if you want to generate the dataset
+            with open(f"./backend/datasets/external/ine_data_v0_{dim_1}.json", "w") as f:
+                json.dump(data, f, indent=2)
+            
+            #last_update_time = data[0]["DataUltimoAtualizacao"] 
+            
+            if data[0]["Sucesso"]["Falso"]:
+                continue
+        
+            period = next(iter(data[0]["Dados"]))
+            
+            extracted_data = data[0]["Dados"][period]
+        
+            #print(data[0]["Dados"].keys())
+            
+            last_period_start, last_period_end = transform_data_to_range(period)
+            
+            for elem in extracted_data:
+
+                if not elem.get(value):
+                    continue  
+        
+                elem_data = {
+                    #"Last Update Time": last_update_time,
+                    "id": "".join(elem[id] for id in id_cols if elem.get(id)), 
+                    "name": " - ".join(elem[name] for name in name_cols if elem.get(name)), 
+                    "value": float(elem.get(value)),
+                    "Data Period": period,
+                    "Data Period Start": last_period_start,
+                    "Data Period End": last_period_end
+                }
+                
+                final_data["Data"].append(elem_data)
         
         return final_data
         
