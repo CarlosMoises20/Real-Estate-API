@@ -1,139 +1,118 @@
 
 from backend.data.ingestion.api.base_api_data_retrieval import BaseApiDataRetrieval
 from backend.utils import transform_data_to_range
-from datetime import date
-import json
+import pandas as pd
 
-"""
-This class is used to retrieve relevant data from the API of INE (Instituto Nacional de Estatística)
-
-"""
+"""This class is used to retrieve relevant data from the API of INE (Instituto Nacional de Estatística)"""
 class INE(BaseApiDataRetrieval):
     
     """Retrieve JSON data from specific 'varcd' of the API of INE"""
-    def __extract_data_from_varcd(self, varcd, data_type, id_cols, name_cols, value):
+    def __extract_data_from_varcd(self, varcd, cols, value_attr_old_name, value_attr_name=None):
         
-        # TODO this still has to be reviewed
-        dim1_values = [f"S7A{year}" for year in range(2010, date.today().year + 1)]
-        
-        final_data = {
-            "Type of Data": data_type, 
-            "Data": []
+        self._params = {
+            "op": 2, 
+            "varcd": varcd, 
+            "lang": "PT"
         }
         
-        for dim_1 in dim1_values:
-        
-            self._params = {
-                "op": 2, 
-                "varcd": varcd, 
-                "Dim1": dim_1,
-                "lang": "PT"
-            }
-        
-            data = super().get_api_data().json()
-        
-            # NOTE optional, if you want to generate the dataset
-            with open(f"./backend/datasets/external/ine_data_v0_{dim_1}.json", "w") as f:
-                json.dump(data, f, indent=2)
-            
-            #last_update_time = data[0]["DataUltimoAtualizacao"] 
-            
-            if data[0]["Sucesso"]["Falso"]:
-                continue
-        
-            period = next(iter(data[0]["Dados"]))
-            
-            extracted_data = data[0]["Dados"][period]
-        
-            #print(data[0]["Dados"].keys())
-            
-            last_period_start, last_period_end = transform_data_to_range(period)
-            
-            for elem in extracted_data:
+        data = super().get_api_data().json()
 
-                if not elem.get(value):
-                    continue  
+        # NOTE draft
+        """with open(f"./backend/datasets/external/ine_data_v0_{value_attr_name}.json", "w") as f:
+            json.dump(data, f, indent=2)"""
+    
+        period = next(iter(data[0]["Dados"]))
         
-                elem_data = {
-                    #"Last Update Time": last_update_time,
-                    "id": "".join(elem[id] for id in id_cols if elem.get(id)), 
-                    "name": " - ".join(elem[name] for name in name_cols if elem.get(name)), 
-                    "value": float(elem.get(value)),
-                    "Data Period": period,
-                    "Data Period Start": last_period_start,
-                    "Data Period End": last_period_end
-                }
-                
-                final_data["Data"].append(elem_data)
+        extracted_data = data[0]["Dados"][period]
         
-        return final_data
+        last_period_start, last_period_end = transform_data_to_range(period)
+        
+        final_data = []
+        
+        for elem in extracted_data:
+
+            if not elem.get(value_attr_old_name):
+                continue  
+            
+            final_data.append({
+                "date_start": last_period_start,
+                "date_end": last_period_end,
+                **{col: elem.get(col) for col in cols if elem.get(col)},
+                value_attr_name: float(elem.get(value_attr_old_name)) if "." in elem.get(value_attr_old_name) \
+                    else int(elem.get(value_attr_old_name)),
+            })
+        
+        # TODO review if this is necessary
+        # generate the dataset that will be later used to train the model after being joined with other datasets
+        pd.DataFrame(final_data).to_csv(f"./backend/datasets/external/ine_data_{value_attr_name}.csv", index=False)
         
     
 
-    """Retrieve JSON data from the API of INE"""
+    """Retrieve JSON data from the API of INE and return a CSV file with extracted relevant data"""
     def get_api_data(self):
         
         # Inflation
-        data_inflation = self.__extract_data_from_varcd(varcd="0014639", 
-                                                        data_type="Inflation",
-                                                        id_cols=["geocod", "dim_3"],
-                                                        name_cols=["geodsg", "dim_3_t"],    
-                                                        value="valor")
+        # https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_api_db
+        # https://smi.ine.pt/Indicador
         
-        print(data_inflation) 
+        # Inflation (absolute value)
+        self.__extract_data_from_varcd(varcd="0014639",
+                                        value_attr_name="inflation_absolute_value",
+                                        value_attr_old_name="valor",
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
+
+        # Inflation (homologous variation)
+        self.__extract_data_from_varcd(varcd="0014647", 
+                                        value_attr_name="inflation_homologous_variable",  
+                                        value_attr_old_name="valor",   
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
+        
+        # Inflation (monthly variation)
+        self.__extract_data_from_varcd(varcd="0014645", 
+                                        value_attr_name="inflation_monthly_variable",  
+                                        value_attr_old_name="valor", 
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
+        
+        # Inflation (yearly variation)
+        self.__extract_data_from_varcd(varcd="0014649", 
+                                        value_attr_name="inflation_yearly_variable",  
+                                        value_attr_old_name="valor", 
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
                 
-        # Average salary
-        data_average_salary = self.__extract_data_from_varcd(varcd="0014751", 
-                                                             data_type="Average salary", 
-                                                             id_cols=["geocod", "dim_3", "dim_4"],
-                                                             name_cols=["geodsg", "dim_3_t", "dim_4_t"],         
-                                                             value="valor")
-        
-        #print(data_average_salary)
+        # Average salary (euros)
+        self.__extract_data_from_varcd(varcd="0014751", 
+                                        value_attr_name="avg_salary_euros",  
+                                        value_attr_old_name="valor", 
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t", 
+                                            "dim_4", "dim_4_t"])
                 
-        # Gross disposable income (TODO review)
-        data_gross_disposable_income = self.__extract_data_from_varcd(varcd="0014133", 
-                                                                      data_type="Gross disposable income",
-                                                                      id_cols=["geocod"], 
-                                                                      name_cols=["geodsg"],
-                                                                      value="valor")
+        # Gross disposable income (euros) 
+        self.__extract_data_from_varcd(varcd="0014133", 
+                                        value_attr_name="gross_disposable_income_euros",  
+                                        value_attr_old_name="valor",
+                                        cols=["geocod", "geodsg"])
         
-        #print(data_gross_disposable_income)        
-        
-        # Unemployment rate (TODO review)
-        data_unemployment_rate = self.__extract_data_from_varcd(varcd="0012136", 
-                                                                data_type="Unemployment rate",
-                                                                id_cols=["geocod", "dim_3"],
-                                                                name_cols=["geodsg", "dim_3_t"],            
-                                                                value="valor")
-        
-        #print(data_unemployment_rate)
+        # Unemployment rate (%)
+        self.__extract_data_from_varcd(varcd="0012136", 
+                                        value_attr_name="unemployment_rate_percentage",  
+                                        value_attr_old_name="valor", 
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
           
-        # Housing price per square meter (TODO review)
-        data_housing_price_per_m2 = self.__extract_data_from_varcd(varcd="0012255", 
-                                                                   data_type="Housing price per square meter",  
-                                                                   id_cols=["geocod", "dim_3"],
-                                                                   name_cols=["geodsg", "dim_3_t"],    
-                                                                   value="valor")
+        # Housing price per square meter (euros)
+        self.__extract_data_from_varcd(varcd="0012255", 
+                                        value_attr_name="housing_price_per_m2_euros",  
+                                        value_attr_old_name="valor", 
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
               
-        #print(data_housing_price_per_m2)
-              
-        # Number of sold houses & transactions (TODO review)
-        data_housing_sold = self.__extract_data_from_varcd(varcd="0012785", 
-                                                           data_type="Number of sold houses & transactions",
-                                                           id_cols=["geocod", "dim_3", "dim_4", "dim_5"],
-                                                           name_cols=["geodsg", "dim_3_t", "dim_4_t", "dim_5_t"],    
-                                                           value="valor")
+        # Number of sold houses & transactions
+        self.__extract_data_from_varcd(varcd="0012785",
+                                        value_attr_name="housing_sold_num_transactions",  
+                                        value_attr_old_name="valor", 
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t", 
+                                                "dim_4", "dim_4_t", "dim_5", "dim_5_t"])
         
-        #print(data_housing_sold)
+        # TODO gather data from all sources to join with the internal dataset
         
-        # TODO gather data from all sources (inflation, average salary, gross disposable income, 
-        # unemployment rate, housing price per square meter, number of sold houses & transactions)
-        final_data = data_inflation
-        
-        return final_data
-    
-    
-    
-"""with open("./backend/datasets/external/ine_data_average_salary.json", "w") as f:
-    json.dump(data_average_salary, f, indent=2)"""
+        # TODO review if it's better to generate a final dataset
+        # generate the dataset that will be later used to train the model after being joined with other datasets
+        #pd.DataFrame(final_data).to_csv(f"./backend/datasets/external/ine_data_final.csv", index=False)

@@ -24,7 +24,7 @@ def aggregate_external_data():
     #print(ine_data)
     
     
-    # API Reference: https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-detailed-guidelines/api-statistics
+    """# API Reference: https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-detailed-guidelines/api-statistics
     
     eurostat = Eurostat(url="https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nama_10_gdp",
             params={
@@ -38,7 +38,7 @@ def aggregate_external_data():
                 }
             )
     
-    eurostat_data = eurostat.get_api_data()
+    eurostat_data = eurostat.get_api_data()"""
     
     """with open("./backend/datasets/external/eurostat_data.json", "w") as f:
             json.dump(eurostat_data, f, indent=2)"""

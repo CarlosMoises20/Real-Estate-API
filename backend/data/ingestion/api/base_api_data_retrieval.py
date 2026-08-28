@@ -1,5 +1,5 @@
 from abc import ABC
-import requests
+import time, requests
 
 
 """
@@ -23,10 +23,30 @@ class BaseApiDataRetrieval(ABC):
         self._headers = headers
     
     """Retrieve data from an API."""
-    def get_api_data(self, timeout=45):
-        response = requests.get(url=self._url, params=self._params, headers=self._headers, timeout=timeout)
-        response.raise_for_status()
-        return response
+    def get_api_data(self, retries=5):
+        
+        for attempt in range(retries):
+            try:
+                response = requests.get(url=self._url, params=self._params, headers=self._headers, timeout=(10, 60))
+                response.raise_for_status()
+                return response
+            
+            except requests.exceptions.ConnectTimeout:
+                if attempt == retries - 1:
+                    raise
+    
+                wait = 2 ** attempt
+                print(f"Timeout. New attempt in {wait}s...")
+                time.sleep(wait)
+                
+                
+            except requests.exceptions.RequestException:
+                if attempt == retries - 1:
+                    raise
+    
+                wait = 2 ** attempt
+                print(f"Error. New attempt in {wait}s...")
+                time.sleep(wait)
     
     
     
