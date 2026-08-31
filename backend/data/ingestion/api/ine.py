@@ -1,13 +1,13 @@
 
 from backend.data.ingestion.api.base_api_data_retrieval import BaseApiDataRetrieval
-from backend.utils import transform_data_to_range
+from backend.utils import *
 import pandas as pd
 
 """This class is used to retrieve relevant data from the API of INE (Instituto Nacional de Estatística)"""
 class INE(BaseApiDataRetrieval):
     
     """Retrieve JSON data from specific 'varcd' of the API of INE"""
-    def __extract_data_from_varcd(self, varcd, cols, value_attr_old_name, value_attr_name=None):
+    def __extract_data_from_varcd(self, varcd, cols, value_attr_old_name, datasets_format, value_attr_name=None):
         
         self._params = {
             "op": 2, 
@@ -17,7 +17,7 @@ class INE(BaseApiDataRetrieval):
         
         data = super().get_api_data().json()
 
-        # NOTE draft
+        # NOTE uncomment if you want to generate the dataset with data from the API in raw format
         """with open(f"./backend/datasets/external/ine_data_v0_{value_attr_name}.json", "w") as f:
             json.dump(data, f, indent=2)"""
     
@@ -41,78 +41,98 @@ class INE(BaseApiDataRetrieval):
                 value_attr_name: float(elem.get(value_attr_old_name)) if "." in elem.get(value_attr_old_name) \
                     else int(elem.get(value_attr_old_name)),
             })
+            
+        final_df = pd.DataFrame(final_data)
         
-        # TODO review if this is necessary
+        # NOTE optional
         # generate the dataset that will be later used to train the model after being joined with other datasets
-        pd.DataFrame(final_data).to_csv(f"./backend/datasets/external/ine_data_{value_attr_name}.csv", index=False)
+        generate_dataset_from_df(df=final_df, 
+                                 file_path_base=f"./backend/datasets/external/ine_data_{value_attr_name}", 
+                                 dataset_format=datasets_format)
+        
+        return final_df
         
     
 
     """Retrieve JSON data from the API of INE and return a CSV file with extracted relevant data"""
-    def get_api_data(self):
+    # TODO change to parquet
+    def get_api_data(self, datasets_format):
         
         # Inflation
         # https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_api_db
         # https://smi.ine.pt/Indicador
         
         # Inflation (absolute value)
-        self.__extract_data_from_varcd(varcd="0014639",
+        df_inflation_abs_value = self.__extract_data_from_varcd(varcd="0014639",
                                         value_attr_name="inflation_absolute_value",
                                         value_attr_old_name="valor",
-                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"],
+                                        datasets_format=datasets_format)
 
         # Inflation (homologous variation)
-        self.__extract_data_from_varcd(varcd="0014647", 
+        df_inflation_homologous_variable = self.__extract_data_from_varcd(varcd="0014647", 
                                         value_attr_name="inflation_homologous_variable",  
                                         value_attr_old_name="valor",   
-                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"],
+                                        datasets_format=datasets_format)
         
         # Inflation (monthly variation)
-        self.__extract_data_from_varcd(varcd="0014645", 
+        df_inflation_monthly_variable = self.__extract_data_from_varcd(varcd="0014645", 
                                         value_attr_name="inflation_monthly_variable",  
                                         value_attr_old_name="valor", 
-                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"],
+                                        datasets_format=datasets_format)
         
         # Inflation (yearly variation)
-        self.__extract_data_from_varcd(varcd="0014649", 
+        df_inflation_yearly_variable = self.__extract_data_from_varcd(varcd="0014649", 
                                         value_attr_name="inflation_yearly_variable",  
                                         value_attr_old_name="valor", 
-                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"],
+                                        datasets_format=datasets_format)
                 
         # Average salary (euros)
-        self.__extract_data_from_varcd(varcd="0014751", 
+        df_avg_salary_euros = self.__extract_data_from_varcd(varcd="0014751", 
                                         value_attr_name="avg_salary_euros",  
                                         value_attr_old_name="valor", 
                                         cols=["geocod", "geodsg", "dim_3", "dim_3_t", 
-                                            "dim_4", "dim_4_t"])
+                                            "dim_4", "dim_4_t"],
+                                        datasets_format=datasets_format)
                 
         # Gross disposable income (euros) 
-        self.__extract_data_from_varcd(varcd="0014133", 
+        df_gross_disposable_income_euros = self.__extract_data_from_varcd(varcd="0014133", 
                                         value_attr_name="gross_disposable_income_euros",  
                                         value_attr_old_name="valor",
-                                        cols=["geocod", "geodsg"])
+                                        cols=["geocod", "geodsg"],
+                                        datasets_format=datasets_format)
         
         # Unemployment rate (%)
-        self.__extract_data_from_varcd(varcd="0012136", 
+        df_unemployment_rate_percentage = self.__extract_data_from_varcd(varcd="0012136", 
                                         value_attr_name="unemployment_rate_percentage",  
                                         value_attr_old_name="valor", 
-                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"],
+                                        datasets_format=datasets_format)
           
         # Housing price per square meter (euros)
-        self.__extract_data_from_varcd(varcd="0012255", 
+        df_housing_price_per_m2_euros = self.__extract_data_from_varcd(varcd="0012255", 
                                         value_attr_name="housing_price_per_m2_euros",  
                                         value_attr_old_name="valor", 
-                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"],
+                                        datasets_format=datasets_format)
               
         # Number of sold houses & transactions
-        self.__extract_data_from_varcd(varcd="0012785",
+        df_housing_sold_num_transactions = self.__extract_data_from_varcd(varcd="0012785",
                                         value_attr_name="housing_sold_num_transactions",  
                                         value_attr_old_name="valor", 
                                         cols=["geocod", "geodsg", "dim_3", "dim_3_t", 
-                                                "dim_4", "dim_4_t", "dim_5", "dim_5_t"])
+                                                "dim_4", "dim_4_t", "dim_5", "dim_5_t"],
+                                        datasets_format=datasets_format)
         
-        # TODO gather data from all sources to join with the internal dataset
         
-        # TODO review if it's better to generate a final dataset
-        # generate the dataset that will be later used to train the model after being joined with other datasets
-        #pd.DataFrame(final_data).to_csv(f"./backend/datasets/external/ine_data_final.csv", index=False)
+        df_list = [df_inflation_abs_value, df_inflation_homologous_variable, 
+                   df_inflation_monthly_variable, 
+                   df_inflation_yearly_variable, df_avg_salary_euros, 
+                   df_gross_disposable_income_euros, 
+                   df_unemployment_rate_percentage, df_housing_price_per_m2_euros, 
+                   df_housing_sold_num_transactions]
+        
+        return pd.concat(df_list, ignore_index=True)

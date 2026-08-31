@@ -13,10 +13,13 @@ indicated parameters and headers
 """
 class BaseApiDataRetrieval(ABC):
     
-    # Constructor
-    # url: url of the api
-    # params: parameters of the api
-    # headers: headers of the api
+    """
+    Constructor
+        # url: url of the api
+        # params: parameters of the api
+        # headers: headers of the api
+        
+    """
     def __init__(self, url, params=None, headers=None):
         self._url = url
         self._params = params
@@ -30,22 +33,13 @@ class BaseApiDataRetrieval(ABC):
                 response = requests.get(url=self._url, params=self._params, headers=self._headers, timeout=(10, 60))
                 response.raise_for_status()
                 return response
-            
-            except requests.exceptions.ConnectTimeout:
-                if attempt == retries - 1:
-                    raise
-    
-                wait = 2 ** attempt
-                print(f"Timeout. New attempt in {wait}s...")
-                time.sleep(wait)
-                
                 
             except requests.exceptions.RequestException:
                 if attempt == retries - 1:
                     raise
     
                 wait = 2 ** attempt
-                print(f"Error. New attempt in {wait}s...")
+                print(f"Request failed. New attempt in {wait}s...")
                 time.sleep(wait)
     
     

@@ -5,6 +5,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.decomposition import PCA
 from backend.app.constants import COLUMN_RENAME_MAP, CATEGORICAL_COLUMNS
 from sklearn.preprocessing import StandardScaler
+from backend.data.ingestion.scraping.data_scraping import aggregate_external_data
 
 
 """
@@ -74,8 +75,8 @@ Returns:
     df_external (pd.DataFrame): The final prepared dataframe.
     
 """
-def prepare_external_data(external_datasets_path="backend/datasets/external"):
-    pass
+def prepare_external_data(datasets_format, external_datasets_path="backend/datasets/external"):
+    df = aggregate_external_data(datasets_format=datasets_format)
 
 
 # Join internal and external datasets, using the appropriate keys in the join method
@@ -83,7 +84,7 @@ def join_internal_and_external_data(df_internal, df_external):
     pass
 
 
-def prepare_final_data(df_final, final_filename="real_estate_internal_data_final.csv", save_new_dataset_as_csv_file=True):
+def prepare_final_data(df_final, datasets_format, final_filename="real_estate_internal_data_final"):
     
     # Split data into train and test dataset
     X = df_final.drop("Price (euros)", axis=1)
@@ -169,9 +170,18 @@ def prepare_final_data(df_final, final_filename="real_estate_internal_data_final
     
     df_final = df_final[COLUMN_ORDER]
     
-    # Save the final dataframe as a CSV file if the flag is True
-    if save_new_dataset_as_csv_file:
-        df_final.to_csv(f"backend/datasets/{final_filename}", index=False)
+    # Save the final dataframe if the flag 'datasets_format' is provided
+    # If the flag is None, no dataset will be generated
+    if datasets_format:
+        
+        file_path = f"backend/datasets/{final_filename}.{datasets_format}"
+        
+        if datasets_format == "csv":
+            df_final.to_csv(file_path, index=False)
+        
+        elif datasets_format == "parquet":
+            df_final.to_parquet(file_path, index=False)
+        
         
     # NOTE: uncomment this to print some examples of the training and testing datasets
     """print(pd.DataFrame(X_train).head(20))
@@ -182,15 +192,19 @@ def prepare_final_data(df_final, final_filename="real_estate_internal_data_final
     return X_train, X_test, y_train, y_test
 
 
-if __name__ == "__main__":
+
+def prepare_data(datasets_format="parquet"):
     
-    df_internal = prepare_internal_data()
-    
+    df_internal = prepare_internal_data(datasets_format=datasets_format)
+        
     # TODO create external dataset; prepare_external_data
     
     # TODO concatenate external dataset with internal dataset through join; join_internal_and_external_data
     df_final = df_internal
     
-    X_train, X_test, y_train, y_test = prepare_final_data(df_final, save_new_dataset_as_csv_file=True)
+    return prepare_final_data(df_final, datasets_format=datasets_format)
+
+
+if __name__ == "__main__":
     
-    
+    X_train, X_test, y_train, y_test = prepare_data()

@@ -8,7 +8,7 @@ This class is used to retrieve relevant data from the API of European Central Ba
 class EuropeanCentralBank(BaseApiDataRetrieval):
     
     """Retrive JSON data from the API of INE"""
-    def get_api_data(self):
+    def get_api_data(self, datasets_format):
         response = super().get_api_data()
         
         data = response.json()
