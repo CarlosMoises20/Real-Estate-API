@@ -7,7 +7,7 @@ This class is used to retrieve relevant data from the API of GovData (Portal das
 """
 class GovData(BaseApiDataRetrieval):
     
-    """Retrive JSON data from the API of GovData"""
+    """Retrive JSON data from the API of GovData and return dataframe with relevant data"""
     def get_api_data(self, datasets_format):
         response = super().get_api_data()
         

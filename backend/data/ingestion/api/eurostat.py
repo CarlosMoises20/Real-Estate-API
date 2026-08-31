@@ -8,7 +8,7 @@ from backend.utils import *
 """This class is used to retrieve relevant data from the API of Eurostat"""
 class Eurostat(BaseApiDataRetrieval):
     
-    """Retrieve JSON data from the API of INE, from 2010 to the current year"""
+    """Retrieve JSON data from the API of INE and return dataframe with relevant data"""
     # TODO change to parquet
     def get_api_data(self, datasets_format):
         

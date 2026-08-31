@@ -54,8 +54,7 @@ class INE(BaseApiDataRetrieval):
         
     
 
-    """Retrieve JSON data from the API of INE and return a CSV file with extracted relevant data"""
-    # TODO change to parquet
+    """Retrieve JSON data from the API of INE and return a pandas dataframe with extracted relevant data"""
     def get_api_data(self, datasets_format):
         
         # Inflation
@@ -128,11 +127,14 @@ class INE(BaseApiDataRetrieval):
                                         datasets_format=datasets_format)
         
         
-        df_list = [df_inflation_abs_value, df_inflation_homologous_variable, 
+        df_list = [df_inflation_abs_value, 
+                   df_inflation_homologous_variable, 
                    df_inflation_monthly_variable, 
-                   df_inflation_yearly_variable, df_avg_salary_euros, 
+                   df_inflation_yearly_variable, 
+                   df_avg_salary_euros, 
                    df_gross_disposable_income_euros, 
-                   df_unemployment_rate_percentage, df_housing_price_per_m2_euros, 
+                   df_unemployment_rate_percentage, 
+                   df_housing_price_per_m2_euros, 
                    df_housing_sold_num_transactions]
         
         return pd.concat(df_list, ignore_index=True)

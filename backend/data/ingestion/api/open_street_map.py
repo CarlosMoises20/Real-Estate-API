@@ -7,7 +7,7 @@ This class is used to retrieve relevant data from the API of Open Street Map
 """
 class OpenStreetMap(BaseApiDataRetrieval):
     
-    """Retrieve JSON data from the API of INE"""
+    """Retrieve JSON data from the API of INE and return dataframe with relevant data"""
     def get_api_data(self, min_lon, min_lat, max_lon, max_lat, datasets_format):
         
         self._params = {

@@ -3,8 +3,9 @@ import re, calendar
 
 
 """
-This function generates a dataset from a dataframe and
+This function generates a dataset from a dataframe (df) and
 saves it to a file in the specified format and in a path defined by 'file_path_base'
+It saves in 'CSV' or 'parquet' formats, depending on the 'dataset_format' parameter
 
 """
 def generate_dataset_from_df(df, file_path_base, dataset_format):
