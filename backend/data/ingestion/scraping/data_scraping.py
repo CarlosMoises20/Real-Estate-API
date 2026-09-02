@@ -64,19 +64,6 @@ def aggregate_external_data(datasets_format):
     osm_data = osm.get_api_data(min_lon=-0.15, min_lat=51.50, max_lon=-0.14, max_lat=51.51,
                             datasets_format=datasets_format)"""
     
-    # References: https://data.ecb.europa.eu/help/api/data 
-    # https://fgeerolf.com/data/ecb/api.html
-    # https://analisemacro.com.br/data-science/como-coletar-dados-do-banco-central-europeu-ecb-usando-a-api-com-o-python/
-    # TODO review the URI according to the type of data that is supposed to be returned
-    """ecb = EuropeanCentralBank(url="https://data-api.ecb.europa.eu/service/data/FM/M.U2.EUR.RT.MM.EURIBOR1YD_.HSTA",
-                              params={
-                                  "startPeriod": "2010",
-                                  "format": "jsondata",
-                              },
-                            headers={'Accept':'application/json'})
-
-    ecb_data = ecb.get_api_data(datasets_format=datasets_format)"""
-    
     
       
     # TODO review the URI, the Swagger UI contains several GET requests, consider those in the class GovData implementation
