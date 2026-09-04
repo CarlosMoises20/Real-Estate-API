@@ -2,6 +2,7 @@
 from backend.data.ingestion.api.base_api_data_retrieval import BaseApiDataRetrieval
 from backend.utils import *
 import pandas as pd
+import json         # If you want to generate the dataset with data from the API in raw format (JSON for visualization)
 
 """This class is used to retrieve relevant data from the API of INE (Instituto Nacional de Estatística)"""
 class INE(BaseApiDataRetrieval):
@@ -15,9 +16,11 @@ class INE(BaseApiDataRetrieval):
             "lang": "PT"
         }
         
+        # Here we don't convert this to dataframe yet, because data has a nested structure and this would add extra complexity in the dataframe pre-processing
+        # Instead, we will extract relevant data from the JSON and then convert it to dataframe
         data = super().get_api_data().json()
 
-        # NOTE uncomment if you want to generate the dataset with data from the API in raw format
+        # NOTE uncomment if you want to generate the dataset with data from the API in raw format, for visualization
         """with open(f"./backend/datasets/external/ine_data_v0_{value_attr_name}.json", "w") as f:
             json.dump(data, f, indent=2)"""
     
@@ -88,6 +91,13 @@ class INE(BaseApiDataRetrieval):
                                         value_attr_old_name="valor", 
                                         cols=["geocod", "geodsg", "dim_3", "dim_3_t"],
                                         datasets_format=datasets_format)
+        
+         # Inflation (yearly variation)
+        df_housing_credit_rate = self.__extract_data_from_varcd(varcd="0001972", 
+                                        value_attr_name="housing_credit_rate",  
+                                        value_attr_old_name="valor", 
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"],
+                                        datasets_format=datasets_format)
                 
         # Average salary (euros)
         df_avg_salary_euros = self.__extract_data_from_varcd(varcd="0014751", 
@@ -131,6 +141,7 @@ class INE(BaseApiDataRetrieval):
                    df_inflation_homologous_variable, 
                    df_inflation_monthly_variable, 
                    df_inflation_yearly_variable, 
+                   df_housing_credit_rate,
                    df_avg_salary_euros, 
                    df_gross_disposable_income_euros, 
                    df_unemployment_rate_percentage, 
