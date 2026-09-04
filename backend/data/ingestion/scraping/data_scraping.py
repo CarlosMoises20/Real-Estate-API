@@ -1,7 +1,6 @@
 
 
 from backend.data.ingestion.api.ine import INE
-from backend.data.ingestion.api.open_street_map import OpenStreetMap
 from backend.data.ingestion.api.eurostat import Eurostat
 from dotenv import load_dotenv
 
@@ -40,17 +39,8 @@ def aggregate_external_data(datasets_format):
     
     eurostat_data = eurostat.get_api_data(datasets_format=datasets_format)"""
     
-    
-    # References: https://publicapis.io/open-street-map-api
-    # TODO finish extraction of relevant data from the API of Open Street Map
-    osm = OpenStreetMap(url="https://api.openstreetmap.org/api/0.6/map",
-            headers={
-                    "User-Agent": "Mozilla/5.0",
-                    "Content-Type": "application/json"
-                }
-            )
 
-    osm_data = osm.get_api_data(datasets_format=datasets_format)
+    # TODO choose an viable alternative to OpenStreetMap API to get facilities data, after a careful study of the available options, and implement it here
     
 
 
