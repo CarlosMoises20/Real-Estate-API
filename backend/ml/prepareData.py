@@ -3,9 +3,9 @@ from pathlib import Path
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.decomposition import PCA
-from backend.app.constants import COLUMN_RENAME_MAP, CATEGORICAL_COLUMNS
+from backend.common.constants import COLUMN_RENAME_MAP, CATEGORICAL_COLUMNS
 from sklearn.preprocessing import StandardScaler
-from backend.data.ingestion.scraping.data_scraping import aggregate_external_data
+from backend.data.ingestion.scraping.data_scraping import aggregate_external_data, aggregate_internal_data
 
 
 """
@@ -18,18 +18,14 @@ Returns:
     df_internal (pd.DataFrame): The final prepared dataframe.
     
 """
-def prepare_internal_data(internal_datasets_path="backend/datasets/internal"):
+def prepare_internal_data(datasets_format):
     
-    # Define the folder containing the CSV files
-    folder = Path(internal_datasets_path)
-
-    # Include all CSV files in the specified folder, except for the final output file.
-    # This approach has the advantage of supporting multiple datasets being stored in "datasets_path",
-    # which will be useful in the future if more datasets are added to the folder to train / test the models
-    csv_files = [file for file in folder.glob("*.csv")]
-
-    # Read CSV files as a Pandas dataframe each
-    df_list = [pd.read_csv(file).rename(columns=COLUMN_RENAME_MAP) for file in csv_files]
+    # TODO finish this
+    
+    df_returned_list = aggregate_internal_data(datasets_format=datasets_format, 
+                                               internal_datasets_path="backend/datasets/internal")
+    
+    df_list = [df.rename(columns=COLUMN_RENAME_MAP) for df in df_returned_list]
 
     # Concatenate the dataframes 
     df_internal = pd.concat(df_list, ignore_index=True)
@@ -75,8 +71,8 @@ Returns:
     df_external (pd.DataFrame): The final prepared dataframe.
     
 """
-def prepare_external_data(datasets_format, external_datasets_path="backend/datasets/external"):
-    df = aggregate_external_data(datasets_format=datasets_format)
+def prepare_external_data(datasets_format):
+    df_list = aggregate_external_data(datasets_format=datasets_format)
 
 
 # Join internal and external datasets, using the appropriate keys in the join method
@@ -198,9 +194,10 @@ def prepare_data(datasets_format="parquet"):
     df_internal = prepare_internal_data(datasets_format=datasets_format)
         
     # TODO create external dataset; prepare_external_data
+    df_external = prepare_external_data(datasets_format=datasets_format)
     
-    # TODO concatenate external dataset with internal dataset through join; join_internal_and_external_data
-    df_final = df_internal
+    # TODO concatenate internal dataset with external dataset through join; join_internal_and_external_data
+    df_final = join_internal_and_external_data(df_internal, df_external)
     
     return prepare_final_data(df_final, datasets_format=datasets_format)
 

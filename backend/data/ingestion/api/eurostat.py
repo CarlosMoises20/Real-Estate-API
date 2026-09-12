@@ -1,17 +1,17 @@
 
-from backend.data.ingestion.api.base_api_data_retrieval import BaseApiDataRetrieval
+from backend.data.ingestion.api.base_source_data_retrieval import BaseSourceDataRetrieval
 import pandas as pd
 from io import StringIO
-from backend.utils import *
+from backend.common.utils import *
 
 
 """This class is used to retrieve relevant data from the API of Eurostat"""
-class Eurostat(BaseApiDataRetrieval):
+class Eurostat(BaseSourceDataRetrieval):
     
     """Retrieve JSON data from the API of INE and return dataframe with relevant data"""
-    def get_api_data(self, datasets_format):
+    def get_source_data(self, datasets_format):
         
-        df = pd.read_csv(StringIO(super().get_api_data().text))
+        df = pd.read_csv(StringIO(super().get_source_data().text))
         
         # NOTE uncomment if you want to generate the dataset with data from the API in raw format (CSV for visualization)            
         df.to_csv(
