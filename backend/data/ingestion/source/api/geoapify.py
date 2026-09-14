@@ -1,14 +1,14 @@
 
-from backend.data.ingestion.api.base_source_data_retrieval import BaseSourceDataRetrieval
+from backend.data.ingestion.source.api.base_api_data_source import BaseAPIDataSource
 import pandas as pd
 from backend.common.constants import PORTUGAL_COORDINATES_LIST
 
 
 """This class is used to retrieve relevant data from the API of Geoapify"""
-class Geoapify(BaseSourceDataRetrieval):
+class Geoapify(BaseAPIDataSource):
     
     """Retrieve JSON data from the API of Geoapify and return dataframe with relevant data"""
-    def get_source_data(self, datasets_format):
+    def get_source_data(self):
         
         # Return data from Portugal Continent, Azores and Madeira
         # NOTE: in the future, this will be simplified to use countrycode:PT when the parameter is available, but for now,
@@ -37,6 +37,6 @@ class Geoapify(BaseSourceDataRetrieval):
         """# Save final dataset (NOTE: optional)            
         generate_dataset_from_df(df=df_list, 
                                 file_path_base=f"./backend/datasets/external/geoapify_data_facilities",
-                                dataset_format=datasets_format)"""
+                                dataset_format=self._datasets_format)"""
         
         return df_list

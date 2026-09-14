@@ -1,46 +1,50 @@
 
 import os, kagglehub
 import pandas as pd
-from backend.data.ingestion.api.ine import INE
-from backend.data.ingestion.api.eurostat import Eurostat
-from backend.data.ingestion.api.geoapify import Geoapify
-from backend.data.ingestion.api.fsq_os_places import FSQOSPlaces
+from backend.data.ingestion.source.api.ine import INE
+from backend.data.ingestion.source.api.eurostat import Eurostat
+from backend.data.ingestion.source.api.geoapify import Geoapify
+from backend.data.ingestion.source.duckdb.fsq_os_places import FSQOSPlaces
 from dotenv import load_dotenv
 
 
 def aggregate_external_data(datasets_format, external_datasets_path="./backend/datasets/external/"):
 
     # TODO uncomment after code here is finished
-    """ine = INE(url="https://www.ine.pt/ine/json_indicador/pindica.jsp", 
-            headers={
-                    "User-Agent": "Mozilla/5.0",
-                    "Content-Type": "application/json"
-                }
+    """ine = INE(
+                url="https://www.ine.pt/ine/json_indicador/pindica.jsp", 
+                headers={
+                        "User-Agent": "Mozilla/5.0",
+                        "Content-Type": "application/json"
+                    },
+                datasets_format=datasets_format
             )
 
 
-    ine_data = ine.get_source_data(datasets_format=datasets_format)"""
+    ine_data = ine.get_source_data()"""
     
     
     # API Reference: https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-detailed-guidelines/api-statistics
     # SMDX-2.0 CSV
     # get GDP per capita data from Eurostat API (from 2010 to current year)
     # TODO uncomment after code here is finished
-    """eurostat = Eurostat(url="https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/nama_10_gdp/1.0",
-            params={
-                "format": "csvdata",
-                "formatVersion": "2.0",
-                "compress": "false",
-                "c[GEO]": "PT",                     # Portugal data
-                "c[TIME_PERIOD]": "ge:2010"         # From 2010 to current year      
-            },
-            headers={
-                    "User-Agent": "Mozilla/5.0",
-                    "Content-Type": "application/json"
-                }
-            )
+    """eurostat = Eurostat(
+                    url="https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/nama_10_gdp/1.0",
+                    params={
+                        "format": "csvdata",
+                        "formatVersion": "2.0",
+                        "compress": "false",
+                        "c[GEO]": "PT",                     # Portugal data
+                        "c[TIME_PERIOD]": "ge:2010"         # From 2010 to current year      
+                    },
+                    headers={
+                            "User-Agent": "Mozilla/5.0",
+                            "Content-Type": "application/json"
+                        },
+                    datasets_format=datasets_format
+                    )
     
-    eurostat_data = eurostat.get_source_data(datasets_format=datasets_format)"""
+    eurostat_data = eurostat.get_source_data()"""
     
 
     # TODO choose an viable alternative to OpenStreetMap API to get facilities data, after a careful study of the available options, and implement it here
@@ -50,41 +54,30 @@ def aggregate_external_data(datasets_format, external_datasets_path="./backend/d
     load_dotenv(dotenv_path="./compose/.env")
     
     # TODO review if routes shouldn't also be included in the data retrieved from Geoapify API, and if so, implement it here
-    """# Geoapify API Reference: https://apidocs.geoapify.com/docs/places/#introduction
-    
-    geoapify = Geoapify(url="https://api.geoapify.com/v2/places",
-            params={
-                "categories": "accommodation.hotel,accommodation.hostel,accommodation.motel,accommodation.guest_house,accommodation.apartment",
-                "limit": 500,
-                "apiKey": os.getenv("GEOAPIFY_API_KEY")
-            },
-            headers={
-                    "User-Agent": "Mozilla/5.0",
-                    "Content-Type": "application/json"
-                }
+    # Geoapify API Reference: https://apidocs.geoapify.com/docs/places/#introduction
+    """geoapify = Geoapify(
+                    url="https://api.geoapify.com/v2/places",
+                    params={
+                        "categories": "accommodation.hotel,accommodation.hostel,accommodation.motel,accommodation.guest_house,accommodation.apartment",
+                        "limit": 500,
+                        "apiKey": os.getenv("GEOAPIFY_API_KEY")
+                    },
+                    headers={
+                            "User-Agent": "Mozilla/5.0",
+                            "Content-Type": "application/json"
+                        },
+                    datasets_format=datasets_format
             )
     
-    df_list = geoapify.get_source_data(datasets_format=datasets_format)"""
+    geoapify_data = geoapify.get_source_data()"""
     
-    # Foursquare OS Places API Reference: https://developer.foursquare.com/reference/places-search
-    # TODO fix this, the URL below is from FSQ Places API, it must be from FSQ OS Places
-    fsq_os_places = FSQOSPlaces(url="https://places-api.foursquare.com/places/search",
-            params={
-                "ll": "38.7169,-9.1392",  # Lisbon coordinates
-                "radius": 10000,          # 10 km radius
-                "limit": 50               # 50 results
-                #"query": "hotel,hostel,motel,guest house,apartment",
-                #"fields": "fsq_id,name,location,categories,geocodes,distance,timezone",
-                #"sort": "DISTANCE"
-            },
-            headers={
-                    "accept": "application/json",
-                    "X-Places-Api-Version": "2025-06-17",
-                    "Authorization": f"Bearer {os.getenv('FSQ_API_KEY')}"
-                }
-            )
+    # Foursquare OS Places API Reference: https://docs.foursquare.com/data-products/docs/fsq-places-open-source
+    fsq_os_places = FSQOSPlaces(
+        datasets_format=datasets_format,
+        hf_token=os.getenv("HUGGING_FACE_TOKEN")
+    )
     
-    df_fsq_list = fsq_os_places.get_source_data(datasets_format=datasets_format)
+    fsq_os_places_data = fsq_os_places.get_source_data()
 
     
 

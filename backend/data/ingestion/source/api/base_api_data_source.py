@@ -1,4 +1,5 @@
-from abc import ABC
+
+from backend.data.ingestion.source.base_data_source import BaseDataSource
 import time, requests
 
 
@@ -11,21 +12,23 @@ each one a different API, to get the data from the API through the indicated URL
 indicated parameters and headers
 
 """
-class BaseSourceDataRetrieval(ABC):
+class BaseAPIDataSource(BaseDataSource):
     
     """
     Constructor
         # url: url of the api
         # params: parameters of the api
         # headers: headers of the api
+        # datasets_format: format of the dataset to be generated (csv or parquet)
         
     """
-    def __init__(self, url, params=None, headers=None):
+    def __init__(self, url, datasets_format=None, params=None, headers=None):
+        super().__init__(datasets_format=datasets_format)
         self._url = url
         self._params = params
         self._headers = headers
     
-    """Retrieve data from an indicated source, using the url, parameters and headers indicated in the constructor"""
+    """Implement abstract method to retrieve data from an indicated API, using the url, parameters and headers indicated in the constructor"""
     def get_source_data(self, retries=5):
         
         for attempt in range(retries):
@@ -41,6 +44,3 @@ class BaseSourceDataRetrieval(ABC):
                 wait = 2 ** attempt
                 print(f"Request failed. New attempt in {wait}s...")
                 time.sleep(wait)
-    
-    
-    

@@ -1,15 +1,15 @@
 
-from backend.data.ingestion.api.base_source_data_retrieval import BaseSourceDataRetrieval
+from backend.data.ingestion.source.api.base_api_data_source import BaseAPIDataSource
 
 """
 This class is used to retrieve relevant data from the API of Idealista
 
 """
-class Idealista(BaseSourceDataRetrieval):
+class Idealista(BaseAPIDataSource):
     # TODO extract necessary data from the API starting from self.get_json_data    
     
     """Retrive JSON data from the API of INE and return dataframe with relevant data"""
-    def get_source_data(self, datasets_format):
+    def get_source_data(self):
         response = super().get_source_data()
         
         data = response.json()

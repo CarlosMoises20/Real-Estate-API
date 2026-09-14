@@ -1,15 +1,15 @@
 
-from backend.data.ingestion.api.base_source_data_retrieval import BaseSourceDataRetrieval
+from backend.data.ingestion.source.api.base_api_data_source import BaseAPIDataSource
 import pandas as pd
 from io import StringIO
 from backend.common.utils import *
 
 
 """This class is used to retrieve relevant data from the API of Eurostat"""
-class Eurostat(BaseSourceDataRetrieval):
+class Eurostat(BaseAPIDataSource):
     
     """Retrieve JSON data from the API of INE and return dataframe with relevant data"""
-    def get_source_data(self, datasets_format):
+    def get_source_data(self):
         
         df = pd.read_csv(StringIO(super().get_source_data().text))
         
@@ -37,6 +37,6 @@ class Eurostat(BaseSourceDataRetrieval):
         # Save final dataset (NOTE: optional)            
         generate_dataset_from_df(df=df, 
                                 file_path_base=f"./backend/datasets/external/eurostat_data_gdp_since_2010",
-                                dataset_format=datasets_format)
+                                dataset_format=self._datasets_format)
         
         return df
