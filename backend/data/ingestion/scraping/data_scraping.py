@@ -74,7 +74,10 @@ def aggregate_external_data(datasets_format, external_datasets_path="./backend/d
     # Foursquare OS Places API Reference: https://docs.foursquare.com/data-products/docs/fsq-places-open-source
     fsq_os_places = FSQOSPlaces(
         datasets_format=datasets_format,
-        hf_token=os.getenv("HUGGING_FACE_TOKEN")
+        access_token=os.getenv("FSQ_OS_PLACES_ACCESS_TOKEN"),
+        db_file_path="./backend/data/duckdb_source/fsq/fsq_os_places.db",
+        country_code="PT",
+        places_dataset_path="./backend/data/duckdb_source/fsq"
     )
     
     fsq_os_places_data = fsq_os_places.get_source_data()
@@ -106,7 +109,7 @@ def aggregate_internal_data(datasets_format, internal_datasets_path="backend/dat
 # TODO remove this when no longer needed    
 if __name__ == "__main__":
     
-    data_format = "csv"
+    data_format = "parquet"
     
     df_internal_list = aggregate_internal_data(datasets_format=data_format)
     

@@ -180627,3 +180627,435 @@ Price,District,City,Town,Type,EnergyCertificate,Floor,NumberOfBathrooms,Parking,
 259000.0,Porto,Vila Nova de Gaia,Canelas,Apartment,A+,,2.0,1.0,87.0,,A+,2026-09-13 10:46:50.503,False,True,True,2.0,1.0,1.0,,60.0,94.0,94.0
 199000.0,Porto,Vila Nova de Gaia,Canelas,Apartment,A+,,1.0,1.0,69.0,,A+,2026-09-13 10:47:07.433,False,True,True,1.0,0.0,,,40.0,82.0,82.0
 315000.0,Setúbal,Almada,Charneca de Caparica e Sobreda,Apartment,D,,2.0,0.0,96.0,1980.0,D,2026-09-13 12:44:52.433,False,True,False,,3.0,2.0,,85.0,,
+57000.0,Aveiro,Oliveira de Azeméis,"Oliveira de Azeméis, Santiago de Riba-Ul, Ul, Macinhata da Seixa e Madail",Transfer of lease,C,,,0.0,180.0,1992.0,C,2026-09-14 13:18:26.857,False,False,False,,,,,,,
+279000.0,Aveiro,Santa Maria da Feira,São João de Ver,Apartment,C,,2.0,0.0,128.0,2007.0,C,2026-09-14 11:57:25.190,True,False,False,,3.0,,,103.0,,184.63
+320000.0,Aveiro,Santa Maria da Feira,Mozelos,Apartment,C,,2.0,1.0,110.0,2003.0,C,2026-09-14 10:53:35.023,False,True,False,,3.0,,,108.0,,
+70000.0,Aveiro,Estarreja,Avanca,Land,NC,,,0.0,,,NC,2026-02-11 22:55:38.087,False,False,False,,,,,,1920.0,
+90000.0,Aveiro,Ílhavo,Gafanha da Nazaré,Store,B-,,1.0,0.0,33.0,1980.0,B-,2026-09-14 09:07:12.570,False,False,False,,,1.0,,29.0,,
+89900.0,Aveiro,Ovar,"Ovar, São João, Arada e São Vicente de Pereira Jusã",House,NC,,3.0,1.0,194.0,1940.0,NC,2025-10-06 16:51:52.613,True,False,False,8.0,4.0,2.0,,194.0,600.0,
+115000.0,Beja,Moura,Safara e Santo Aleixo da Restauração,House,E,,1.0,0.0,100.0,1951.0,E,2026-09-14 08:38:08.497,False,False,False,,3.0,1.0,,100.0,145.0,
+379500.0,Braga,Braga,"Real, Dume e Semelhe",Apartment,A,,2.0,0.0,176.0,2023.0,A,2026-09-14 11:04:18.313,True,True,True,,3.0,0.0,,124.0,,
+380000.0,Braga,Guimarães,Azurém,Warehouse,NC,,,0.0,325.0,2014.0,NC,2026-09-14 18:48:18.710,False,False,False,,,,Like new,,,
+450000.0,Braga,Vila Verde,Loureira,House,A,,3.0,0.0,224.0,2025.0,A,2026-09-14 12:01:18.827,True,False,False,,4.0,3.0,,224.0,442.0,370.0
+850000.0,Braga,Amares,Amares e Figueiredo,House,A,,4.0,0.0,307.0,2020.0,A,2026-09-14 13:45:40.843,True,False,True,,4.0,,,307.0,1100.0,
+39900.0,Braga,Cabeceiras de Basto,"Refojos de Basto, Outeiro e Painzela",House,NC,,0.0,1.0,61.0,1951.0,NC,2026-09-14 14:51:27.057,False,False,False,,2.0,0.0,,61.0,361.0,
+319000.0,Braga,Esposende,Apúlia e Fão,Apartment,A,,2.0,0.0,105.0,2022.0,A,2026-09-14 11:51:54.207,True,True,True,,2.0,2.0,,145.0,,
+172000.0,Braga,Vila Nova de Famalicão,Antas e Abade de Vermoim,Apartment,NC,,2.0,0.0,79.0,1986.0,NC,2026-09-14 16:49:05.697,False,True,False,,3.0,,,87.0,,
+217500.0,Braga,Vila Nova de Famalicão,Carreira e Bente,Apartment,C,,1.0,0.0,85.0,1996.0,C,2026-09-14 15:20:07.927,True,False,False,,2.0,0.0,,85.0,,
+55000.0,Braga,Amares,"Vilela, Seramil e Paredes Secas",House,F,,1.0,1.0,201.0,1995.0,F,2026-09-11 17:10:52.033,False,False,False,,2.0,0.0,,130.0,250.0,
+200000.0,Braga,Guimarães,"Oliveira, São Paio e São Sebastião",Apartment,E,,2.0,0.0,150.0,1988.0,E,2026-09-11 09:36:16.627,False,True,False,4.0,3.0,2.0,,120.0,,150.0
+690000.0,Braga,Barcelos,Sequeade e Bastuço (São João e Santo Estevão),House,NC,,3.0,0.0,323.0,2005.0,NC,2026-09-14 16:10:48.080,True,False,False,,4.0,,,372.0,1000.0,
+35000.0,Braga,Fafe,Moreira do Rei e Várzea Cova,House,NC,,0.0,0.0,226.0,1937.0,NC,2026-09-14 14:14:11.240,False,False,False,,2.0,0.0,,118.0,,
+379900.0,Braga,Braga,Palmeira,House,NC,,4.0,0.0,210.0,2000.0,NC,2026-09-14 08:49:08.953,True,False,False,,4.0,2.0,,304.0,304.0,
+70000.0,Castelo Branco,Belmonte,Belmonte e Colmeal da Torre,House,NC,,1.0,0.0,57.0,2000.0,NC,2026-09-14 11:52:32.140,False,False,False,,2.0,,,57.0,4087.0,
+125000.0,Castelo Branco,Covilhã,Covilhã e Canhoso,Apartment,B,,1.0,0.0,29.0,2025.0,B,2026-09-14 11:41:09.040,False,True,False,1.0,0.0,,,29.0,,
+172500.0,Coimbra,Coimbra,Eiras e São Paulo de Frades,Apartment,C,,1.0,0.0,54.0,2008.0,C,2026-09-14 15:41:20.667,False,False,False,,1.0,,Good condition,54.0,,
+54000.0,Coimbra,Lousã,Lousã e Vilarinho,House,NC,,1.0,0.0,180.0,1951.0,NC,2026-09-14 09:05:57.237,False,False,False,,4.0,1.0,Needs renovation,80.0,272.0,272.0
+98000.0,Coimbra,Montemor-o-Velho,Arazede,Land,NC,,,0.0,,,NC,2026-09-14 13:12:57.697,False,False,False,,,,,,2800.0,
+55000.0,Coimbra,Pampilhosa da Serra,Portela do Fojo - Machio,House,F,,1.0,0.0,68.0,1937.0,F,2026-09-14 14:22:50.350,False,False,False,3.0,2.0,1.0,,130.0,484.0,142.0
+148000.0,Coimbra,Figueira da Foz,Buarcos e São Julião,Apartment,E,,1.0,0.0,58.0,1990.0,E,2026-09-14 13:33:31.773,True,False,False,5.0,2.0,,Good condition,58.0,0.0,72.0
+45000.0,Leiria,Leiria,Coimbrão,Land,NC,,,0.0,,,NC,2026-09-03 18:02:03.107,False,False,False,,,,,,1340.0,
+49500.0,Coimbra,Montemor-o-Velho,Arazede,Land,NC,,,0.0,,,NC,2026-09-14 13:06:55.483,False,False,False,,,,,,1700.0,
+59000.0,Coimbra,Arganil,Cerdeira e Moura da Serra,House,NC,,1.0,0.0,30.0,1937.0,NC,2026-09-14 13:41:27.557,False,False,False,,1.0,0.0,,55.0,55.0,
+275000.0,Coimbra,Coimbra,"Coimbra (Sé Nova, Santa Cruz, Almedina e São Bartolomeu)",Apartment,C,,2.0,1.0,119.0,1967.0,C,2026-05-11 13:44:21.463,False,False,False,5.0,3.0,,,119.0,,133.0
+180000.0,Coimbra,Soure,Vila Nova de Anços,House,E,,1.0,1.0,90.0,1937.0,E,2025-12-12 16:15:44.057,False,False,False,5.0,2.0,0.0,Good condition,81.0,179.0,100.0
+120000.0,Coimbra,Soure,Vinha da Rainha,House,D,,2.0,1.0,198.0,1976.0,D,2025-11-21 12:58:57.983,False,False,False,,5.0,,Used,198.0,319.0,328.63
+370000.0,Lisboa,Cascais,Carcavelos e Parede,Apartment,C,,1.0,0.0,60.0,1972.0,C,2026-09-14 14:41:40.937,False,False,False,3.0,2.0,,,60.0,,
+380000.0,Faro,Faro,Faro (Sé e São Pedro),Apartment,D,,2.0,0.0,105.0,1994.0,D,2026-09-14 17:07:44.910,True,True,False,,3.0,,,95.0,,116.6
+262500.0,Faro,Portimão,Alvor,Apartment,D,,2.0,0.0,64.0,1986.0,D,2026-09-14 15:45:24.380,False,False,False,2.0,1.0,1.0,Good condition,57.0,64.0,
+219900.0,Faro,Portimão,Portimão,Apartment,C,,1.0,0.0,43.0,1974.0,C,2026-09-14 13:56:55.483,False,True,False,,1.0,0.0,,37.0,,62.69
+45000.0,Faro,Loulé,São Sebastião,Land,NC,,,0.0,,,NC,2026-09-14 10:26:30.160,False,False,False,,,,,,1010.0,
+234900.0,Faro,Silves,Silves,House,NC,,1.0,0.0,54.0,1951.0,NC,2026-09-14 16:33:06.057,False,False,False,,1.0,,Good condition,54.0,,
+279000.0,Faro,Tavira,Santa Luzia,Apartment,C,,1.0,0.0,68.0,2003.0,C,2026-09-14 17:43:31.307,False,False,False,,2.0,0.0,Good condition,65.0,,
+58000.0,Faro,Olhão,Moncarapacho e Fuseta,Land,NC,,,0.0,,,NC,2026-09-14 16:22:13.720,False,False,False,,,,,,7840.0,
+548000.0,Faro,Silves,Algoz e Tunes,House,E,,5.0,1.0,308.0,2003.0,E,2026-09-14 11:18:52.930,False,False,False,,5.0,5.0,,199.0,390.0,
+247000.0,Faro,Albufeira,Albufeira e Olhos de Água,Apartment,E,,1.0,0.0,65.0,1988.0,E,2025-12-09 17:23:06.717,False,True,False,2.0,1.0,,Reasonable,65.0,,
+46000.0,Guarda,Pinhel,Alverca da Beira/Bouça Cova,House,NC,,1.0,0.0,48.0,1949.0,NC,2026-09-14 13:21:55.513,False,False,False,,1.0,0.0,,30.0,,
+230000.0,Guarda,Sabugal,Vila do Touro,Farm,F,,2.0,1.0,192.0,1938.0,F,2026-09-14 14:48:19.690,True,False,False,4.0,3.0,1.0,Used,,18300.0,
+3000000.0,Guarda,Vila Nova de Foz Côa,Freixo de Numão,Land,NC,,1.0,0.0,253483.0,,NC,2026-09-14 17:26:18.427,False,False,False,5.0,,1.0,,253483.0,253483.0,
+175000.0,Guarda,Guarda,Guarda,Apartment,C,,2.0,0.0,129.0,1991.0,C,2026-09-14 10:37:11.190,False,True,False,5.0,3.0,1.0,,114.0,,
+449000.0,Leiria,Alcobaça,Aljubarrota,House,A+,,4.0,1.0,144.0,2005.0,A+,2026-09-14 15:44:01.317,True,False,False,,3.0,,Good condition,144.0,2300.0,327.73
+252500.0,Leiria,Pombal,Pombal,Apartment,D,,2.0,1.0,125.0,1998.0,D,2026-09-14 21:22:12.750,False,True,False,,3.0,1.0,,125.0,,
+34000.0,Leiria,Ansião,Pousaflores,House,NC,,1.0,1.0,901.0,2026.0,NC,2026-09-14 21:22:31.743,False,False,False,,3.0,0.0,,62.0,,
+445000.0,Leiria,Peniche,Peniche,House,E,,3.0,1.0,175.0,1997.0,E,2026-09-14 13:34:21.253,True,False,True,5.0,4.0,,Good condition,144.0,,
+49500.0,Leiria,Óbidos,A dos Negros,Land,NC,,,0.0,,,NC,2026-09-14 17:51:56.790,False,False,False,,,,,,856.0,
+110000.0,Leiria,Ansião,Avelar,House,NC,,1.0,1.0,128.0,1939.0,NC,2026-09-14 11:52:00.063,False,False,False,5.0,3.0,1.0,,208.0,884.0,884.0
+58000.0,Leiria,Pombal,Louriçal,Land,NC,,,0.0,,,NC,2026-09-14 21:20:48.470,False,False,False,,,,,,1860.0,
+450000.0,Leiria,Leiria,"Leiria, Pousos, Barreira e Cortes",Apartment,A+,,2.0,1.0,156.0,2026.0,A+,2026-09-03 16:02:05.090,True,True,True,,3.0,,New,156.0,,295.15
+190000.0,Leiria,Leiria,Parceiros e Azoia,House,NC,,1.0,1.0,43.0,1963.0,NC,2026-08-14 10:41:16.247,False,False,False,,1.0,,,43.0,293.0,243.0
+50000.0,Leiria,Pombal,"Guia, Ilha e Mata Mourisca",Land,NC,,,0.0,,,NC,2026-09-11 16:55:33.620,False,False,False,,,,,,1398.0,
+70000.0,Leiria,Figueiró dos Vinhos,Figueiró dos Vinhos e Bairradas,House,NC,,1.0,1.0,72.0,1937.0,NC,2026-09-14 18:01:11.767,False,False,False,,3.0,1.0,Needs renovation,72.0,,144.0
+272000.0,Leiria,Leiria,Marrazes e Barosa,Apartment,D,,2.0,1.0,129.0,1988.0,D,2026-09-14 16:28:20.013,False,False,False,,2.0,,,129.0,,152.0
+199000.0,Leiria,Leiria,Marrazes e Barosa,Apartment,B,,1.0,0.0,54.0,2026.0,B,2026-07-27 17:10:06.220,True,False,False,,1.0,,,54.0,,110.83
+220000.0,Leiria,Leiria,Marrazes e Barosa,Apartment,B,,2.0,1.0,50.0,2026.0,B,2026-07-27 15:07:28.170,False,False,False,,2.0,,,50.0,,89.63
+35000.0,Leiria,Pombal,Louriçal,Land,NC,,,0.0,840.0,,NC,2025-06-25 11:41:10.240,False,False,False,,,,,840.0,840.0,840.0
+30000.0,Leiria,Leiria,Caranguejeira,Land,NC,,,0.0,580.0,,NC,,False,False,False,0.0,0.0,,,580.0,580.0,
+1195000.0,Lisboa,Lisboa,Avenidas Novas,Apartment,A,,4.0,1.0,137.0,2025.0,A,2026-09-15 01:14:24.273,False,True,True,4.0,3.0,,,137.0,,
+2990000.0,Lisboa,Lisboa,São Domingos de Benfica,Apartment,C,,5.0,1.0,549.0,1967.0,C,2026-09-14 09:07:44.873,False,True,True,,4.0,,,378.0,,
+275000.0,Lisboa,Lisboa,Arroios,Apartment,D,,1.0,0.0,35.0,1951.0,D,2026-09-14 16:13:26.847,False,False,False,3.0,2.0,,,31.0,0.0,0.0
+645000.0,Lisboa,Lisboa,Areeiro,Apartment,C,,2.0,1.0,161.0,1980.0,C,2026-09-14 14:04:24.700,False,True,False,6.0,5.0,,Reasonable,144.0,461.0,161.08
+315000.0,Lisboa,Lisboa,Areeiro,Apartment,C,,1.0,1.0,54.0,1980.0,C,2026-09-14 14:30:42.457,False,True,False,2.0,1.0,,Reasonable,48.0,0.0,54.15
+780000.0,Lisboa,Lisboa,Alvalade,Apartment,C,,2.0,1.0,114.0,1953.0,C,2026-09-14 15:53:24.743,False,True,False,5.0,3.0,,,102.0,0.0,118.0
+470000.0,Lisboa,Lisboa,Penha de França,Apartment,C,,1.0,0.0,92.0,1954.0,C,2026-09-14 13:47:49.183,False,False,False,4.0,3.0,,,92.0,,95.0
+330000.0,Lisboa,Lisboa,Santa Clara,Apartment,E,,1.0,1.0,93.0,2006.0,E,2026-09-14 10:45:29.607,False,False,False,3.0,2.0,0.0,,67.0,,
+375000.0,Lisboa,Lisboa,Estrela,Store,C,,1.0,0.0,90.0,1976.0,C,2026-09-14 13:49:14.820,False,False,False,,,1.0,Good condition,89.0,,
+365000.0,Lisboa,Lisboa,Carnide,Store,NC,,1.0,0.0,105.0,,NC,2026-09-14 17:32:44.523,False,True,False,1.0,,1.0,Good condition,,,117.5
+795000.0,Lisboa,Lisboa,Lumiar,Apartment,B,,3.0,1.0,106.0,2026.0,B,2026-09-14 12:26:31.607,False,True,True,3.0,2.0,2.0,,92.0,,120.0
+795000.0,Lisboa,Lisboa,Lumiar,Apartment,B,,3.0,1.0,119.0,2026.0,B,2026-09-14 12:29:46.327,False,True,True,3.0,2.0,2.0,,94.0,,129.0
+245000.0,Lisboa,Sintra,Rio de Mouro,Apartment,D,,1.0,0.0,77.0,1987.0,D,2026-09-14 10:52:09.247,False,False,False,,2.0,,,68.0,,
+460000.0,Lisboa,Oeiras,Carnaxide e Queijas,Apartment,E,,1.0,0.0,105.0,1994.0,E,2026-09-14 14:01:01.850,False,True,False,3.0,2.0,,Good condition,105.0,,105.0
+170000.0,Lisboa,Sintra,Agualva e Mira-Sintra,Apartment,C,,1.0,0.0,33.0,1976.0,C,2026-09-14 15:42:49.377,False,True,False,,1.0,0.0,,33.0,,33.0
+480000.0,Lisboa,Torres Vedras,Ponte do Rol,Apartment,A,,3.0,1.0,132.0,,A,2026-09-14 14:52:57.087,False,True,True,,3.0,,,132.0,,
+440000.0,Lisboa,Torres Vedras,Ponte do Rol,Apartment,A,,3.0,1.0,127.0,,A,2026-09-14 14:57:43.413,False,True,True,,3.0,,,127.0,,
+495000.0,Lisboa,Torres Vedras,Ponte do Rol,Apartment,A,,3.0,1.0,150.0,,A,2026-09-14 15:04:02.327,False,False,True,,3.0,,,150.0,,
+495000.0,Lisboa,Torres Vedras,Ponte do Rol,Apartment,A+,,3.0,1.0,150.0,,A+,2026-09-14 15:08:30.553,False,True,True,,3.0,,,150.0,,
+515000.0,Lisboa,Torres Vedras,Ponte do Rol,Apartment,A,,3.0,1.0,150.0,,A,2026-09-14 15:19:12.777,False,True,True,,3.0,,,150.0,,
+480000.0,Lisboa,Torres Vedras,Ponte do Rol,Apartment,A+,,3.0,1.0,143.0,,A+,2026-09-14 15:24:05.800,False,True,True,,3.0,,,143.0,,
+460000.0,Lisboa,Torres Vedras,Ponte do Rol,Apartment,A,,3.0,1.0,127.0,,A,2026-09-14 15:25:51.420,False,True,True,,3.0,,,127.0,,
+59000.0,Lisboa,Loures,Bucelas,House,NC,,0.0,0.0,68.0,1952.0,NC,2026-09-14 15:38:53.517,False,False,False,,2.0,,,68.0,,
+129000.0,Lisboa,Arruda dos Vinhos,Arruda dos Vinhos,House,NC,,1.0,0.0,48.0,1988.0,NC,2026-09-14 15:47:26.883,False,False,False,,1.0,1.0,,48.0,,
+320000.0,Lisboa,Vila Franca de Xira,"Alhandra, São João dos Montes e Calhandriz",Land,NC,,,0.0,,,NC,2026-09-14 17:08:06.917,False,False,False,,,,,,2280.0,
+297500.0,Lisboa,Amadora,Águas Livres,Apartment,E,,1.0,0.0,68.0,1977.0,E,2026-09-14 17:09:22.220,False,False,False,3.0,2.0,,Good condition,51.0,,
+30000.0,Lisboa,Alenquer,Meca,Other - Residential,NC,,,0.0,30.0,,NC,2026-09-14 13:01:53.783,False,False,False,,,,,30.0,,
+355000.0,Lisboa,Sintra,Algueirão-Mem Martins,Apartment,B-,,1.0,1.0,105.0,2000.0,B-,2026-09-14 18:14:12.483,False,True,False,,2.0,,,87.0,,
+440000.0,Lisboa,Cascais,Carcavelos e Parede,Apartment,B-,,1.0,0.0,63.0,1973.0,B-,2026-09-14 13:37:41.750,False,False,False,,1.0,,,63.0,,
+289000.0,Lisboa,Vila Franca de Xira,Alverca do Ribatejo e Sobralinho,Apartment,E,,1.0,1.0,163.0,2003.0,E,2026-09-14 14:47:18.287,False,True,False,,2.0,,Good condition,163.0,,
+269000.0,Lisboa,Alenquer,Alenquer (Santo Estêvão e Triana),Apartment,C,,2.0,1.0,80.0,2001.0,C,2026-09-14 13:42:19.880,False,True,False,,2.0,,Good condition,80.0,,
+280000.0,Lisboa,Sintra,Algueirão-Mem Martins,Apartment,C,,1.0,0.0,68.0,1996.0,C,2026-09-14 14:39:56.007,False,False,False,,2.0,,Reasonable,68.0,,
+1900000.0,Lisboa,Cascais,São Domingos de Rana,Land,NC,,,0.0,,,NC,2026-09-14 17:59:17.090,False,False,False,,,,,,21720.0,
+410000.0,Lisboa,Lisboa,São Domingos de Benfica,Apartment,E,,1.0,0.0,64.0,1952.0,E,2026-09-14 17:30:47.043,False,False,False,3.0,2.0,,,54.0,,64.0
+850000.0,Lisboa,Lisboa,Avenidas Novas,Apartment,C,,2.0,0.0,102.0,2018.0,C,2026-09-14 14:51:25.220,False,True,False,3.0,2.0,,,90.0,,
+295000.0,Lisboa,Loures,Loures,Apartment,C,,1.0,1.0,72.0,1988.0,C,2026-09-14 09:18:50.693,False,False,False,3.0,2.0,,Like new,56.0,212.0,83.1
+319000.0,Lisboa,Sintra,Agualva e Mira-Sintra,Apartment,D,,1.0,0.0,83.0,1997.0,D,2026-09-14 09:17:09.777,False,True,False,3.0,2.0,,,83.0,90.0,7.0
+280000.0,Lisboa,Vila Franca de Xira,Póvoa de Santa Iria e Forte da Casa,Apartment,D,,1.0,0.0,70.0,1987.0,D,2026-09-14 12:07:27.813,False,True,False,,2.0,0.0,,67.0,,81.0
+1860000.0,Lisboa,Arruda dos Vinhos,Santiago dos Velhos,Farm,B,,14.0,0.0,367.0,2022.0,B,2026-09-14 11:57:18.370,False,False,False,10.0,7.0,7.0,,,120000.0,
+225000.0,Lisboa,Arruda dos Vinhos,Arruda dos Vinhos,House,D,,1.0,0.0,80.0,1937.0,D,2026-09-14 16:54:48.863,True,False,False,3.0,2.0,,Reasonable,110.0,40.0,120.0
+350000.0,Lisboa,Vila Franca de Xira,Alverca do Ribatejo e Sobralinho,Apartment,C,,2.0,0.0,98.0,1973.0,C,2026-09-14 10:59:58.737,False,False,False,5.0,4.0,1.0,,87.0,,113.34
+355000.0,Lisboa,Oeiras,Porto Salvo,Apartment,E,,1.0,0.0,72.0,1978.0,E,2026-09-14 11:05:31.043,False,False,False,3.0,2.0,,Good condition,69.0,,
+800000.0,Lisboa,Sintra,Queluz e Belas,House,D,,4.0,1.0,189.0,2012.0,D,2026-09-14 10:20:04.087,True,False,False,,4.0,,,189.0,398.0,
+1000000.0,Lisboa,Loures,Sacavém e Prior Velho,Store,B,,,1.0,398.0,2023.0,B,2026-09-09 16:21:55.290,False,False,True,,,,,,,
+270000.0,Lisboa,Vila Franca de Xira,Vialonga,Apartment,C,,1.0,0.0,72.0,1984.0,C,2026-09-14 09:49:54.720,False,False,False,,3.0,,,72.0,,
+269000.0,Lisboa,Amadora,Águas Livres,Apartment,E,,1.0,0.0,46.0,1976.0,E,2026-09-14 13:34:10.580,False,True,False,2.0,1.0,1.0,,42.0,,
+320000.0,Lisboa,Sintra,Cacém e São Marcos,Apartment,C,,1.0,0.0,80.0,1998.0,C,2026-09-14 12:49:38.463,False,True,False,,2.0,,,85.0,,
+300000.0,Lisboa,Sintra,Algueirão-Mem Martins,Apartment,B,,1.0,0.0,75.0,1999.0,B,2026-09-14 09:22:22.497,False,True,False,3.0,2.0,,,75.0,500.0,
+269000.0,Lisboa,Sintra,Algueirão-Mem Martins,Apartment,F,,1.0,0.0,83.0,1993.0,F,2026-09-14 10:29:11.503,False,False,False,,2.0,,,83.0,,
+267500.0,Lisboa,Sintra,Algueirão-Mem Martins,Apartment,C,,1.0,0.0,79.0,1993.0,C,2026-09-14 10:50:29.890,False,False,False,,2.0,,,93.0,,
+340000.0,Lisboa,Lisboa,Misericórdia,Apartment,D,,1.0,0.0,61.0,1950.0,D,2026-09-14 15:45:52.550,False,False,False,3.0,2.0,,,50.0,,
+607000.0,Lisboa,Lisboa,Misericórdia,Apartment,D,,2.0,0.0,104.0,1950.0,D,2026-09-14 12:26:36.637,False,False,False,5.0,4.0,,Used,80.0,,
+249500.0,Lisboa,Vila Franca de Xira,Castanheira do Ribatejo e Cachoeiras,Apartment,C,,2.0,0.0,68.0,1978.0,C,2026-08-24 10:54:25.043,False,False,False,,3.0,,,68.0,,
+330000.0,Lisboa,Cascais,Carcavelos e Parede,Apartment,C,,1.0,0.0,62.0,1993.0,C,2026-09-14 09:50:15.093,False,True,False,2.0,1.0,,Like new,62.0,,
+180000.0,Lisboa,Sintra,Cacém e São Marcos,Warehouse,NC,,1.0,0.0,225.0,1994.0,NC,2026-09-14 08:18:14.647,False,False,False,1.0,,1.0,Used,225.0,,225.0
+595000.0,Lisboa,Loures,Loures,House,B,,3.0,0.0,150.0,2017.0,B,2026-09-14 09:57:53.433,True,False,False,5.0,4.0,1.0,Good condition,150.0,,242.0
+1490000.0,Lisboa,Oeiras,Porto Salvo,House,A+,,5.0,1.0,329.0,2022.0,A+,2026-09-14 14:10:11.710,False,False,False,,5.0,,,250.0,576.0,
+1075000.0,Lisboa,Cascais,Cascais e Estoril,Apartment,B,,2.0,1.0,157.0,1992.0,B,2026-09-14 12:22:26.637,False,True,False,5.0,3.0,,,110.0,,157.0
+565000.0,Lisboa,Mafra,Venda do Pinheiro e Santo Estêvão das Galés,House,D,,3.0,0.0,160.0,2003.0,D,2026-09-14 13:36:09.450,True,False,False,5.0,4.0,,,160.0,,
+299000.0,Lisboa,Lisboa,Alvalade,Apartment,B-,,1.0,0.0,37.0,2024.0,B-,2026-09-14 15:09:46.863,False,False,False,0.0,0.0,,Like new,30.0,,
+320000.0,Lisboa,Sintra,Cacém e São Marcos,Apartment,D,,2.0,0.0,118.0,1999.0,D,2026-05-20 11:07:52.250,False,True,False,4.0,3.0,,Good condition,98.0,,125.0
+310000.0,Lisboa,Sintra,Agualva e Mira-Sintra,Apartment,C,,2.0,0.0,85.0,1977.0,C,2026-04-29 17:03:35.077,False,False,False,4.0,3.0,1.0,,82.0,,
+890000.0,Lisboa,Cascais,Cascais e Estoril,House,D,,3.0,1.0,140.0,2010.0,D,2026-04-22 12:13:51.287,False,False,False,,3.0,0.0,,126.0,,294.0
+350000.0,Lisboa,Mafra,Encarnação,House,NC,,3.0,1.0,120.0,,NC,2026-02-24 17:42:45.767,False,False,True,,3.0,3.0,,100.0,,
+320000.0,Lisboa,Mafra,Encarnação,House,NC,,2.0,1.0,100.0,,NC,2026-02-24 17:42:54.800,False,False,True,,2.0,2.0,,90.0,,
+320000.0,Lisboa,Mafra,Encarnação,House,NC,,2.0,1.0,100.0,,NC,2026-02-24 17:49:39.263,False,False,True,,2.0,2.0,,90.0,,
+350000.0,Lisboa,Mafra,Encarnação,House,NC,,3.0,1.0,120.0,,NC,2026-02-24 17:50:05.850,False,False,True,,3.0,3.0,,100.0,,
+320000.0,Lisboa,Mafra,Encarnação,House,NC,,2.0,1.0,100.0,,NC,2026-02-24 17:54:45.633,False,False,True,,2.0,2.0,,90.0,,
+749000.0,Lisboa,Cascais,Carcavelos e Parede,Apartment,D,,2.0,0.0,179.0,2001.0,D,2026-09-14 11:26:25.423,False,False,False,,3.0,,,179.0,,
+549000.0,Lisboa,Cascais,Carcavelos e Parede,Apartment,D,,2.0,0.0,145.0,2001.0,D,2026-09-14 11:24:57.567,False,False,False,,4.0,,,94.0,,
+1199000.0,Lisboa,Cascais,Carcavelos e Parede,House,D,,5.0,0.0,330.0,1976.0,D,2026-09-14 11:22:50.627,True,False,False,,12.0,,,330.0,480.0,
+1299000.0,Lisboa,Cascais,Carcavelos e Parede,Building,C,,4.0,0.0,330.0,2001.0,C,2026-09-14 11:27:23.713,False,False,False,,6.0,,,179.0,,
+1090000.0,Lisboa,Lisboa,Santo António,Apartment,A+,,2.0,1.0,136.0,2021.0,A+,2026-01-06 15:41:25.307,False,True,False,,2.0,,,86.0,,
+165000.0,Lisboa,Sintra,São João das Lampas e Terrugem,House,NC,,1.0,1.0,61.0,1951.0,NC,2026-09-14 15:30:06.790,False,False,False,,2.0,,Needs renovation,55.0,125.0,89.0
+350000.0,Lisboa,Torres Vedras,A dos Cunhados e Maceira,House,B-,,3.0,1.0,281.0,2016.0,B-,2025-10-27 10:45:06.313,False,False,False,,3.0,,,281.0,20.0,
+130000.0,Lisboa,Sintra,Colares,Land,NC,,0.0,0.0,11326.0,,NC,,False,False,False,0.0,0.0,0.0,,11326.0,11326.0,
+240000.0,Portalegre,Castelo de Vide,Santa Maria da Devesa,House,F,,2.0,0.0,122.0,1951.0,F,2026-09-14 14:43:11.827,False,False,False,4.0,2.0,,,120.0,70.0,183.18
+1250000.0,Portalegre,Gavião,Belver,Farm,B-,,15.0,0.0,493.0,,B-,2026-09-14 13:49:18.667,False,False,False,24.0,15.0,2.0,,,6403.0,788.15
+40000.0,Portalegre,Portalegre,Sé e São Lourenço,House,NC,,1.0,1.0,75.0,1951.0,NC,2026-09-14 08:46:54.280,False,False,False,3.0,2.0,,,75.0,305.0,150.0
+95000.0,Portalegre,Elvas,"Caia, São Pedro e Alcáçova",House,E,,2.0,0.0,150.0,1951.0,E,2026-09-10 16:26:03.327,False,False,False,6.0,3.0,,Reasonable,150.0,75.0,150.0
+95000.0,Portalegre,Nisa,"Espírito Santo, Nossa Senhora da Graça e São Simão",House,E,,2.0,0.0,124.0,1951.0,E,2026-09-02 09:44:32.370,False,False,False,5.0,3.0,,Reasonable,124.0,177.0,144.0
+150000.0,Portalegre,Portalegre,Sé e São Lourenço,Apartment,C,,3.0,0.0,88.0,1970.0,C,2026-09-14 05:19:37.643,False,False,False,4.0,3.0,,,85.0,590.0,88.0
+356136.0,Porto,Vila Nova de Gaia,Mafamude e Vilar do Paraíso,Apartment,A,,2.0,1.0,80.0,2026.0,A,2026-09-14 09:23:08.607,False,True,False,,2.0,,,89.0,,
+357236.0,Porto,Vila Nova de Gaia,Mafamude e Vilar do Paraíso,Apartment,A,,2.0,1.0,80.0,2026.0,A,2026-09-14 09:40:54.667,False,True,False,,2.0,,,89.0,,
+1230000.0,Porto,Vila Nova de Gaia,Mafamude e Vilar do Paraíso,Store,F,,,0.0,645.0,,F,2026-09-14 14:04:38.503,False,False,False,,,,,,,
+325000.0,Porto,Lousada,"Cristelos, Boim e Ordem",House,F,,3.0,1.0,400.0,2000.0,F,2026-09-14 13:47:48.933,False,False,False,,6.0,,,200.0,900.0,
+300000.0,Porto,Santo Tirso,Vila Nova do Campo,House,NC,,1.0,1.0,60.0,1999.0,NC,2026-09-14 11:30:23.230,False,False,False,4.0,2.0,,,60.0,163.0,124.65
+295500.0,Porto,Vila do Conde,Vila do Conde,Apartment,NC,,1.0,0.0,94.0,1984.0,NC,2026-09-14 13:47:35.980,False,True,False,,2.0,1.0,Reasonable,94.0,,
+260000.0,Porto,Valongo,Campo,Apartment,C,,2.0,1.0,83.0,2005.0,C,2026-09-14 15:54:01.240,False,True,False,3.0,2.0,1.0,,83.0,,103.0
+240000.0,Porto,Matosinhos,São Mamede de Infesta e Senhora da Hora,Apartment,D,,2.0,0.0,105.0,1987.0,D,2026-09-11 15:20:32.933,False,False,False,4.0,3.0,2.0,,101.0,,
+375000.0,Porto,Maia,Águas Santas,Apartment,D,,2.0,0.0,139.0,1991.0,D,2026-09-09 10:47:19.137,True,False,False,,2.0,,,87.0,,
+524600.0,Porto,Maia,Águas Santas,Apartment,A,,6.0,1.0,144.0,2024.0,A,2026-09-14 15:21:50.830,False,True,True,9.0,3.0,3.0,Like new,119.0,,190.72
+415000.0,Porto,Trofa,Coronado (São Romão e São Mamede),House,B,,3.0,1.0,183.0,2007.0,B,2026-09-14 12:03:31.223,True,False,True,,3.0,1.0,Good condition,276.0,,
+250000.0,Ilha do Faial,Horta,Horta (Angústias),House,NC,,1.0,1.0,88.0,2006.0,NC,2026-09-14 10:53:15.513,False,False,False,6.0,4.0,,,88.0,184.0,
+257000.0,Porto,Valongo,Valongo,Apartment,C,,1.0,1.0,80.0,1999.0,C,2026-06-15 15:58:23.880,False,True,False,3.0,2.0,0.0,Good condition,75.0,,
+330000.0,Porto,Trofa,Bougado (São Martinho e Santiago),Apartment,C,,2.0,1.0,89.0,2003.0,C,2026-09-14 09:06:41.247,False,True,False,3.0,2.0,1.0,Like new,89.0,,112.5
+290000.0,Porto,Gondomar,"Gondomar (São Cosme), Valbom e Jovim",Apartment,D,,2.0,1.0,85.0,2001.0,D,2026-09-14 12:11:29.483,False,True,False,6.0,2.0,,,85.0,,111.0
+15000.0,Porto,Baião,Santa Cruz do Douro e São Tomé de Covelas,Land,NC,,,0.0,,,NC,2026-05-22 10:32:04.523,False,False,False,,,,,,1275.0,
+195000.0,Porto,Marco de Canaveses,Vila Boa do Bispo,Building,F,,,1.0,110.0,1995.0,F,2026-03-05 16:08:22.860,False,False,False,,,,,309.0,,
+269900.0,Porto,Porto,Paranhos,Apartment,NC,,1.0,1.0,43.0,2025.0,NC,2026-09-14 17:10:33.550,False,True,False,3.0,1.0,,,48.0,62.0,48.25
+272500.0,Porto,Marco de Canaveses,Marco,Apartment,A,,3.0,1.0,138.0,2026.0,A,2025-10-30 18:49:24.097,False,True,True,,3.0,1.0,New,124.0,,171.45
+220000.0,Porto,Marco de Canaveses,Marco,Apartment,A,,1.0,1.0,88.0,2026.0,A,2025-10-30 18:55:35.713,False,True,True,,2.0,,New,77.0,,122.8
+225000.0,Santarém,Santarém,"Santarém (Marvila), Santa Iria da Ribeira de Santarém, Santarém (São Salvador) e Santarém (São Nicolau)",Apartment,C,,2.0,1.0,85.0,1993.0,C,2026-09-14 15:38:21.573,False,True,False,,2.0,,,85.0,,
+187500.0,Santarém,Santarém,Arneiro das Milhariças,House,NC,,0.0,0.0,80.0,1937.0,NC,2026-09-14 12:13:21.203,False,False,False,3.0,2.0,,,80.0,1358.0,239.0
+19900.0,Santarém,Torres Novas,"Brogueira, Parceiros de Igreja e Alcorochel",Land,NC,,,0.0,,,NC,2026-09-14 08:29:58.370,False,False,False,,,,,,3160.0,
+495000.0,Santarém,Benavente,Samora Correia,House,A,,2.0,1.0,144.0,1997.0,A,2026-09-14 11:54:45.400,False,False,True,4.0,3.0,,,122.0,276.0,
+160000.0,Santarém,Benavente,Benavente,Apartment,E,,1.0,0.0,72.0,1977.0,E,2026-09-14 10:37:28.583,False,False,False,,2.0,,,72.0,72.0,
+60000.0,Santarém,Ferreira do Zêzere,Igreja Nova do Sobral,Other - Residential,NC,,0.0,0.0,110.0,1938.0,NC,2026-09-14 14:56:44.180,False,False,False,,2.0,0.0,,110.0,1760.0,
+125000.0,Santarém,Torres Novas,"Torres Novas (São Pedro), Lapas e Ribeira Branca",Store,B-,,2.0,0.0,72.0,,B-,2026-09-14 15:25:38.470,False,False,False,,,2.0,,,,
+150000.0,Santarém,Tomar,Madalena e Beselga,House,E,,1.0,1.0,296.0,1951.0,E,2026-09-14 15:22:45.187,True,False,False,,3.0,1.0,,296.0,,
+375000.0,Santarém,Torres Novas,Olaia e Paço,House,C,,2.0,0.0,141.0,1926.0,C,2026-09-14 12:22:12.407,False,False,False,3.0,3.0,,,141.0,321.0,
+21000.0,Santarém,Vila Nova da Barquinha,Vila Nova da Barquinha,Land,NC,,,0.0,,,NC,2026-06-16 08:22:09.047,False,False,False,,,,,,240.0,
+150000.0,Santarém,Vila Nova da Barquinha,Vila Nova da Barquinha,Store,D,,,0.0,310.0,,D,2026-06-03 12:30:58.463,False,False,False,,,,,,,
+120000.0,Santarém,Torres Novas,"Torres Novas (Santa Maria, Salvador e Santiago)",Building,F,,1.0,0.0,98.0,1951.0,F,2026-05-28 19:07:19.103,False,False,False,3.0,2.0,,,62.0,,
+279000.0,Santarém,Ourém,Nossa Senhora Misericórdias,House,NC,,1.0,1.0,99.0,1951.0,NC,2025-09-15 10:53:02.937,False,False,False,3.0,3.0,1.0,,125.0,497.0,69.0
+6000.0,Santarém,Ourém,Alburitel,Land,NC,,,0.0,,,NC,2025-08-28 14:28:27.227,False,False,False,,,,,,4160.0,
+38000.0,Santarém,Abrantes,Rio de Moinhos,Warehouse,NC,,,0.0,335.0,1955.0,NC,2025-03-31 18:11:30.460,False,False,False,,,,,335.0,480.0,335.0
+7500.0,Santarém,Ourém,Seiça,Land,NC,,,0.0,,,NC,2024-07-24 08:23:43.593,False,False,False,,,,,,6070.0,
+5000.0,Santarém,Ourém,Caxarias,Land,NC,,,0.0,,,NC,2024-07-23 14:51:28.237,False,False,False,,,,,,3158.0,
+57000.0,Santarém,Constância,Montalvo,Land,NC,,0.0,0.0,,,NC,,False,False,False,,,0.0,,111012.0,111012.0,
+5000.0,Santarém,Constância,Montalvo,Land,NC,,0.0,0.0,,,NC,,False,False,False,,,0.0,,3480.0,3480.0,
+11000.0,Santarém,Ourém,Caxarias,Land,NC,,0.0,0.0,2000.0,,NC,,False,False,False,,,0.0,,,2000.0,
+278000.0,Setúbal,Setúbal,"Setúbal (São Julião, Nossa Senhora da Anunciada e Santa Maria da Graça)",Apartment,B-,,2.0,0.0,93.0,1994.0,B-,2026-09-14 18:20:56.957,False,True,False,4.0,3.0,,,84.0,96.0,
+239000.0,Setúbal,Setúbal,"Setúbal (São Julião, Nossa Senhora da Anunciada e Santa Maria da Graça)",Apartment,B-,,1.0,0.0,65.0,1994.0,B-,2026-09-14 18:30:04.007,False,True,False,3.0,2.0,,,58.0,68.0,
+220000.0,Setúbal,Montijo,Montijo e Afonsoeiro,Apartment,D,,1.0,0.0,110.0,1978.0,D,2026-09-14 14:41:10.420,False,False,False,3.0,2.0,,,70.0,,
+220000.0,Setúbal,Almada,Laranjeiro e Feijó,Apartment,F,,1.0,0.0,70.0,2026.0,F,2026-09-14 16:34:34.760,False,False,False,,1.0,,,43.0,,43.0
+200000.0,Setúbal,Sesimbra,Quinta do Conde,House,NC,,1.0,1.0,36.0,1983.0,NC,2026-09-14 11:20:13.893,False,False,True,3.0,2.0,,Needs renovation,35.0,300.0,44.66
+350000.0,Setúbal,Palmela,Quinta do Anjo,Apartment,D,,2.0,1.0,116.0,2003.0,D,2026-09-14 15:25:10.257,False,True,False,,3.0,,,116.0,,142.99
+1930000.0,Setúbal,Almada,Charneca de Caparica e Sobreda,House,A+,,5.0,1.0,370.0,2026.0,A+,2026-09-14 16:45:46.203,True,False,True,6.0,5.0,,,253.0,985.0,
+270000.0,Setúbal,Palmela,Pinhal Novo,Apartment,B-,,2.0,0.0,83.0,2012.0,B-,2026-09-14 16:17:55.790,False,True,False,,2.0,0.0,,91.0,,
+239900.0,Setúbal,Seixal,Amora,Apartment,D,,1.0,0.0,87.0,1977.0,D,2026-09-14 11:55:32.767,False,True,False,,2.0,,Good condition,87.0,,
+265000.0,Setúbal,Montijo,Atalaia e Alto Estanqueiro-Jardia,Apartment,C,,1.0,0.0,73.0,2000.0,C,2026-09-14 15:36:07.963,False,False,False,,2.0,,,73.0,,
+210000.0,Setúbal,Barreiro,"Alto do Seixalinho, Santo André e Verderena",Apartment,C,,1.0,0.0,45.0,1971.0,C,2026-09-14 09:33:45.857,False,False,False,,1.0,0.0,,46.0,,
+230000.0,Setúbal,Moita,Alhos Vedros,Apartment,F,,1.0,0.0,78.0,1986.0,F,2026-09-14 14:52:04.197,False,False,False,,2.0,0.0,,70.0,,
+180000.0,Setúbal,Grândola,Grândola e Santa Margarida da Serra,Land,NC,,,0.0,,,NC,2026-09-14 11:13:08.587,False,False,False,,,,,,393.0,
+915000.0,Setúbal,Almada,Charneca de Caparica e Sobreda,House,A+,,4.0,1.0,266.0,2024.0,A+,2026-09-14 15:30:19.947,False,False,False,,4.0,,,182.0,612.0,
+1920000.0,Setúbal,Almada,"Almada, Cova da Piedade, Pragal e Cacilhas",Other - Commercial,NC,,,0.0,375.0,2016.0,NC,2026-09-14 16:17:35.367,False,False,False,,,,,430.0,,430.0
+346500.0,Setúbal,Seixal,Corroios,Apartment,C,,2.0,0.0,107.0,1983.0,C,2026-09-14 18:08:37.460,False,False,False,4.0,3.0,2.0,Like new,107.0,193.0,
+478000.0,Setúbal,Almada,Costa de Caparica,Apartment,C,,1.0,0.0,113.0,1984.0,C,2026-09-14 15:21:37.907,False,True,False,,2.0,1.0,,113.0,,
+324000.0,Setúbal,Alcochete,Alcochete,Apartment,E,,2.0,0.0,109.0,2000.0,E,2026-09-14 10:26:50.163,False,False,False,,2.0,1.0,Good condition,52.0,,
+260000.0,Setúbal,Setúbal,"Setúbal (São Julião, Nossa Senhora da Anunciada e Santa Maria da Graça)",Apartment,B-,,1.0,0.0,70.0,1979.0,B-,2026-09-14 15:00:55.397,False,True,False,3.0,2.0,0.0,,70.0,234.0,70.0
+260000.0,Setúbal,Setúbal,"Setúbal (São Julião, Nossa Senhora da Anunciada e Santa Maria da Graça)",Apartment,D,,1.0,0.0,80.0,1978.0,D,2026-09-14 14:51:17.577,False,False,False,3.0,2.0,,Used,73.0,,
+199900.0,Setúbal,Setúbal,São Sebastião,Other - Commercial,B-,,2.0,0.0,62.0,1983.0,B-,2026-09-08 14:18:39.480,False,False,False,,,2.0,,,,109.44
+749000.0,Setúbal,Alcochete,Alcochete,Apartment,A,,3.0,1.0,269.0,2003.0,A,2026-09-14 11:13:12.957,False,True,False,,3.0,,Good condition,269.0,,
+36150.0,Setúbal,Almada,Caparica e Trafaria,Land,NC,,,1.0,321.0,,NC,2026-09-14 13:22:23.457,False,False,False,,,,,,321.0,321.0
+2000000000.0,Setúbal,Seixal,Corroios,House,C,,5.0,0.0,606.0,2006.0,C,2026-09-14 17:17:35.943,True,False,True,12.0,6.0,5.0,,540.0,,
+135000.0,Setúbal,Palmela,Quinta do Anjo,Land,NC,,,0.0,,,NC,2026-09-14 16:15:48.113,False,False,False,,,,,,319.0,
+290000.0,Setúbal,Setúbal,"Setúbal (São Julião, Nossa Senhora da Anunciada e Santa Maria da Graça)",Apartment,D,,1.0,0.0,64.0,2024.0,D,2026-05-28 15:05:16.690,False,False,False,3.0,2.0,,,64.0,,
+357000.0,Setúbal,Seixal,"Seixal, Arrentela e Aldeia de Paio Pires",Apartment,D,,2.0,1.0,106.0,2000.0,D,2026-09-14 14:23:40.427,True,True,False,4.0,3.0,,Good condition,106.0,,119.26
+1150000.0,Setúbal,Seixal,Corroios,House,D,,7.0,0.0,679.0,2002.0,D,2026-04-08 07:53:04.367,True,False,False,,5.0,,,345.0,996.0,
+539750.0,Setúbal,Sesimbra,Quinta do Conde,House,C,,3.0,0.0,151.0,1992.0,C,2025-10-29 11:10:03.080,True,False,False,5.0,4.0,1.0,,151.0,379.0,178.0
+35000.0,Viana do Castelo,Ponte de Lima,Arcozelo,Land,NC,,,0.0,,,NC,2026-09-14 14:47:12.503,False,False,False,,,,,,8060.0,
+420000.0,Viana do Castelo,Ponte de Lima,Arcozelo,House,NC,,3.0,0.0,205.0,2026.0,NC,2026-09-14 10:13:35.823,True,False,True,,4.0,,,246.0,,
+575000.0,Vila Real,Vila Real,Adoufe e Vilarinho de Samardã,House,F,,5.0,1.0,270.0,1995.0,F,2026-07-02 11:54:10.557,True,False,False,,5.0,2.0,,270.0,10700.0,540.0
+1399000.0,Aveiro,Vagos,Vagos e Santo António,House,A+,,12.0,1.0,489.0,2017.0,A+,2026-09-15 15:05:39.853,False,True,True,14.0,11.0,,Like new,489.0,1278.0,894.0
+320000.0,Aveiro,Ovar,Esmoriz,Apartment,B-,,2.0,1.0,97.0,1998.0,B-,2026-09-15 18:09:15.073,False,True,True,,2.0,,,97.0,,126.8
+199900.0,Aveiro,Ovar,"Ovar, São João, Arada e São Vicente de Pereira Jusã",Apartment,E,,1.0,0.0,65.0,1990.0,E,2026-09-15 19:14:51.647,False,False,False,,2.0,,,65.0,,69.4
+42000.0,Aveiro,Anadia,"Tamengos, Aguim e Óis do Bairro",Land,NC,,,0.0,,,NC,2026-08-21 10:37:12.907,False,False,False,,,,,,2142.0,115.0
+250000.0,Aveiro,Mealhada,"Mealhada, Ventosa do Bairro e Antes",Apartment,B-,,2.0,0.0,150.0,2006.0,B-,2026-08-21 10:34:22.833,True,True,False,7.0,3.0,,,138.0,174.0,174.0
+850000.0,Aveiro,Aveiro,Aradas,House,C,,6.0,0.0,278.0,2012.0,C,2026-09-15 19:15:30.963,True,False,True,8.0,4.0,2.0,Needs renovation,278.0,1072.0,481.0
+15000.0,Aveiro,Murtosa,Murtosa,Land,NC,,,0.0,,,NC,2025-11-26 10:27:59.167,False,False,False,,,,,,530.0,
+185500.0,Beja,Beja,Beja (Salvador e Santa Maria da Feira),House,E,,1.0,0.0,66.0,1951.0,E,2026-09-15 16:24:56.787,False,False,False,,1.0,,,66.0,102.0,
+38850.0,Beja,Alvito,Alvito,Land,NC,,0.0,0.0,,,NC,2026-09-15 17:10:18.240,False,False,False,,,0.0,,,310.0,
+119900.0,Braga,Braga,Lomar e Arcos,House,NC,,1.0,0.0,106.0,1988.0,NC,2026-09-15 15:22:34.427,False,False,False,,3.0,1.0,,106.0,557.0,
+120000.0,Braga,Braga,Lomar e Arcos,Land,NC,,,0.0,53.0,,NC,2026-09-15 15:27:16.890,False,False,False,,,,,53.0,557.0,
+354500.0,Braga,Vila Nova de Famalicão,Ribeirão,Apartment,C,,2.0,0.0,173.0,2001.0,C,2026-09-15 17:22:06.467,True,False,False,,3.0,,,133.0,,
+544400.0,Braga,Terras de Bouro,Moimenta (Santo André),House,B-,,3.0,0.0,334.0,2012.0,B-,2026-09-15 16:23:46.740,True,False,True,,4.0,,Good condition,290.0,,
+295000.0,Braga,Guimarães,Caldelas,Apartment,B,,2.0,0.0,109.0,2008.0,B,2026-09-15 10:21:22.323,True,True,True,,2.0,2.0,,109.0,,
+232000.0,Braga,Guimarães,São Torcato,Apartment,C,,1.0,1.0,128.0,2001.0,C,2026-09-15 09:34:18.480,False,False,False,,2.0,1.0,,101.0,,
+64900.0,Braga,Póvoa de Lanhoso,Monsul,Land,NC,,,0.0,,,NC,2026-09-15 09:13:09.687,False,False,False,,,,,,663.0,
+110000.0,Bragança,Vinhais,Celas,House,F,,1.0,0.0,94.0,1937.0,F,2026-09-15 11:23:10.913,False,False,False,6.0,3.0,,Used,94.0,,195.56
+100000.0,Bragança,Bragança,"Sé, Santa Maria e Meixedo",Apartment,E,,1.0,0.0,53.0,1984.0,E,2026-09-15 16:07:06.953,False,False,False,2.0,1.0,0.0,Like new,38.0,,
+215000.0,Braga,Guimarães,Serzedo e Calvos,House,D,,2.0,0.0,198.0,1979.0,D,2026-09-15 08:38:08.637,False,False,False,3.0,3.0,2.0,,198.0,863.0,198.0
+500.0,Braga,Póvoa de Lanhoso,Serzedelo,House,E,,1.0,0.0,49.0,1937.0,E,2026-09-15 10:08:33.170,False,False,False,,1.0,,,49.0,61.0,
+289900.0,Braga,Guimarães,Ponte,Apartment,B,,2.0,0.0,115.0,2003.0,B,2026-09-15 16:07:32.813,True,True,False,,3.0,2.0,,140.0,,
+329900.0,Braga,Vila Verde,Vila Verde e Barbudo,Apartment,A+,,2.0,1.0,124.0,2022.0,A+,2026-09-15 16:01:50.633,False,True,False,,3.0,,,124.0,,
+240000.0,Braga,Braga,Braga (São José de São Lázaro e São João do Souto),Apartment,C,,2.0,0.0,94.0,2026.0,C,2026-09-15 15:49:50.400,False,False,False,,2.0,,,94.0,,
+459000.0,Braga,Vila Nova de Famalicão,Arnoso (Santa Maria e Santa Eulália) e Sezures,House,A,,3.0,1.0,191.0,2020.0,A,2026-09-15 15:22:49.943,True,False,False,,3.0,1.0,,191.0,,
+235000.0,Braga,Vila Verde,Vila Verde e Barbudo,Apartment,NC,,2.0,0.0,91.0,1984.0,NC,2026-09-15 15:26:57.430,True,False,False,,2.0,1.0,,91.0,,
+599900.0,Braga,Vieira do Minho,Ventosa e Cova,House,NC,,2.0,0.0,283.0,2007.0,NC,2026-09-15 09:22:17.070,True,False,False,,3.0,,Good condition,283.0,1570.0,
+590000.0,Braga,Fafe,Passos,House,D,,3.0,1.0,155.0,1986.0,D,2026-09-15 15:17:10.017,False,False,False,,3.0,,,155.0,1598.0,
+76500.0,Braga,Braga,"Braga (Maximinos, Sé e Cividade)",Store,NC,,,0.0,27.0,,NC,2026-09-15 11:52:12.820,False,False,False,,,,,,,
+55000.0,Braga,Braga,Guisande e Oliveira (São Pedro),House,NC,,1.0,0.0,20.0,1937.0,NC,2026-09-15 12:07:53.177,False,False,False,,2.0,,,40.0,980.0,
+292500.0,Braga,Amares,"Ferreiros, Prozelo e Besteiros",Apartment,NC,,2.0,0.0,118.0,,NC,2026-09-15 15:18:57.703,True,True,True,,3.0,,,150.0,,150.93
+69900.0,Castelo Branco,Fundão,Alpedrinha,Farm,NC,,0.0,0.0,63.0,,NC,2026-09-15 11:14:10.383,False,False,False,,,0.0,,10500.0,10500.0,87.0
+36500.0,Castelo Branco,Idanha-a-Nova,Rosmaninhal,Store,NC,,3.0,0.0,83.0,1997.0,NC,2026-09-15 12:55:11.540,False,False,False,5.0,,2.0,,83.0,,118.0
+60000.0,Castelo Branco,Idanha-a-Nova,Rosmaninhal,House,NC,,1.0,0.0,40.0,1937.0,NC,2026-09-15 13:00:32.077,False,False,False,5.0,3.0,,,40.0,40.0,80.0
+70000.0,Castelo Branco,Idanha-a-Nova,Rosmaninhal,House,E,,2.0,0.0,125.0,1986.0,E,2026-09-15 13:05:12.590,False,False,False,4.0,3.0,1.0,,125.0,62.0,187.92
+35000.0,Castelo Branco,Idanha-a-Nova,Rosmaninhal,House,F,,1.0,0.0,78.0,1976.0,F,2026-09-15 13:07:56.777,False,False,False,5.0,4.0,,,78.0,88.0,88.8
+75000.0,Castelo Branco,Oleiros,Oleiros - Amieira,Land,NC,,,0.0,,,NC,2026-09-15 15:05:34.617,False,False,False,,,,,,2072.0,
+26000.0,Castelo Branco,Castelo Branco,Lardosa,House,NC,,1.0,0.0,79.0,1937.0,NC,2026-08-29 10:03:43.473,False,False,False,3.0,2.0,,Needs renovation,70.0,,79.6
+247500.0,Coimbra,Coimbra,Eiras e São Paulo de Frades,Apartment,D,,2.0,0.0,85.0,1984.0,D,2026-09-15 11:34:34.667,True,False,False,,3.0,2.0,Good condition,85.0,,122.0
+60500.0,Coimbra,Coimbra,Souselas e Botão,Industrial,NC,,,0.0,1200.0,,NC,2026-09-15 14:08:12.293,False,False,False,,,,,,,
+540000.0,Coimbra,Coimbra,Santo António dos Olivais,Apartment,A,,2.0,1.0,107.0,,A,2026-09-15 09:51:17.100,False,True,True,4.0,3.0,,,107.0,,
+780000.0,Coimbra,Coimbra,Santo António dos Olivais,Apartment,A,,4.0,1.0,146.0,,A,2026-09-15 09:52:36.033,False,True,True,5.0,4.0,,,146.0,,
+560000.0,Coimbra,Coimbra,Santo António dos Olivais,Apartment,A,,2.0,1.0,107.0,,A,2026-09-15 09:54:37.740,False,True,True,4.0,3.0,,,107.0,,
+550000.0,Coimbra,Coimbra,Santo António dos Olivais,Apartment,A,,2.0,1.0,107.0,,A,2026-09-15 09:57:07.900,False,True,True,4.0,3.0,,,107.0,,
+695000.0,Coimbra,Coimbra,Santo António dos Olivais,Apartment,A,,4.0,1.0,137.0,,A,2026-09-15 10:04:13.197,False,True,True,5.0,4.0,,,137.0,,
+55000.0,Coimbra,Góis,Cadafaz e Colmeal,House,NC,,1.0,1.0,65.0,1953.0,NC,2026-09-15 14:43:02.973,False,False,False,,3.0,,,130.0,65.0,130.0
+178000.0,Coimbra,Vila Nova de Poiares,Poiares (Santo André),Apartment,E,,1.0,0.0,79.0,2005.0,E,2026-09-15 14:29:20.360,True,True,True,6.0,2.0,0.0,Good condition,79.0,111.0,111.4
+45000.0,Coimbra,Oliveira do Hospital,Lagares da Beira,House,NC,,0.0,1.0,42.0,1937.0,NC,2026-09-15 09:26:13.633,False,False,True,,2.0,0.0,,42.0,,
+135000.0,Coimbra,Oliveira do Hospital,Lagares da Beira,House,F,,3.0,0.0,153.0,2007.0,F,2026-09-15 09:34:56.313,True,False,False,,5.0,1.0,,308.0,,
+235000.0,Coimbra,Oliveira do Hospital,Bobadela,House,F,,2.0,1.0,101.0,2021.0,F,2026-09-15 09:22:57.760,False,False,True,,3.0,0.0,,241.0,,
+75000.0,Coimbra,Oliveira do Hospital,Oliveira do Hospital e São Paio de Gramaços,House,NC,,1.0,1.0,72.0,1937.0,NC,2026-09-15 10:36:45.827,False,False,True,,2.0,0.0,,72.0,,
+119000.0,Coimbra,Montemor-o-Velho,Liceia,House,E,,1.0,1.0,140.0,1951.0,E,2026-05-14 09:57:32.613,True,False,False,,3.0,,,140.0,1212.0,
+180000.0,Coimbra,Coimbra,São Martinho do Bispo e Ribeira de Frades,Land,NC,,,0.0,,,NC,2026-02-26 12:34:04.987,False,False,False,,,,,,4045.0,
+75000.0,Coimbra,Penela,"São Miguel, Santa Eufémia e Rabaçal",House,F,,1.0,1.0,105.0,1937.0,F,2025-12-15 10:41:25.093,False,False,False,4.0,3.0,1.0,,105.0,403.0,327.0
+9500.0,Coimbra,Penela,Cumeeira,House,NC,,0.0,0.0,26.0,1951.0,NC,2025-05-28 15:03:04.173,False,False,False,5.0,4.0,,,22.0,82.0,
+95000.0,Évora,Montemor-o-Novo,Cortiçadas de Lavre e Lavre,Land,NC,,,0.0,,,NC,2026-09-15 14:32:40.620,False,False,False,,,,,,61250.0,
+247500.0,Évora,Évora,"Évora (São Mamede, Sé, São Pedro e Santo Antão)",House,D,,2.0,0.0,90.0,1950.0,D,2026-09-15 14:04:54.927,False,False,False,3.0,2.0,,Good condition,63.0,,
+330000.0,Faro,Faro,Faro (Sé e São Pedro),Apartment,E,,2.0,0.0,113.0,1986.0,E,2026-09-15 16:13:24.050,False,False,False,,4.0,0.0,,113.0,,128.4
+875000.0,Faro,Loulé,Quarteira,Apartment,A+,,2.0,1.0,89.0,2025.0,A+,2026-09-15 16:40:03.893,False,True,True,,2.0,2.0,,81.0,,123.84
+350000.0,Faro,Lagos,São Gonçalo de Lagos,House,NC,,1.0,1.0,44.0,2001.0,NC,2026-09-15 14:48:15.943,False,False,False,3.0,2.0,,Good condition,63.0,,63.0
+249900.0,Faro,Castro Marim,Altura,Apartment,D,,2.0,1.0,66.0,1991.0,D,2026-09-15 15:06:51.580,False,False,False,,1.0,1.0,Good condition,66.0,,
+950000.0,Faro,Silves,Algoz e Tunes,House,A+,,2.0,0.0,120.0,2015.0,A+,2026-09-15 13:13:12.407,False,False,False,5.0,4.0,,Good condition,102.0,8440.0,
+350000.0,Faro,Vila Real de Santo António,Monte Gordo,Apartment,C,,1.0,0.0,80.0,1988.0,C,2026-09-15 14:06:26.057,False,True,False,,2.0,,,80.0,,93.0
+980000.0,Faro,Portimão,Alvor,House,B-,,5.0,1.0,280.0,2010.0,B-,2026-09-15 17:32:26.397,True,False,True,6.0,4.0,0.0,Like new,248.0,,
+365000.0,Faro,Vila Real de Santo António,Monte Gordo,Apartment,C,,1.0,0.0,66.0,1992.0,C,2026-09-04 16:08:12.030,False,True,False,,1.0,1.0,Good condition,66.0,,
+1150000.0,Faro,Vila do Bispo,Budens,House,B-,,3.0,0.0,190.0,2005.0,B-,2026-09-15 08:50:48.347,True,False,False,,3.0,,,190.0,,
+201500.0,Faro,Albufeira,Albufeira e Olhos de Água,Apartment,B-,,2.0,0.0,88.0,2003.0,B-,2026-04-13 07:46:45.827,False,False,False,,1.0,1.0,,88.0,,
+418000.0,Faro,Albufeira,Albufeira e Olhos de Água,Apartment,C,,2.0,0.0,137.0,2003.0,C,2026-04-13 07:46:28.633,False,False,False,,3.0,1.0,,137.0,,
+200000.0,Guarda,Guarda,Santana da Azinha,Farm,NC,,,0.0,120.0,,NC,2026-09-15 17:00:26.983,False,False,False,,,,,,14529.0,
+30000.0,Guarda,Guarda,Santana da Azinha,Land,NC,,,0.0,,,NC,2026-09-15 17:02:35.707,False,False,False,,,,,,15824.0,
+35000.0,Guarda,Guarda,Santana da Azinha,Land,NC,,,0.0,,,NC,2026-09-15 17:04:39.273,False,False,False,,,,,,14327.0,
+80000.0,Guarda,Guarda,Santana da Azinha,Land,NC,,,0.0,,,NC,2026-09-15 17:07:56.943,False,False,False,,,,,,19265.0,
+11000.0,Guarda,Pinhel,Alverca da Beira/Bouça Cova,Other - Residential,NC,,,0.0,65.0,,NC,2026-09-15 16:31:49.497,False,False,False,,,,,,,
+650000.0,Leiria,Alcobaça,Alcobaça e Vestiaria,House,C,,5.0,1.0,260.0,2025.0,C,2026-09-15 16:20:18.340,True,False,False,,4.0,3.0,,165.0,,
+159000.0,Leiria,Porto de Mós,Mira de Aire,Apartment,E,,1.0,0.0,112.0,1999.0,E,2026-09-15 15:06:21.290,False,False,False,3.0,2.0,,Good condition,112.0,,136.1
+37500.0,Leiria,Pombal,Pombal,Land,NC,,,0.0,,,NC,2026-09-15 11:34:18.717,False,False,False,,,,,,297.0,
+50000.0,Leiria,Castanheira de Pêra,Castanheira de Pêra e Coentral,House,NC,,2.0,1.0,61.0,1935.0,NC,2026-09-15 15:55:07.217,True,False,False,,2.0,1.0,,122.0,762.0,
+63000.0,Leiria,Castanheira de Pêra,Castanheira de Pêra e Coentral,House,NC,,1.0,0.0,52.0,1935.0,NC,2026-09-15 16:30:09.543,False,False,False,,2.0,,,104.0,398.0,
+39900.0,Leiria,Pombal,Abiul,Land,NC,,,0.0,,,NC,2026-09-15 17:42:34.020,False,False,False,,,,,,3429.0,
+120000.0,Leiria,Caldas da Rainha,Santa Catarina,Land,NC,,,0.0,,,NC,2026-09-15 14:35:48.067,False,False,False,,,,,,3559.0,
+19990.0,Leiria,Ansião,Alvorge,Storage,NC,,0.0,0.0,69.0,1937.0,NC,2026-09-15 14:42:58.223,False,False,False,1.0,1.0,0.0,,69.0,106.0,
+135000.0,Leiria,Figueiró dos Vinhos,Figueiró dos Vinhos e Bairradas,House,E,,1.0,1.0,360.0,2009.0,E,2026-09-15 17:44:29.573,False,False,False,,3.0,0.0,,360.0,724.0,
+660000.0,Leiria,Batalha,Batalha,Building,E,,5.0,1.0,487.0,1978.0,E,2026-09-15 18:55:31.267,False,False,False,,8.0,,,487.0,2340.0,605.3
+565000.0,Lisboa,Lisboa,São Vicente,Apartment,D,,2.0,0.0,98.0,1951.0,D,2026-09-15 12:09:01.757,False,False,False,,3.0,0.0,,98.0,,
+479800.0,Lisboa,Lisboa,São Domingos de Benfica,Apartment,C,,1.0,0.0,117.0,1966.0,C,2026-09-15 16:09:41.780,False,False,False,4.0,3.0,1.0,,115.0,,
+550000.0,Lisboa,Lisboa,Campolide,Apartment,D,,2.0,0.0,111.0,1989.0,D,2026-09-15 16:52:31.693,False,True,False,,3.0,,,105.0,,
+412000.0,Lisboa,Lisboa,Penha de França,Apartment,E,,1.0,0.0,105.0,1935.0,E,2026-09-15 14:58:09.407,False,False,False,3.0,2.0,,,85.0,,
+545000.0,Lisboa,Lisboa,Misericórdia,Apartment,E,,1.0,0.0,66.0,1950.0,E,2026-09-15 09:44:19.093,False,False,False,,2.0,,Like new,52.0,,
+570000.0,Lisboa,Lisboa,Misericórdia,Apartment,D,,2.0,0.0,84.0,1950.0,D,2026-09-15 10:03:59.660,False,False,False,,2.0,,Like new,60.0,,
+600000.0,Lisboa,Lisboa,Benfica,Apartment,A,,3.0,1.0,90.0,2026.0,A,2026-09-15 11:22:57.570,False,True,False,3.0,2.0,1.0,,70.0,,200.0
+800000.0,Lisboa,Oeiras,"Algés, Linda-a-Velha e Cruz Quebrada-Dafundo",Apartment,NC,,3.0,1.0,110.0,,NC,2026-09-15 15:49:56.717,False,True,False,4.0,3.0,1.0,,110.0,,134.0
+450000.0,Lisboa,Amadora,Águas Livres,Apartment,C,,2.0,0.0,90.0,2010.0,C,2026-09-15 17:09:09.673,True,True,False,3.0,2.0,0.0,,77.0,,109.0
+575000.0,Lisboa,Mafra,Ericeira,Apartment,C,,2.0,1.0,135.0,2006.0,C,2026-09-15 15:06:49.730,False,False,False,4.0,3.0,,,122.0,,181.96
+1500000.0,Lisboa,Loures,Fanhões,Farm,B,,5.0,0.0,450.0,2022.0,B,2026-09-15 13:53:42.733,True,False,True,,5.0,,,226.0,7137.0,
+132000.0,Lisboa,Mafra,"Enxara do Bispo, Gradil e Vila Franca do Rosário",House,NC,,3.0,0.0,223.0,1951.0,NC,2026-09-15 14:05:29.990,False,False,False,,8.0,2.0,Needs renovation,131.0,177.0,223.0
+250000.0,Lisboa,Sintra,Cacém e São Marcos,Apartment,C,,1.0,0.0,86.0,1999.0,C,2026-09-15 20:04:27.197,False,True,False,2.0,1.0,,Like new,74.0,294.0,
+320000.0,Lisboa,Sintra,Queluz e Belas,Apartment,D,,1.0,1.0,78.0,1996.0,D,2026-09-15 09:19:03.763,False,True,False,,2.0,,Good condition,74.0,,
+289000.0,Lisboa,Torres Vedras,"Torres Vedras (São Pedro, Santiago, Santa Maria do Castelo e São Miguel) e Matacães",Apartment,D,,2.0,0.0,143.0,1995.0,D,2026-09-15 13:34:50.157,False,False,False,,4.0,0.0,,143.0,,
+750000.0,Lisboa,Torres Vedras,"Torres Vedras (São Pedro, Santiago, Santa Maria do Castelo e São Miguel) e Matacães",House,B,,5.0,1.0,649.0,2012.0,B,2026-09-15 15:45:55.360,True,False,False,,6.0,0.0,,649.0,3600.0,
+240000.0,Lisboa,Odivelas,Odivelas,Apartment,E,,1.0,0.0,47.0,1989.0,E,2026-09-15 16:17:51.103,False,False,False,,1.0,1.0,,47.0,,
+107000.0,Lisboa,Loures,"Camarate, Unhos e Apelação",Land,NC,,,0.0,,,NC,2026-09-15 16:10:30.963,False,False,False,,,,,,640.0,
+260000.0,Lisboa,Amadora,Venteira,Apartment,E,,2.0,0.0,71.0,1977.0,E,2026-09-15 10:07:43.973,False,False,False,3.0,2.0,,Used,62.0,,
+3180000.0,Lisboa,Cascais,Alcabideche,House,A,,6.0,1.0,364.0,,A,2026-09-15 14:28:51.843,True,False,True,,4.0,1.0,,364.0,895.0,554.9
+249500.0,Lisboa,Odivelas,Odivelas,Apartment,D,,1.0,0.0,68.0,1978.0,D,2026-09-15 15:41:32.003,False,False,False,3.0,2.0,,,65.0,,77.0
+325000.0,Lisboa,Odivelas,Póvoa de Santo Adrião e Olival Basto,Apartment,D,,2.0,0.0,59.0,1985.0,D,2026-09-15 14:42:22.993,False,False,False,4.0,2.0,1.0,,50.0,,
+330000.0,Lisboa,Odivelas,Odivelas,Apartment,D,,1.0,0.0,80.0,1974.0,D,2026-09-15 18:08:09.893,False,False,False,4.0,3.0,,Used,76.0,,180.0
+275000.0,Lisboa,Amadora,Falagueira - Venda Nova,Apartment,D,,2.0,0.0,86.0,1968.0,D,2026-09-15 15:45:55.257,False,True,False,,3.0,1.0,,86.0,,
+35000.0,Lisboa,Sintra,Rio de Mouro,Garage,NC,,,0.0,24.0,,NC,2026-09-15 10:01:27.453,False,False,False,,,,,24.0,,
+399500.0,Lisboa,Lisboa,São Vicente,Apartment,C,,2.0,0.0,86.0,1950.0,C,2026-09-14 15:28:01.733,False,False,False,,3.0,,,77.0,,
+425000.0,Lisboa,Sintra,Queluz e Belas,Apartment,E,,2.0,1.0,112.0,1997.0,E,2026-09-15 11:48:47.997,False,True,False,,3.0,,Good condition,112.0,,115.0
+85000.0,Lisboa,Loures,"Camarate, Unhos e Apelação",Land,NC,,,0.0,,,NC,2026-09-15 16:29:39.083,False,False,False,,,,,,399.0,
+260000.0,Lisboa,Sintra,Rio de Mouro,Apartment,D,,1.0,0.0,77.0,1978.0,D,2026-09-15 12:00:50.040,False,False,False,,2.0,,,66.0,,
+265000.0,Lisboa,Alenquer,Carregado e Cadafais,Apartment,C,,1.0,0.0,99.0,2004.0,C,2026-09-15 09:05:07.960,False,True,False,,2.0,,,113.0,,
+89000.0,Lisboa,Azambuja,Aveiras de Cima,House,E,,1.0,0.0,74.0,1937.0,E,2026-09-14 11:03:25.400,False,False,False,,3.0,,,69.0,,
+940000.0,Lisboa,Lourinhã,São Bartolomeu dos Galegos e Moledo,House,C,,2.0,1.0,208.0,1990.0,C,2026-09-15 15:59:44.083,False,False,False,4.0,3.0,1.0,Good condition,199.0,2500.0,244.0
+355000.0,Lisboa,Cascais,Carcavelos e Parede,Apartment,C,,1.0,0.0,39.0,1997.0,C,2026-09-14 16:48:55.567,False,False,False,,1.0,,,34.0,,43.86
+299000.0,Lisboa,Sintra,Queluz e Belas,House,D,,1.0,0.0,119.0,1951.0,D,2026-09-15 16:10:45.840,False,False,False,,1.0,,,98.0,,
+330000.0,Lisboa,Odivelas,Odivelas,Apartment,D,,2.0,0.0,74.0,1971.0,D,2026-09-15 12:09:26.587,False,False,False,4.0,3.0,,,66.0,320.0,87.5
+599000.0,Lisboa,Lisboa,Areeiro,Apartment,D,,2.0,0.0,148.0,1986.0,D,2026-09-15 09:13:23.407,False,False,False,4.0,2.0,1.0,Good condition,80.0,,
+329000.0,Lisboa,Torres Vedras,São Pedro da Cadeira,House,D,,2.0,0.0,176.0,1999.0,D,2026-09-15 15:01:20.617,True,False,False,5.0,4.0,,,146.0,,198.0
+70000.0,Lisboa,Odivelas,Odivelas,Transfer of lease,B,,,0.0,135.0,2001.0,B,2026-09-15 13:18:18.230,False,False,False,,,,,,,
+350000.0,Lisboa,Mafra,Malveira e São Miguel de Alcainça,House,D,,2.0,0.0,80.0,1980.0,D,2026-09-15 16:26:46.057,False,False,False,,2.0,1.0,,80.0,,
+370000.0,Lisboa,Lourinhã,Lourinhã e Atalaia,House,D,,3.0,1.0,161.0,2009.0,D,2026-09-15 11:04:50.970,False,False,False,,3.0,,,133.0,,
+16000.0,Lisboa,Sintra,São João das Lampas e Terrugem,Land,NC,,,0.0,,,NC,2026-09-15 15:10:09.117,False,False,False,,,,,,2100.0,
+1690000.0,Lisboa,Lisboa,Santo António,Apartment,C,,3.0,0.0,175.0,1939.0,C,2026-09-15 09:20:42.903,False,True,False,,3.0,,,156.0,,196.0
+700000.0,Lisboa,Sintra,"Almargem do Bispo, Pêro Pinheiro e Montelavar",House,NC,,6.0,1.0,162.0,2026.0,NC,2026-09-15 15:33:00.147,True,False,True,7.0,3.0,3.0,New,162.0,413.0,
+100000.0,Lisboa,Odivelas,Ramada e Caneças,Land,NC,,,0.0,300.0,,NC,2026-09-15 12:50:30.960,False,False,False,,,,,,300.0,
+1200000.0,Lisboa,Cascais,Alcabideche,House,B,,3.0,1.0,163.0,2010.0,B,2026-09-11 09:33:16.707,False,False,False,4.0,3.0,,Good condition,190.0,311.0,250.26
+280000.0,Lisboa,Sintra,Queluz e Belas,Apartment,D,,1.0,0.0,88.0,1994.0,D,2026-09-15 08:45:46.650,False,True,False,,1.0,,,79.0,,
+160000.0,Lisboa,Cadaval,Lamas e Cercal,House,D,,2.0,0.0,91.0,2002.0,D,2026-09-15 10:15:51.640,False,False,False,,2.0,,,91.0,,
+394900.0,Lisboa,Lisboa,Olivais,Apartment,C,,2.0,0.0,86.0,1994.0,C,2026-09-15 08:54:51.537,False,True,False,4.0,3.0,,,89.0,,89.0
+328000.0,Lisboa,Loures,Santo António dos Cavaleiros e Frielas,Apartment,A+,,1.0,1.0,77.0,2026.0,A+,2026-09-15 14:58:59.743,False,True,True,2.0,1.0,,New,67.0,,
+750000.0,Lisboa,Sintra,Queluz e Belas,Apartment,E,,3.0,1.0,130.0,2006.0,E,2026-09-15 16:12:22.707,False,True,False,,3.0,1.0,,134.0,,
+130000.0,Lisboa,Oeiras,Barcarena,Land,NC,,,0.0,,,NC,2026-09-14 16:53:31.613,False,False,False,,,,,,300.0,
+1350000.0,Lisboa,Cascais,Cascais e Estoril,Apartment,C,,4.0,1.0,98.0,2009.0,C,2026-09-15 17:39:15.540,False,True,False,3.0,1.0,,,80.0,,
+430000.0,Lisboa,Odivelas,Odivelas,Apartment,B-,,2.0,1.0,105.0,1994.0,B-,2026-08-27 16:48:54.640,False,True,False,4.0,3.0,,Good condition,105.0,,
+385000.0,Lisboa,Lisboa,Arroios,Apartment,C,,1.0,0.0,49.0,2026.0,C,2026-09-15 16:29:53.557,False,True,False,2.0,1.0,1.0,,44.0,,
+387000.0,Lisboa,Sintra,Queluz e Belas,Apartment,C,,2.0,0.0,120.0,1995.0,C,2026-07-31 14:13:42.473,False,False,False,,3.0,0.0,Good condition,108.0,,
+440000.0,Lisboa,Lisboa,Benfica,Apartment,D,,1.0,0.0,63.0,1989.0,D,,False,True,False,,2.0,0.0,,63.0,,
+495000.0,Lisboa,Vila Franca de Xira,Vila Franca de Xira,Farm,F,,10.0,0.0,546.0,2006.0,F,2026-06-23 14:10:38.297,False,False,False,,,5.0,,,,
+426000.0,Lisboa,Vila Franca de Xira,Vialonga,Land,NC,,,0.0,,,NC,2026-06-16 08:39:30.710,False,False,False,,,,,,46499.0,
+610000.0,Lisboa,Lisboa,Santa Maria Maior,Apartment,B,,2.0,1.0,135.0,2014.0,B,2026-09-15 09:07:05.233,False,False,False,4.0,3.0,,Good condition,133.0,,179.0
+750000.0,Lisboa,Lisboa,Estrela,Apartment,D,,3.0,0.0,185.0,1951.0,D,2026-09-15 09:42:45.897,False,False,False,6.0,4.0,,,152.0,,
+22000.0,Lisboa,Torres Vedras,Dois Portos e Runa,Land,NC,,,0.0,5040.0,,NC,2026-04-17 15:45:27.173,False,False,False,,,,,,5040.0,5040.0
+1100000.0,Lisboa,Oeiras,"Algés, Linda-a-Velha e Cruz Quebrada-Dafundo",Apartment,A,,4.0,0.0,149.0,2026.0,A,2026-05-05 17:18:13.133,True,True,False,4.0,3.0,1.0,New,149.0,,196.0
+225000.0,Lisboa,Lourinhã,São Bartolomeu dos Galegos e Moledo,House,F,,1.0,1.0,60.0,1968.0,F,2025-11-28 13:04:58.570,False,False,True,,3.0,,,200.0,200.0,
+840000.0,Lisboa,Oeiras,"Algés, Linda-a-Velha e Cruz Quebrada-Dafundo",Apartment,NC,,2.0,1.0,152.0,2026.0,NC,2025-10-10 12:45:02.727,False,True,True,4.0,3.0,1.0,,98.0,,
+420000.0,Lisboa,Loures,"Santa Iria de Azoia, São João da Talha e Bobadela",House,D,,2.0,1.0,94.0,1990.0,D,2025-09-22 16:06:46.230,False,False,False,,4.0,,,94.0,550.0,
+10000.0,Lisboa,Lisboa,Arroios,Garage,NC,,,1.0,12.0,2000.0,NC,2024-10-29 09:30:57.013,False,False,False,,,,Reasonable,12.0,,
+375000.0,Lisboa,Sintra,Agualva e Mira-Sintra,Garage,NC,,1.0,0.0,243.0,2001.0,NC,2024-06-03 14:07:55.613,False,False,True,,,1.0,New,243.0,,243.0
+397000.0,Porto,Porto,"Cedofeita, Santo Ildefonso, Sé, Miragaia, São Nicolau e Vitória",Apartment,C,,2.0,1.0,85.0,1988.0,C,2026-09-15 09:46:36.230,False,True,False,,2.0,,,85.0,,101.0
+1300000.0,Porto,Paredes,Parada de Todeia,Land,NC,,,0.0,,,NC,2026-09-15 09:04:50.253,False,False,False,,,,,,72261.0,
+379000.0,Porto,Vila Nova de Gaia,Pedroso e Seixezelo,House,NC,,3.0,1.0,155.0,2025.0,NC,2026-09-15 12:18:22.270,False,False,False,,3.0,3.0,,155.0,,
+400000.0,Porto,Vila Nova de Gaia,Arcozelo,Apartment,A+,,2.0,1.0,94.0,2026.0,A+,2026-09-15 16:01:29.077,False,True,True,,2.0,,,85.0,,
+92000.0,Porto,Marco de Canaveses,Penhalonga e Paços de Gaiolo,Land,NC,,,0.0,,,NC,2026-09-15 15:18:30.347,False,False,False,,,,,,4934.0,
+150000.0,Porto,Maia,Nogueira e Silva Escura,Transfer of lease,C,,,0.0,93.0,,C,2026-09-15 10:26:52.867,False,False,False,,,,,93.0,,
+335000.0,Porto,Vila Nova de Gaia,Mafamude e Vilar do Paraíso,Apartment,D,,1.0,1.0,89.0,1993.0,D,2026-09-15 10:00:34.493,False,True,True,3.0,2.0,,Good condition,89.0,112.0,112.0
+419000.0,Porto,Lousada,"Silvares, Pias, Nogueira e Alvarenga",Apartment,B,,3.0,1.0,215.0,2026.0,B,2026-09-15 08:33:40.380,False,True,True,,3.0,,,175.0,,
+255000.0,Porto,Penafiel,Termas de São Vicente,Apartment,A,,2.0,1.0,91.0,,A,2026-09-15 11:27:39.647,False,True,True,,2.0,,,91.0,,
+267500.0,Porto,Vila Nova de Gaia,Oliveira do Douro,Land,NC,,,0.0,,,NC,2026-09-15 15:11:29.313,False,False,False,,,,,,2037.0,400.0
+110000.0,Porto,Vila do Conde,"Bagunte, Ferreiró, Outeiro Maior e Parada",Land,NC,,,0.0,,,NC,2026-09-15 15:26:56.290,False,False,False,,,,,,7225.0,
+160000.0,Porto,Maia,Cidade da Maia,Transfer of lease,NC,,,0.0,1697.0,,NC,2026-09-15 13:56:34.553,False,False,False,,,,,,,
+725000.0,Porto,Porto,"Cedofeita, Santo Ildefonso, Sé, Miragaia, São Nicolau e Vitória",Building,E,,3.0,0.0,158.0,1965.0,E,2026-09-15 15:54:02.903,False,False,False,,11.0,,Used,158.0,,
+589000.0,Porto,Maia,Moreira,House,B-,,4.0,1.0,195.0,2003.0,B-,2026-09-15 14:18:36.673,True,False,True,4.0,3.0,,Good condition,195.0,156.0,306.6
+199000.0,Porto,Vila Nova de Gaia,Canelas,Apartment,A+,,1.0,1.0,69.0,,A+,2026-09-15 15:27:27.870,False,True,True,1.0,0.0,,,40.0,82.0,82.0
+2200000.0,Porto,Porto,"Cedofeita, Santo Ildefonso, Sé, Miragaia, São Nicolau e Vitória",Hotel,C,,10.0,0.0,746.0,1951.0,C,2026-09-15 09:36:04.320,False,False,False,22.0,10.0,0.0,Good condition,746.0,245.0,
+299000.0,Porto,Porto,Paranhos,Apartment,D,,1.0,0.0,83.0,1988.0,D,2026-09-15 13:57:07.510,False,False,False,3.0,3.0,,,83.0,,93.0
+149000.0,Porto,Penafiel,Rio Mau,Land,NC,,,0.0,,,NC,2026-09-15 18:02:03.037,False,False,False,,,,,,2050.0,
+40000.0,Porto,Felgueiras,Vila Cova da Lixa e Borba de Godim,Land,NC,,,0.0,,,NC,2026-09-15 14:19:58.113,False,False,False,,,,,,775.0,
+330000.0,Porto,Porto,Campanhã,Apartment,A+,,1.0,0.0,55.0,,A+,2026-09-15 16:08:32.470,False,True,True,,1.0,,,49.0,,
+655000.0,Porto,Matosinhos,Matosinhos e Leça da Palmeira,Apartment,A+,,3.0,1.0,104.0,,A+,2026-09-15 17:07:52.943,False,True,True,,3.0,1.0,,93.0,,
+1149000.0,Porto,Gondomar,Rio Tinto,Land,NC,,,0.0,,,NC,2026-09-15 11:44:40.497,False,False,False,,,,,,6000.0,
+385000.0,Porto,Porto,Campanhã,Apartment,NC,,3.0,1.0,84.0,2025.0,NC,2026-09-15 14:37:06.210,False,True,False,3.0,2.0,1.0,New,84.0,,
+220000.0,Porto,Porto,Bonfim,Apartment,B-,,1.0,0.0,38.0,2022.0,B-,2026-09-15 15:03:26.023,False,False,False,,0.0,0.0,Like new,38.0,,38.0
+80000.0,Porto,Marco de Canaveses,Vila Boa do Bispo,Land,NC,,,0.0,,,NC,2025-09-10 17:46:14.060,False,False,False,,,,,,2750.0,
+69500.0,Porto,Paredes,Paredes,House,NC,,0.0,0.0,96.0,1937.0,NC,2025-05-22 16:19:27.077,False,False,False,,1.0,,,96.0,1980.0,
+60000.0,Porto,Trofa,Muro,Land,NC,,0.0,0.0,867.0,,NC,,False,False,False,,,0.0,,,867.0,
+75000.0,Santarém,Torres Novas,Chancelaria,Land,NC,,,0.0,,,NC,2026-09-15 20:13:08.243,False,False,False,,,,,,13440.0,
+194000.0,Santarém,Tomar,Tomar (São João Baptista) e Santa Maria dos Olivais,House,E,,1.0,1.0,95.0,1964.0,E,2026-09-15 17:11:34.057,False,False,False,4.0,3.0,,,79.0,340.0,104.0
+387000.0,Santarém,Cartaxo,Pontével,House,C,,3.0,1.0,217.0,1971.0,C,2026-09-15 13:20:35.337,False,False,False,,2.0,2.0,Like new,154.0,2763.0,
+150000.0,Santarém,Abrantes,Abrantes (São Vicente e São João) e Alferrarede,Apartment,E,,1.0,0.0,80.0,1990.0,E,2026-09-15 15:02:04.127,True,False,False,,2.0,,Good condition,80.0,,
+525000.0,Santarém,Constância,Montalvo,House,E,,4.0,0.0,336.0,2006.0,E,2026-09-15 17:29:59.563,True,False,False,,5.0,,,336.0,2609.0,
+220000.0,Santarém,Abrantes,Abrantes (São Vicente e São João) e Alferrarede,Building,E,,,0.0,152.0,1950.0,E,2026-09-15 16:19:39.773,False,False,False,8.0,,,Needs renovation,152.0,,
+799000.0,Santarém,Benavente,Benavente,House,C,,2.0,1.0,377.0,1999.0,C,2026-09-15 17:07:40.560,True,False,True,,5.0,,,358.0,5000.0,446.94
+78000.0,Santarém,Tomar,São Pedro de Tomar,House,F,,1.0,0.0,66.0,1937.0,F,2026-09-14 10:35:04.057,False,False,True,,2.0,,,68.0,,
+515000.0,Santarém,Chamusca,Carregueira,Land,NC,,0.0,0.0,,,NC,,False,False,False,,,0.0,,,284890.0,
+35000.0,Setúbal,Almada,Caparica e Trafaria,Garage,NC,,,0.0,28.0,1986.0,NC,2026-09-15 13:27:08.050,False,False,False,,,,,28.0,,
+280000.0,Setúbal,Montijo,Montijo e Afonsoeiro,Apartment,E,,1.0,0.0,90.0,1986.0,E,2026-09-15 15:39:26.673,False,False,False,,2.0,1.0,,90.0,,
+177500.0,Setúbal,Seixal,Fernão Ferro,Land,NC,,,0.0,,,NC,2026-09-15 14:09:32.280,False,False,False,,,,,,315.0,
+250000.0,Setúbal,Barreiro,Barreiro e Lavradio,Apartment,D,,1.0,0.0,66.0,1960.0,D,2026-09-15 11:48:33.173,False,False,False,3.0,2.0,,Like new,66.0,193.0,66.0
+329000.0,Setúbal,Almada,"Almada, Cova da Piedade, Pragal e Cacilhas",Apartment,D,,1.0,0.0,77.0,1969.0,D,2026-09-15 11:48:53.170,False,False,False,4.0,3.0,,,69.0,175.0,77.5
+530000.0,Setúbal,Montijo,Montijo e Afonsoeiro,House,D,,2.0,1.0,267.0,1982.0,D,2026-09-15 09:14:14.223,False,False,False,7.0,6.0,,,242.0,261.0,404.4
+850000.0,Setúbal,Almada,"Almada, Cova da Piedade, Pragal e Cacilhas",Apartment,D,,3.0,0.0,137.0,2008.0,D,2026-09-15 14:46:34.863,False,False,False,,3.0,2.0,Good condition,135.0,,
+310000.0,Setúbal,Grândola,Grândola e Santa Margarida da Serra,Apartment,E,,1.0,0.0,61.0,2000.0,E,2026-09-15 13:50:34.550,False,True,False,,2.0,,,61.0,,
+165000.0,Setúbal,Moita,Baixa da Banheira e Vale da Amoreira,Apartment,D,,1.0,0.0,60.0,1958.0,D,2026-09-15 09:38:18.740,False,False,False,,2.0,,,41.0,,
+100000.0,Setúbal,Moita,Baixa da Banheira e Vale da Amoreira,Apartment,D,,1.0,0.0,40.0,1958.0,D,2026-09-15 09:42:38.997,False,False,False,,0.0,1.0,,24.0,,
+437500.0,Setúbal,Barreiro,Barreiro e Lavradio,Apartment,C,,2.0,0.0,110.0,2026.0,C,2026-09-04 16:44:33.280,False,False,False,5.0,4.0,,New,111.0,,
+950000.0,Setúbal,Santiago do Cacém,Abela,Land,NC,,,0.0,,,NC,2026-08-05 10:16:36.567,False,False,False,,,,,,159.0,
+110000.0,Setúbal,Palmela,Quinta do Anjo,Land,NC,,,0.0,,,NC,2026-09-15 15:37:22.267,False,False,False,,,,,,185.0,
+325000.0,Setúbal,Grândola,Grândola e Santa Margarida da Serra,Other - Commercial,C,,,0.0,76.0,,C,2026-05-15 12:52:33.570,False,False,False,,,,,,,
+1800000.0,Setúbal,Santiago do Cacém,"Santiago do Cacém, Santa Cruz e São Bartolomeu da Serra",Farm,A+,,4.0,0.0,130.0,,A+,2026-04-29 15:31:07.383,False,False,False,,5.0,,,132.0,8000.0,
+380000.0,Setúbal,Sesimbra,Castelo (Sesimbra),Apartment,D,,1.0,1.0,65.0,2006.0,D,2026-05-12 13:45:31.527,False,True,True,,1.0,,,65.0,,
+98000.0,Setúbal,Montijo,Canha,Land,NC,,,0.0,,2003.0,NC,2026-03-10 07:13:44.157,False,False,False,,,,,,20500.0,9.225
+130000.0,Setúbal,Sines,Sines,Store,C,,,0.0,38.0,,C,2026-01-15 17:53:55.310,False,False,False,,,,,,,
+490000.0,Setúbal,Montijo,Montijo e Afonsoeiro,House,E,,3.0,0.0,145.0,2003.0,E,2025-12-17 15:29:01.257,False,False,False,,3.0,3.0,,145.0,,
+49500.0,Setúbal,Palmela,Quinta do Anjo,Land,NC,,,0.0,,,NC,2025-11-24 13:43:57.593,False,False,False,,,,,,17526.0,
+450000.0,Setúbal,Santiago do Cacém,Cercal,Farm,B,,3.0,0.0,100.0,2017.0,B,2025-11-19 14:29:11.387,True,False,False,3.0,2.0,1.0,Good condition,100.0,13500.0,124.0
+590000.0,Setúbal,Santiago do Cacém,Cercal,Farm,D,,2.0,0.0,113.0,1998.0,D,2026-09-15 14:13:47.483,False,False,False,6.0,5.0,0.0,,140.0,23500.0,140.43
+250000.0,Viana do Castelo,Viana do Castelo,Cardielos e Serreleis,House,NC,,3.0,1.0,301.0,1937.0,NC,2026-09-15 15:32:14.297,False,False,False,,4.0,1.0,,301.0,8000.0,
+20000.0,Viana do Castelo,Valença,Gondomil e Sanfins,Land,NC,,,0.0,,,NC,2026-09-15 15:04:32.017,False,False,False,,,,,,800.0,
+4500.0,Viana do Castelo,Valença,Gondomil e Sanfins,Land,NC,,,0.0,,,NC,2026-09-15 15:10:17.170,False,False,False,,,,,,2500.0,
+3000.0,Viana do Castelo,Valença,Gondomil e Sanfins,Land,NC,,,0.0,,,NC,2026-09-15 15:15:46.127,False,False,False,,,,,,1490.0,
+165000.0,Viana do Castelo,Ponte de Lima,Anais,House,NC,,2.0,1.0,120.0,2008.0,NC,2026-09-15 15:07:20.440,False,False,False,6.0,4.0,1.0,Needs renovation,280.0,520.0,280.8
+199000.0,Vila Real,Chaves,Santa Maria Maior,Apartment,D,,2.0,1.0,92.0,2010.0,D,2026-09-15 16:33:44.480,False,True,False,4.0,3.0,,,92.0,,92.15
+89750.0,Vila Real,Alijó,Castedo e Cotas,House,F,,2.0,0.0,208.0,1956.0,F,2026-09-14 16:48:38.863,True,False,False,,4.0,2.0,,177.0,297.0,
+77000.0,Vila Real,Valpaços,Vilarandelo,Land,NC,,,0.0,,,NC,2026-09-15 14:21:40.043,False,False,False,,,,,,7088.0,
