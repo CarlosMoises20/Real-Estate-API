@@ -8,14 +8,14 @@ import os, duckdb                                                               
 class FSQOSPlaces(BaseDuckDBDataSource):
     
     """Constructor for the FSQOSPlaces class"""
-    def __init__(self, access_token, country_code, db_file_path, places_dataset_path, datasets_format=None):
+    def __init__(self, access_token, country_code, db_file_path, datasets_format=None, datasets_path=None):
         
         super().__init__(datasets_format=datasets_format, 
+                         datasets_path=datasets_path,
                          connection=duckdb.connect(db_file_path))
         
         self.__access_token = access_token
         self.__country_code = country_code
-        self.__places_dataset_path = places_dataset_path
         
         self._initial_setup()                         # Setup the environment before fetching data from Foursquare OS Places
     
@@ -55,16 +55,14 @@ class FSQOSPlaces(BaseDuckDBDataSource):
         
         datasets_format = self._datasets_format if self._datasets_format else "parquet"
         
-        dataset_full_path = f"{self.__places_dataset_path}/fsq_{self.__country_code.lower()}_places.{datasets_format}"
+        dataset_full_path = f"{self._datasets_path}/fsq_{self.__country_code.lower()}_places.{datasets_format}"
         
         # verify local .parquet dataset with places from FSQ OS Places
         if not os.path.exists(dataset_full_path):
             
             query = f"""
-                        COPY (SELECT p.fsq_place_id, p.name, p.latitude, p.longitude, p.address,
-                                p.country, p.locality, p.region, p.postcode, p.date_created,
-                                p.date_refreshed, p.date_closed, p.fsq_category_ids, p.fsq_category_labels,
-                                p.bbox
+                        COPY (SELECT p.name, p.latitude, p.longitude, p.address,
+                                p.country, p.date_created, p.fsq_category_labels
                             FROM fsq.datasets.places_os AS p
                             WHERE p.country = '{self.__country_code}') 
                             TO '{dataset_full_path}'

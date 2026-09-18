@@ -7,8 +7,9 @@ class BaseDuckDBDataSource(BaseDataSource):
     
     """Constructor for the BaseDuckDBDataSource class, which initializes the DuckDB
     connection and the datasets format"""
-    def __init__(self, datasets_format=None, connection=None):
-        super().__init__(datasets_format=datasets_format)
+    def __init__(self, datasets_format=None, datasets_path=None, connection=None):
+        super().__init__(datasets_format=datasets_format,
+                         datasets_path=datasets_path)
         self._connection = duckdb.connect() if not connection else connection
     
     

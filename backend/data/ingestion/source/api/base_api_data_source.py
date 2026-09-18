@@ -22,8 +22,9 @@ class BaseAPIDataSource(BaseDataSource):
         # datasets_format: format of the dataset to be generated (csv or parquet)
         
     """
-    def __init__(self, url, datasets_format=None, params=None, headers=None):
-        super().__init__(datasets_format=datasets_format)
+    def __init__(self, url, datasets_format=None, datasets_path=None, params=None, headers=None):
+        super().__init__(datasets_format=datasets_format, 
+                         datasets_path=datasets_path)
         self._url = url
         self._params = params
         self._headers = headers

@@ -2,7 +2,6 @@
 from backend.data.ingestion.source.api.base_api_data_source import BaseAPIDataSource
 from backend.common.utils import *
 import pandas as pd
-import json         # If you want to generate the dataset with data from the API in raw format (JSON for visualization)
 
 """This class is used to retrieve relevant data from the API of INE (Instituto Nacional de Estatística)"""
 class INE(BaseAPIDataSource):
@@ -19,10 +18,6 @@ class INE(BaseAPIDataSource):
         # Here we don't convert this to dataframe yet, because data has a nested structure and this would add extra complexity in the dataframe pre-processing
         # Instead, we will extract relevant data from the JSON and then convert it to dataframe
         data = super().get_source_data().json()
-
-        # NOTE uncomment if you want to generate the dataset with data from the API in raw format, for visualization
-        """with open(f"./backend/datasets/external/ine_data_v0_{value_attr_name}.json", "w") as f:
-            json.dump(data, f, indent=2)"""
     
         period = next(iter(data[0]["Dados"]))
         
@@ -50,7 +45,7 @@ class INE(BaseAPIDataSource):
         # NOTE optional
         # generate the dataset that will be later used to train the model after being joined with other datasets
         generate_dataset_from_df(df=final_df, 
-                                 file_path_base=f"./backend/datasets/external/ine_data_{value_attr_name}", 
+                                 file_path_base=f"{self._datasets_path}/ine_data_{value_attr_name}", 
                                  dataset_format=self._datasets_format)
         
         return final_df
@@ -58,7 +53,7 @@ class INE(BaseAPIDataSource):
     
 
     """Retrieve JSON data from the API of INE and return a pandas dataframe with extracted relevant data"""
-    def get_source_data(self):
+    def get_api_data(self):
         
         # Inflation
         # https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_api_db
