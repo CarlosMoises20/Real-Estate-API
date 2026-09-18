@@ -1,7 +1,6 @@
 
 from backend.data.ingestion.source.api.base_api_data_source import BaseAPIDataSource
 import pandas as pd
-import json
 from backend.common.constants import PORTUGAL_COORDINATES_LIST
 from backend.common.utils import generate_dataset_from_df
 

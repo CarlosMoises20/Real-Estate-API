@@ -1,10 +1,5 @@
 import pandas as pd
-from pathlib import Path
-from sklearn.model_selection import train_test_split
-from sklearn.impute import SimpleImputer
-from sklearn.decomposition import PCA
 from backend.common.constants import COLUMN_RENAME_MAP, CATEGORICAL_COLUMNS
-from sklearn.preprocessing import StandardScaler
 from backend.data.ingestion.scraping.data_scraping import aggregate_external_data, aggregate_internal_data
 
 
@@ -81,51 +76,6 @@ def join_internal_and_external_data(df_internal, df_external):
 
 
 def prepare_final_data(df_final, datasets_format, final_filename="real_estate_internal_data_final"):
-    
-    # Split data into train and test dataset
-    X = df_final.drop("Price (euros)", axis=1)
-    y = df_final["Price (euros)"]
-    
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, shuffle=True)
-    
-    print("Number of training samples before removing 'outliers':", X_train.shape[0])
-    
-    # Remove price outliers using only training data; TODO analyze how this affects the model's results
-    mean_price = y_train.mean()
-    std_price = y_train.std()
-
-    lower_bound = mean_price - 3 * std_price
-    upper_bound = mean_price + 3 * std_price
-
-    outlier_mask = ((y_train < lower_bound) | (y_train > upper_bound))
-
-    X_train = X_train.loc[~outlier_mask]
-    y_train = y_train.loc[~outlier_mask]
-    
-    print("Number of training samples after removing 'outliers':", X_train.shape[0])
-    
-    # Handle missing values (Imputation or Removal)
-    imputer = SimpleImputer(strategy="median")
-    
-    X_train = pd.DataFrame(data=imputer.fit_transform(X_train), columns=X.columns, index=X_train.index)
-    
-    X_test = pd.DataFrame(data=imputer.transform(X_test), columns=X.columns, index=X_test.index)
-
-    # Normalize the data; TODO analyze later how this affects the model efficacy)
-    scaler = StandardScaler()
-    
-    X_train = pd.DataFrame(scaler.fit_transform(X_train), columns=X.columns, index=X_train.index)
-    
-    X_test = pd.DataFrame(scaler.transform(X_test), columns=X.columns, index=X_test.index)
-    
-    # Feature Reduction (PCA); TODO analyze later how this affects the model efficacy
-    pca = PCA()
-    
-    X_train = pd.DataFrame(data=pca.fit_transform(X_train), columns=X.columns, index=X_train.index)
-    
-    X_test = pd.DataFrame(data=pca.transform(X_test), columns=X.columns, index=X_test.index)
-    
-    # TODO: Bias mitigation (if necessary, check this after seeing the first results of the models in test)
         
     # Reorder the columns in the desired order for the final dataframe 
     # Standard column order for the final dataset.
@@ -177,23 +127,15 @@ def prepare_final_data(df_final, datasets_format, final_filename="real_estate_in
         
         elif datasets_format == "parquet":
             df_final.to_parquet(file_path, index=False)
-        
-        
-    # NOTE: uncomment this to print some examples of the training and testing datasets
-    """print(pd.DataFrame(X_train).head(20))
-    print(pd.DataFrame(X_test).head(20))
-    print(pd.DataFrame(y_train).head(20))
-    print(pd.DataFrame(y_test).head(20))"""
     
-    return X_train, X_test, y_train, y_test
+    return df_final
 
 
 
 def prepare_data(datasets_format="parquet"):
     
     df_internal = prepare_internal_data(datasets_format=datasets_format)
-        
-    # TODO create external dataset; prepare_external_data
+    
     df_external = prepare_external_data(datasets_format=datasets_format)
     
     # TODO concatenate internal dataset with external dataset through join; join_internal_and_external_data
@@ -204,4 +146,4 @@ def prepare_data(datasets_format="parquet"):
 
 if __name__ == "__main__":
     
-    X_train, X_test, y_train, y_test = prepare_data()
+    df_final = prepare_data()

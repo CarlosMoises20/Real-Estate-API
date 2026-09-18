@@ -52,17 +52,3 @@ PORTUGAL_COORDINATES_LIST = [
         }
     }
 ]
-
-
-
-FSQ_CATEGORIES_LIST = [
-    "Travel and Transportation",
-    "Arts and Entertainment",
-    "Business and Professional Services",
-    "Community and Government",
-    "Dining and Drinking",
-    "Health and Medicine",
-    "Retail",
-    "Sports and Recreation",
-    "Event"
-]

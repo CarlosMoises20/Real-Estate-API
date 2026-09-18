@@ -2,20 +2,21 @@
 import pandas as pd
 from backend.data.ingestion.source.duckdb.base_duckdb_data_source import BaseDuckDBDataSource      # Access FSQ OS Places data using DuckDB SQL queries; see https://duckdb.org/docs/current/sql/introduction for more details
 from backend.common.utils import *
-import os, duckdb                                                                                        # If you want to generate the dataset with data in raw format (JSON for visualization)
+import os                                                                                        # If you want to generate the dataset with data in raw format (JSON for visualization)
 
 """This class is used to retrieve relevant data from Foursquare OS Places"""
 class FSQOSPlaces(BaseDuckDBDataSource):
     
     """Constructor for the FSQOSPlaces class"""
     def __init__(self, access_token, country_code, db_file_path, datasets_format=None, datasets_path=None):
-        
-        super().__init__(datasets_format=datasets_format, 
+
+        super().__init__(datasets_format=datasets_format if datasets_format else "parquet", 
                          datasets_path=datasets_path,
-                         connection=duckdb.connect(db_file_path))
+                         connection=super()._create_connection_from_db_file(db_file_path) if db_file_path else None)
         
         self.__access_token = access_token
         self.__country_code = country_code
+        self.__dataset_full_path = f"{self._datasets_path}/fsq_{self.__country_code.lower()}_places.{self._datasets_format}"
         
         self._initial_setup()                         # Setup the environment before fetching data from Foursquare OS Places
     
@@ -49,34 +50,43 @@ class FSQOSPlaces(BaseDuckDBDataSource):
             print("Failed to connect to FSQ OS Places API. Please check your access token from your .env file and try again.")  
             raise
         
+    """
+    This method is used to update the dataset with data from Foursquare OS Places
+    We can call this method in separate whenever we know that the API data has been updated, hence
+    we need to update the local dataset to apply the latest changes
+    
+    """    
+    def update_data(self):
         
-    """Retrieve JSON data from Foursquare OS Places and return dataframe with relevant data"""
+        query = f"""
+                    COPY (SELECT p.name, p.latitude, p.longitude, p.address,
+                            p.country, p.date_created, p.fsq_category_labels
+                        FROM fsq.datasets.places_os AS p
+                        WHERE p.country = '{self.__country_code}') 
+                        TO '{self.__dataset_full_path}'
+                """
+
+        # even if the user does not manually define datasets_format, the dataset will always be created (by default, in parquet format),
+        # to increase the solution's efficiency on data processing        
+        formatter = "WITH CSV DELIMITER ','" if self._datasets_format == "csv" else "(FORMAT PARQUET)"
+        
+        self._connection.sql(f"{query} {formatter};")
+        
+        
+    """
+    Retrieve JSON data from Foursquare OS Places and return dataframe with relevant data
+    Instead of always calling the API to retrieve data, we can call this method to retrieve the local data
+    for faster processing ("cache" method), calling the API only when there is no local dataset
+    
+    """
     def get_source_data(self):
         
-        datasets_format = self._datasets_format if self._datasets_format else "parquet"
-        
-        dataset_full_path = f"{self._datasets_path}/fsq_{self.__country_code.lower()}_places.{datasets_format}"
-        
-        # verify local .parquet dataset with places from FSQ OS Places
-        if not os.path.exists(dataset_full_path):
-            
-            query = f"""
-                        COPY (SELECT p.name, p.latitude, p.longitude, p.address,
-                                p.country, p.date_created, p.fsq_category_labels
-                            FROM fsq.datasets.places_os AS p
-                            WHERE p.country = '{self.__country_code}') 
-                            TO '{dataset_full_path}'
-                    """
-        
-            # even if the user does not define self._datasets_format, the dataset will always be created (by default, in parquet format),
-            # to increase the solution's efficiency on data processing        
-            formatter = "WITH CSV DELIMITER ','" if datasets_format == "csv" else "(FORMAT PARQUET)"
-            
-            self._connection.sql(f"{query} {formatter};")
-        
-        # TODO if possible, implement logic to update local dataset when remote dataset is updated
+        # verify local dataset with places from FSQ OS Places
+        if not os.path.exists(self.__dataset_full_path):        
+            self.update_data()
         
         # Read and return the dataset
-        return pd.read_parquet(dataset_full_path) if datasets_format == "parquet" else pd.read_csv(dataset_full_path)
+        return pd.read_parquet(self.__dataset_full_path) if self._datasets_format == "parquet" else pd.read_csv(self.__dataset_full_path)
+    
         
     
