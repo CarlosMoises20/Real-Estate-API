@@ -67,12 +67,46 @@ Returns:
     
 """
 def prepare_external_data(datasets_format):
-    df_list = aggregate_external_data(datasets_format=datasets_format)
+    
+    df_dict = aggregate_external_data(datasets_format=datasets_format)
+    
+    for df_name, df in df_dict.items():
+        
+        df_dict[df_name] = df.drop_duplicates()
+    
+    return df_dict
 
 
 # Join internal and external datasets, using the appropriate keys in the join method
 def join_internal_and_external_data(df_internal, df_external):
+    
+    # TODO join each attribute from external datasets with 'df_internal'
+    
+        # TODO inflation (INE)
+        
+        # TODO unemployment rate (INE)
+        
+        # TODO housing sold (INE)
+        
+        # TODO housing price per m2
+        
+        # TODO housing credit rate
+        
+        # TODO gross disposable income
+        
+        # TODO average salary
+        
+        # TODO GDP (Eurostat)
+        
+        # TODO FSQ (geospatial data)
+        
+        # TODO Geoapify (geospatial data)
+        
+        # TODO RASI (criminal data)
+    
+    
     pass
+    
 
 
 def prepare_final_data(df_final, datasets_format, final_filename="real_estate_internal_data_final"):

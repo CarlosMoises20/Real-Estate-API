@@ -87,7 +87,18 @@ def aggregate_external_data(datasets_format, external_datasets_path="./backend/d
     )
     
     df_fsq = fsq_os_places.get_source_data()
-
+    
+    
+    # RASI dataset (with data related to criminal records from 2024 and 2025)
+    df_rasi = pd.read_csv(f"{external_datasets_path}/rasi_data.csv", sep=",", encoding="utf-8")
+    
+    return {
+        "INE": df_ine,
+        "Eurostat": df_eurostat,
+        "Geoapify": df_geoapify,
+        "FSQ": df_fsq,
+        "RASI": df_rasi
+    }
     
 
     
@@ -105,10 +116,8 @@ def aggregate_internal_data(datasets_format, internal_datasets_path="backend/dat
     df_kaggle = pd.read_csv(kaggle_dataset_path, sep=",", encoding="utf-8")
     
     
-    # TODO Idealista and Imovirtual
-    
-    # TODO return list of dataframes, one for each dataset, instead of just returning the Kaggle
-    # dataframe, and then implement the logic to join them in the prepare_internal_data function
+    # TODO aggregate data from Idealista
+
     return [df_kaggle]
     
     

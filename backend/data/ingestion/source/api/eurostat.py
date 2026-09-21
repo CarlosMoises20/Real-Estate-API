@@ -2,7 +2,7 @@
 from backend.data.ingestion.source.api.base_api_data_source import BaseAPIDataSource
 import pandas as pd
 from io import StringIO
-from backend.common.utils import *
+from backend.common.utils import generate_dataset_from_df, transform_data_to_range
 
 
 """This class is used to retrieve relevant data from the API of Eurostat"""
@@ -26,7 +26,11 @@ class Eurostat(BaseAPIDataSource):
         )
         
         # Remove irrelevant attributes
-        df = df.drop(columns=["STRUCTURE", "STRUCTURE_ID", "freq", "TIME_PERIOD"])
+        df = df.drop(columns=["STRUCTURE", "STRUCTURE_ID", "freq", 
+                              "TIME_PERIOD", "OBS_FLAG"])
+        
+        # Rename relevant attributes
+        df = df.rename(columns={"OBS_VALUE": "gdp"})
         
         # Save final dataset (NOTE: optional)            
         generate_dataset_from_df(df=df, 
