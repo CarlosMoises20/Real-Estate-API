@@ -1,85 +1,85 @@
 date_start,date_end,geocod,geodsg,dim_3,dim_3_t,dim_4,dim_4_t,dim_5,dim_5_t,housing_sold_num_transactions
-2026-01-01,2026-03-31,PT,Portugal,H11,Novos,T,Total,S1400000,Famílias,6497
-2026-01-01,2026-03-31,PT,Portugal,H12,Existentes,T,Total,S1400000,Famílias,26331
-2026-01-01,2026-03-31,11,Norte,H1,Total,T,Total,S1400000,Famílias,9952
-2026-01-01,2026-03-31,15,Algarve,H1,Total,T,Total,S1400000,Famílias,2287
-2026-01-01,2026-03-31,19,Centro,H1,Total,T,Total,S1400000,Famílias,5301
-2026-01-01,2026-03-31,1A,Grande Lisboa,H1,Total,T,Total,S1400000,Famílias,5985
-2026-01-01,2026-03-31,1B,Península de Setúbal,H1,Total,T,Total,S1400000,Famílias,3349
-2026-01-01,2026-03-31,1C,Alentejo,H1,Total,T,Total,S1400000,Famílias,1770
-2026-01-01,2026-03-31,1D,Oeste e Vale do Tejo,H1,Total,T,Total,S1400000,Famílias,3099
-2026-01-01,2026-03-31,20,Região Autónoma dos Açores,H1,Total,T,Total,S1400000,Famílias,531
-2026-01-01,2026-03-31,30,Região Autónoma da Madeira,H1,Total,T,Total,S1400000,Famílias,554
-2026-01-01,2026-03-31,1,Continente,H1,Total,T,Total,S1400000,Famílias,31743
-2026-01-01,2026-03-31,2,Região Autónoma dos Açores,H1,Total,T,Total,S1400000,Famílias,531
-2026-01-01,2026-03-31,3,Região Autónoma da Madeira,H1,Total,T,Total,S1400000,Famílias,554
-2026-01-01,2026-03-31,PT,Portugal,H1,Total,T,Total,S1400000,Famílias,32828
-2026-01-01,2026-03-31,PT,Portugal,H11,Novos,T,Total,S3000000,Restantes setores institucionais,892
-2026-01-01,2026-03-31,PT,Portugal,H12,Existentes,T,Total,S3000000,Restantes setores institucionais,4025
-2026-01-01,2026-03-31,11,Norte,H1,Total,T,Total,S3000000,Restantes setores institucionais,1426
-2026-01-01,2026-03-31,15,Algarve,H1,Total,T,Total,S3000000,Restantes setores institucionais,416
-2026-01-01,2026-03-31,19,Centro,H1,Total,T,Total,S3000000,Restantes setores institucionais,673
-2026-01-01,2026-03-31,1A,Grande Lisboa,H1,Total,T,Total,S3000000,Restantes setores institucionais,1208
-2026-01-01,2026-03-31,1B,Península de Setúbal,H1,Total,T,Total,S3000000,Restantes setores institucionais,420
-2026-01-01,2026-03-31,1C,Alentejo,H1,Total,T,Total,S3000000,Restantes setores institucionais,205
-2026-01-01,2026-03-31,1D,Oeste e Vale do Tejo,H1,Total,T,Total,S3000000,Restantes setores institucionais,414
-2026-01-01,2026-03-31,20,Região Autónoma dos Açores,H1,Total,T,Total,S3000000,Restantes setores institucionais,44
-2026-01-01,2026-03-31,30,Região Autónoma da Madeira,H1,Total,T,Total,S3000000,Restantes setores institucionais,111
-2026-01-01,2026-03-31,1,Continente,H1,Total,T,Total,S3000000,Restantes setores institucionais,4762
-2026-01-01,2026-03-31,2,Região Autónoma dos Açores,H1,Total,T,Total,S3000000,Restantes setores institucionais,44
-2026-01-01,2026-03-31,3,Região Autónoma da Madeira,H1,Total,T,Total,S3000000,Restantes setores institucionais,111
-2026-01-01,2026-03-31,PT,Portugal,H1,Total,T,Total,S3000000,Restantes setores institucionais,4917
-2026-01-01,2026-03-31,11,Norte,H1,Total,1,Território nacional,T,Total,10993
-2026-01-01,2026-03-31,15,Algarve,H1,Total,1,Território nacional,T,Total,2192
-2026-01-01,2026-03-31,19,Centro,H1,Total,1,Território nacional,T,Total,5724
-2026-01-01,2026-03-31,1A,Grande Lisboa,H1,Total,1,Território nacional,T,Total,6971
-2026-01-01,2026-03-31,1B,Península de Setúbal,H1,Total,1,Território nacional,T,Total,3656
-2026-01-01,2026-03-31,1C,Alentejo,H1,Total,1,Território nacional,T,Total,1913
-2026-01-01,2026-03-31,1D,Oeste e Vale do Tejo,H1,Total,1,Território nacional,T,Total,3378
-2026-01-01,2026-03-31,20,Região Autónoma dos Açores,H1,Total,1,Território nacional,T,Total,533
-2026-01-01,2026-03-31,30,Região Autónoma da Madeira,H1,Total,1,Território nacional,T,Total,615
-2026-01-01,2026-03-31,1,Continente,H1,Total,1,Território nacional,T,Total,34827
-2026-01-01,2026-03-31,2,Região Autónoma dos Açores,H1,Total,1,Território nacional,T,Total,533
-2026-01-01,2026-03-31,3,Região Autónoma da Madeira,H1,Total,1,Território nacional,T,Total,615
-2026-01-01,2026-03-31,PT,Portugal,H1,Total,1,Território nacional,T,Total,35975
-2026-01-01,2026-03-31,PT,Portugal,H1,Total,2,União Europeia,T,Total,923
-2026-01-01,2026-03-31,PT,Portugal,H1,Total,3,Restantes países,T,Total,847
-2026-01-01,2026-03-31,11,Norte,H11,Novos,T,Total,T,Total,2819
-2026-01-01,2026-03-31,15,Algarve,H11,Novos,T,Total,T,Total,486
-2026-01-01,2026-03-31,19,Centro,H11,Novos,T,Total,T,Total,1150
-2026-01-01,2026-03-31,1A,Grande Lisboa,H11,Novos,T,Total,T,Total,1116
-2026-01-01,2026-03-31,1B,Península de Setúbal,H11,Novos,T,Total,T,Total,646
-2026-01-01,2026-03-31,1C,Alentejo,H11,Novos,T,Total,T,Total,259
-2026-01-01,2026-03-31,1D,Oeste e Vale do Tejo,H11,Novos,T,Total,T,Total,698
-2026-01-01,2026-03-31,20,Região Autónoma dos Açores,H11,Novos,T,Total,T,Total,93
-2026-01-01,2026-03-31,30,Região Autónoma da Madeira,H11,Novos,T,Total,T,Total,122
-2026-01-01,2026-03-31,1,Continente,H11,Novos,T,Total,T,Total,7174
-2026-01-01,2026-03-31,2,Região Autónoma dos Açores,H11,Novos,T,Total,T,Total,93
-2026-01-01,2026-03-31,3,Região Autónoma da Madeira,H11,Novos,T,Total,T,Total,122
-2026-01-01,2026-03-31,PT,Portugal,H11,Novos,T,Total,T,Total,7389
-2026-01-01,2026-03-31,11,Norte,H12,Existentes,T,Total,T,Total,8559
-2026-01-01,2026-03-31,15,Algarve,H12,Existentes,T,Total,T,Total,2217
-2026-01-01,2026-03-31,19,Centro,H12,Existentes,T,Total,T,Total,4824
-2026-01-01,2026-03-31,1A,Grande Lisboa,H12,Existentes,T,Total,T,Total,6077
-2026-01-01,2026-03-31,1B,Península de Setúbal,H12,Existentes,T,Total,T,Total,3123
-2026-01-01,2026-03-31,1C,Alentejo,H12,Existentes,T,Total,T,Total,1716
-2026-01-01,2026-03-31,1D,Oeste e Vale do Tejo,H12,Existentes,T,Total,T,Total,2815
-2026-01-01,2026-03-31,20,Região Autónoma dos Açores,H12,Existentes,T,Total,T,Total,482
-2026-01-01,2026-03-31,30,Região Autónoma da Madeira,H12,Existentes,T,Total,T,Total,543
-2026-01-01,2026-03-31,1,Continente,H12,Existentes,T,Total,T,Total,29331
-2026-01-01,2026-03-31,2,Região Autónoma dos Açores,H12,Existentes,T,Total,T,Total,482
-2026-01-01,2026-03-31,3,Região Autónoma da Madeira,H12,Existentes,T,Total,T,Total,543
-2026-01-01,2026-03-31,PT,Portugal,H12,Existentes,T,Total,T,Total,30356
-2026-01-01,2026-03-31,11,Norte,H1,Total,T,Total,T,Total,11378
-2026-01-01,2026-03-31,15,Algarve,H1,Total,T,Total,T,Total,2703
-2026-01-01,2026-03-31,19,Centro,H1,Total,T,Total,T,Total,5974
-2026-01-01,2026-03-31,1A,Grande Lisboa,H1,Total,T,Total,T,Total,7193
-2026-01-01,2026-03-31,1B,Península de Setúbal,H1,Total,T,Total,T,Total,3769
-2026-01-01,2026-03-31,1C,Alentejo,H1,Total,T,Total,T,Total,1975
-2026-01-01,2026-03-31,1D,Oeste e Vale do Tejo,H1,Total,T,Total,T,Total,3513
-2026-01-01,2026-03-31,20,Região Autónoma dos Açores,H1,Total,T,Total,T,Total,575
-2026-01-01,2026-03-31,30,Região Autónoma da Madeira,H1,Total,T,Total,T,Total,665
-2026-01-01,2026-03-31,1,Continente,H1,Total,T,Total,T,Total,36505
-2026-01-01,2026-03-31,2,Região Autónoma dos Açores,H1,Total,T,Total,T,Total,575
-2026-01-01,2026-03-31,3,Região Autónoma da Madeira,H1,Total,T,Total,T,Total,665
-2026-01-01,2026-03-31,PT,Portugal,H1,Total,T,Total,T,Total,37745
+2026-04-01,2026-06-30,1,Continente,H1,Total,T,Total,S1400000,Famílias,33841
+2026-04-01,2026-06-30,11,Norte,H1,Total,T,Total,S1400000,Famílias,10614
+2026-04-01,2026-06-30,15,Algarve,H1,Total,T,Total,S1400000,Famílias,2413
+2026-04-01,2026-06-30,19,Centro,H1,Total,T,Total,S1400000,Famílias,5842
+2026-04-01,2026-06-30,1A,Grande Lisboa,H1,Total,T,Total,S1400000,Famílias,6418
+2026-04-01,2026-06-30,1B,Península de Setúbal,H1,Total,T,Total,S1400000,Famílias,3568
+2026-04-01,2026-06-30,1C,Alentejo,H1,Total,T,Total,S1400000,Famílias,1834
+2026-04-01,2026-06-30,1D,Oeste e Vale do Tejo,H1,Total,T,Total,S1400000,Famílias,3152
+2026-04-01,2026-06-30,2,Região Autónoma dos Açores,H1,Total,T,Total,S1400000,Famílias,551
+2026-04-01,2026-06-30,20,Região Autónoma dos Açores,H1,Total,T,Total,S1400000,Famílias,551
+2026-04-01,2026-06-30,3,Região Autónoma da Madeira,H1,Total,T,Total,S1400000,Famílias,543
+2026-04-01,2026-06-30,30,Região Autónoma da Madeira,H1,Total,T,Total,S1400000,Famílias,543
+2026-04-01,2026-06-30,PT,Portugal,H1,Total,T,Total,S1400000,Famílias,34935
+2026-04-01,2026-06-30,PT,Portugal,H11,Novos,T,Total,S1400000,Famílias,6833
+2026-04-01,2026-06-30,PT,Portugal,H12,Existentes,T,Total,S1400000,Famílias,28102
+2026-04-01,2026-06-30,1,Continente,H1,Total,T,Total,S3000000,Restantes setores institucionais,5008
+2026-04-01,2026-06-30,11,Norte,H1,Total,T,Total,S3000000,Restantes setores institucionais,1516
+2026-04-01,2026-06-30,15,Algarve,H1,Total,T,Total,S3000000,Restantes setores institucionais,411
+2026-04-01,2026-06-30,19,Centro,H1,Total,T,Total,S3000000,Restantes setores institucionais,693
+2026-04-01,2026-06-30,1A,Grande Lisboa,H1,Total,T,Total,S3000000,Restantes setores institucionais,1163
+2026-04-01,2026-06-30,1B,Península de Setúbal,H1,Total,T,Total,S3000000,Restantes setores institucionais,441
+2026-04-01,2026-06-30,1C,Alentejo,H1,Total,T,Total,S3000000,Restantes setores institucionais,310
+2026-04-01,2026-06-30,1D,Oeste e Vale do Tejo,H1,Total,T,Total,S3000000,Restantes setores institucionais,474
+2026-04-01,2026-06-30,2,Região Autónoma dos Açores,H1,Total,T,Total,S3000000,Restantes setores institucionais,70
+2026-04-01,2026-06-30,20,Região Autónoma dos Açores,H1,Total,T,Total,S3000000,Restantes setores institucionais,70
+2026-04-01,2026-06-30,3,Região Autónoma da Madeira,H1,Total,T,Total,S3000000,Restantes setores institucionais,129
+2026-04-01,2026-06-30,30,Região Autónoma da Madeira,H1,Total,T,Total,S3000000,Restantes setores institucionais,129
+2026-04-01,2026-06-30,PT,Portugal,H1,Total,T,Total,S3000000,Restantes setores institucionais,5207
+2026-04-01,2026-06-30,PT,Portugal,H11,Novos,T,Total,S3000000,Restantes setores institucionais,1002
+2026-04-01,2026-06-30,PT,Portugal,H12,Existentes,T,Total,S3000000,Restantes setores institucionais,4205
+2026-04-01,2026-06-30,1,Continente,H1,Total,1,Território nacional,T,Total,37048
+2026-04-01,2026-06-30,11,Norte,H1,Total,1,Território nacional,T,Total,11628
+2026-04-01,2026-06-30,15,Algarve,H1,Total,1,Território nacional,T,Total,2276
+2026-04-01,2026-06-30,19,Centro,H1,Total,1,Território nacional,T,Total,6291
+2026-04-01,2026-06-30,1A,Grande Lisboa,H1,Total,1,Território nacional,T,Total,7356
+2026-04-01,2026-06-30,1B,Península de Setúbal,H1,Total,1,Território nacional,T,Total,3921
+2026-04-01,2026-06-30,1C,Alentejo,H1,Total,1,Território nacional,T,Total,2079
+2026-04-01,2026-06-30,1D,Oeste e Vale do Tejo,H1,Total,1,Território nacional,T,Total,3497
+2026-04-01,2026-06-30,2,Região Autónoma dos Açores,H1,Total,1,Território nacional,T,Total,578
+2026-04-01,2026-06-30,20,Região Autónoma dos Açores,H1,Total,1,Território nacional,T,Total,578
+2026-04-01,2026-06-30,3,Região Autónoma da Madeira,H1,Total,1,Território nacional,T,Total,626
+2026-04-01,2026-06-30,30,Região Autónoma da Madeira,H1,Total,1,Território nacional,T,Total,626
+2026-04-01,2026-06-30,PT,Portugal,H1,Total,1,Território nacional,T,Total,38252
+2026-04-01,2026-06-30,PT,Portugal,H1,Total,2,União Europeia,T,Total,946
+2026-04-01,2026-06-30,PT,Portugal,H1,Total,3,Restantes países,T,Total,944
+2026-04-01,2026-06-30,1,Continente,H1,Total,T,Total,T,Total,38849
+2026-04-01,2026-06-30,11,Norte,H1,Total,T,Total,T,Total,12130
+2026-04-01,2026-06-30,15,Algarve,H1,Total,T,Total,T,Total,2824
+2026-04-01,2026-06-30,19,Centro,H1,Total,T,Total,T,Total,6535
+2026-04-01,2026-06-30,1A,Grande Lisboa,H1,Total,T,Total,T,Total,7581
+2026-04-01,2026-06-30,1B,Península de Setúbal,H1,Total,T,Total,T,Total,4009
+2026-04-01,2026-06-30,1C,Alentejo,H1,Total,T,Total,T,Total,2144
+2026-04-01,2026-06-30,1D,Oeste e Vale do Tejo,H1,Total,T,Total,T,Total,3626
+2026-04-01,2026-06-30,2,Região Autónoma dos Açores,H1,Total,T,Total,T,Total,621
+2026-04-01,2026-06-30,20,Região Autónoma dos Açores,H1,Total,T,Total,T,Total,621
+2026-04-01,2026-06-30,3,Região Autónoma da Madeira,H1,Total,T,Total,T,Total,672
+2026-04-01,2026-06-30,30,Região Autónoma da Madeira,H1,Total,T,Total,T,Total,672
+2026-04-01,2026-06-30,PT,Portugal,H1,Total,T,Total,T,Total,40142
+2026-04-01,2026-06-30,1,Continente,H11,Novos,T,Total,T,Total,7612
+2026-04-01,2026-06-30,11,Norte,H11,Novos,T,Total,T,Total,3137
+2026-04-01,2026-06-30,15,Algarve,H11,Novos,T,Total,T,Total,509
+2026-04-01,2026-06-30,19,Centro,H11,Novos,T,Total,T,Total,1259
+2026-04-01,2026-06-30,1A,Grande Lisboa,H11,Novos,T,Total,T,Total,1194
+2026-04-01,2026-06-30,1B,Península de Setúbal,H11,Novos,T,Total,T,Total,577
+2026-04-01,2026-06-30,1C,Alentejo,H11,Novos,T,Total,T,Total,263
+2026-04-01,2026-06-30,1D,Oeste e Vale do Tejo,H11,Novos,T,Total,T,Total,673
+2026-04-01,2026-06-30,2,Região Autónoma dos Açores,H11,Novos,T,Total,T,Total,117
+2026-04-01,2026-06-30,20,Região Autónoma dos Açores,H11,Novos,T,Total,T,Total,117
+2026-04-01,2026-06-30,3,Região Autónoma da Madeira,H11,Novos,T,Total,T,Total,106
+2026-04-01,2026-06-30,30,Região Autónoma da Madeira,H11,Novos,T,Total,T,Total,106
+2026-04-01,2026-06-30,PT,Portugal,H11,Novos,T,Total,T,Total,7835
+2026-04-01,2026-06-30,1,Continente,H12,Existentes,T,Total,T,Total,31237
+2026-04-01,2026-06-30,11,Norte,H12,Existentes,T,Total,T,Total,8993
+2026-04-01,2026-06-30,15,Algarve,H12,Existentes,T,Total,T,Total,2315
+2026-04-01,2026-06-30,19,Centro,H12,Existentes,T,Total,T,Total,5276
+2026-04-01,2026-06-30,1A,Grande Lisboa,H12,Existentes,T,Total,T,Total,6387
+2026-04-01,2026-06-30,1B,Península de Setúbal,H12,Existentes,T,Total,T,Total,3432
+2026-04-01,2026-06-30,1C,Alentejo,H12,Existentes,T,Total,T,Total,1881
+2026-04-01,2026-06-30,1D,Oeste e Vale do Tejo,H12,Existentes,T,Total,T,Total,2953
+2026-04-01,2026-06-30,2,Região Autónoma dos Açores,H12,Existentes,T,Total,T,Total,504
+2026-04-01,2026-06-30,20,Região Autónoma dos Açores,H12,Existentes,T,Total,T,Total,504
+2026-04-01,2026-06-30,3,Região Autónoma da Madeira,H12,Existentes,T,Total,T,Total,566
+2026-04-01,2026-06-30,30,Região Autónoma da Madeira,H12,Existentes,T,Total,T,Total,566
+2026-04-01,2026-06-30,PT,Portugal,H12,Existentes,T,Total,T,Total,32307

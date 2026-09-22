@@ -23,6 +23,14 @@ def generate_dataset_from_df(df, file_path_base, dataset_format):
 
 
 
+def add_temporal_feature(df_original, df_temporal, date_start_col, date_end_col, target_date_col, 
+                         source_col, target_col):
+    
+    pass
+    
+
+
+
 # dt_string = "Janeiro de 2022" (example)
 # returns two dates: the first day of the month and the last day of the month
 # for example; '2022-01-01' and '2022-01-31'

@@ -78,31 +78,46 @@ def prepare_external_data(datasets_format):
 
 
 # Join internal and external datasets, using the appropriate keys in the join method
-def join_internal_and_external_data(df_internal, df_external):
+def join_internal_and_external_data(df_internal, df_external_list_dict):
     
     # TODO join each attribute from external datasets with 'df_internal'
+    # TODO fix this to use temporal attributes
     
-        # TODO inflation (INE)
-        
-        # TODO unemployment rate (INE)
-        
-        # TODO housing sold (INE)
-        
-        # TODO housing price per m2
-        
-        # TODO housing credit rate
-        
-        # TODO gross disposable income
-        
-        # TODO average salary
-        
-        # TODO GDP (Eurostat)
-        
-        # TODO FSQ (geospatial data)
-        
-        # TODO Geoapify (geospatial data)
-        
-        # TODO RASI (criminal data)
+    # TODO inflation (INE)
+    
+    df_final = df_internal
+    
+    df_final["Inflation"] = df_external_list_dict["INE"]["Inflation Monthly Variation"]
+    
+    # TODO unemployment rate (INE)
+    
+    df_final["Unemployment Rate (%)"] = df_external_list_dict["INE"]["Unemployment Rate (%)"]
+    
+    # TODO housing sold (INE); join using "date_start" and "date_end"
+    
+    df_final["Sold Houses"] = df_external_list_dict["INE"]["Number of Sold Houses & Transactions"]
+    
+    # TODO housing price per m2
+    
+    df_final["Housing Price per m2"] = df_external_list_dict["INE"]["Housing Price per m2"]
+    
+    # TODO population
+    
+    df_final["Population"] = df_external_list_dict["INE"]["Population"]
+    
+    # TODO housing credit rate
+    
+    # TODO gross disposable income
+    
+    # TODO average salary
+    
+    # TODO GDP (Eurostat)
+    
+    # TODO FSQ (geospatial data)
+    
+    # TODO Geoapify (geospatial data)
+    
+    # TODO RASI (criminal data)
     
     
     pass
@@ -170,10 +185,10 @@ def prepare_data(datasets_format="parquet"):
     
     df_internal = prepare_internal_data(datasets_format=datasets_format)
     
-    df_external = prepare_external_data(datasets_format=datasets_format)
+    df_external_list_dict = prepare_external_data(datasets_format=datasets_format)
     
     # TODO concatenate internal dataset with external dataset through join; join_internal_and_external_data
-    df_final = join_internal_and_external_data(df_internal, df_external)
+    df_final = join_internal_and_external_data(df_internal, df_external_list_dict)
     
     return prepare_final_data(df_final, datasets_format=datasets_format)
 

@@ -52,4 +52,4 @@ class Geoapify(BaseAPIDataSource):
                                 file_path_base=f"{self._datasets_path}/geoapify_data_facilities",
                                 dataset_format=self._datasets_format)
         
-        return df_list
+        return df_final

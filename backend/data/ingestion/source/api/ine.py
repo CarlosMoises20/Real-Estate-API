@@ -2,6 +2,7 @@
 from backend.data.ingestion.source.api.base_api_data_source import BaseAPIDataSource
 from backend.common.utils import *
 import pandas as pd
+import json
 
 """This class is used to retrieve relevant data from the API of INE (Instituto Nacional de Estatística)"""
 class INE(BaseAPIDataSource):
@@ -18,6 +19,9 @@ class INE(BaseAPIDataSource):
         # Here we don't convert this to dataframe yet, because data has a nested structure and this would add extra complexity in the dataframe pre-processing
         # Instead, we will extract relevant data from the JSON and then convert it to dataframe
         data = super().get_source_data().json()
+        
+        with open(f"{self._datasets_path}/ine_data_{value_attr_name}.json", "w") as f:
+            json.dump(data, f, indent=2)
     
         period = next(iter(data[0]["Dados"]))
         
@@ -42,11 +46,11 @@ class INE(BaseAPIDataSource):
             
         final_df = pd.DataFrame(final_data)
         
-        # NOTE optional
+        # NOTE here it is necessary to generate because the API only stores data from the most recent months
         # generate the dataset that will be later used to train the model after being joined with other datasets
         generate_dataset_from_df(df=final_df, 
-                                 file_path_base=f"{self._datasets_path}/ine_data_{value_attr_name}", 
-                                 dataset_format=self._datasets_format)
+                                 file_path_base=f"{self._datasets_path}/ine_data_{value_attr_name}_from_{last_period_start}_to_{last_period_end}", 
+                                 dataset_format=self._datasets_format if self._datasets_format else "parquet")
         
         return final_df
         
@@ -121,16 +125,15 @@ class INE(BaseAPIDataSource):
                                         cols=["geocod", "geodsg", "dim_3", "dim_3_t", 
                                                 "dim_4", "dim_4_t", "dim_5", "dim_5_t"])
         
-        
-        df_list = [df_inflation_abs_value, 
-                   df_inflation_homologous_variable, 
-                   df_inflation_monthly_variable, 
-                   df_inflation_yearly_variable, 
-                   df_housing_credit_rate,
-                   df_avg_salary_euros, 
-                   df_gross_disposable_income_euros, 
-                   df_unemployment_rate_percentage, 
-                   df_housing_price_per_m2_euros, 
-                   df_housing_sold_num_transactions]
-        
-        return pd.concat(df_list, ignore_index=True)
+        return {
+            "Inflation": df_inflation_abs_value,
+            "Inflation Homologous Variation": df_inflation_homologous_variable,
+            "Inflation Monthly Variation": df_inflation_monthly_variable,
+            "Inflation Yearly Variation": df_inflation_yearly_variable,
+            "Housing Credit Rate": df_housing_credit_rate,
+            "Average Salary (€)": df_avg_salary_euros,
+            "Gross Disposable Income (€)": df_gross_disposable_income_euros,
+            "Unemployment Rate (%)": df_unemployment_rate_percentage,
+            "Housing Price per Square Meter (€)": df_housing_price_per_m2_euros,
+            "Number of Sold Houses & Transactions": df_housing_sold_num_transactions
+        }

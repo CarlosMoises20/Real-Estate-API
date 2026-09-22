@@ -27,7 +27,7 @@ def aggregate_external_data(datasets_format, external_datasets_path="./backend/d
     # API Reference: https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-detailed-guidelines/api-statistics
     # SMDX-2.0 CSV
     # get GDP per capita data from Eurostat API (from 2010 to current year)
-    eurostat = Eurostat(
+    """eurostat = Eurostat(
                     url="https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/nama_10_gdp/1.0",
                     params={
                         "format": "csvdata",
@@ -42,9 +42,9 @@ def aggregate_external_data(datasets_format, external_datasets_path="./backend/d
                         },
                     datasets_format=datasets_format,
                     datasets_path=external_datasets_path    
-                    )
+                )
     
-    df_eurostat = eurostat.get_api_data()
+    df_eurostat = eurostat.get_api_data()"""
     
     # NOTE you need to create a .env file in the compose folder with the variable GEOAPIFY_API_KEY={your_api_key_here}
     
@@ -78,7 +78,7 @@ def aggregate_external_data(datasets_format, external_datasets_path="./backend/d
     
     
     # Foursquare OS Places API Reference: https://docs.foursquare.com/data-products/docs/fsq-places-open-source
-    fsq_os_places = FSQOSPlaces(
+    """fsq_os_places = FSQOSPlaces(
         datasets_format=datasets_format,
         access_token=os.getenv("FSQ_OS_PLACES_ACCESS_TOKEN"),
         db_file_path="./backend/data/duckdb_source/fsq/fsq_os_places.db",
@@ -86,7 +86,7 @@ def aggregate_external_data(datasets_format, external_datasets_path="./backend/d
         datasets_path=external_datasets_path
     )
     
-    df_fsq = fsq_os_places.get_source_data()
+    df_fsq = fsq_os_places.get_source_data()"""
     
     
     # RASI dataset (with data related to criminal records from 2024 and 2025)
@@ -94,9 +94,9 @@ def aggregate_external_data(datasets_format, external_datasets_path="./backend/d
     
     return {
         "INE": df_ine,
-        "Eurostat": df_eurostat,
+        #"Eurostat": df_eurostat,
         "Geoapify": df_geoapify,
-        "FSQ": df_fsq,
+        #"FSQ": df_fsq,
         "RASI": df_rasi
     }
     
@@ -104,7 +104,7 @@ def aggregate_external_data(datasets_format, external_datasets_path="./backend/d
     
     
     
-def aggregate_internal_data(datasets_format, internal_datasets_path="backend/datasets/internal/"):
+def aggregate_internal_data(datasets_format, internal_datasets_path="./backend/datasets/internal/"):
     
     # Download CSV Kaggle dataset from the link
     # https://www.kaggle.com/datasets/luvathoms/portugal-real-estate-2024
@@ -124,7 +124,7 @@ def aggregate_internal_data(datasets_format, internal_datasets_path="backend/dat
 # TODO remove this when no longer needed    
 if __name__ == "__main__":
     
-    data_format = "parquet"
+    data_format = "csv"
     
     df_internal_list = aggregate_internal_data(datasets_format=data_format)
     
