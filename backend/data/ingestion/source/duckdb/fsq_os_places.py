@@ -8,9 +8,9 @@ import os                                                                       
 class FSQOSPlaces(BaseDuckDBDataSource):
     
     """Constructor for the FSQOSPlaces class"""
-    def __init__(self, access_token, country_code, db_file_path, datasets_format=None, datasets_path=None):
+    def __init__(self, access_token, country_code, db_file_path, datasets_format, datasets_path=None):
 
-        super().__init__(datasets_format=datasets_format if datasets_format else "parquet", 
+        super().__init__(datasets_format=datasets_format, 
                          datasets_path=datasets_path,
                          connection=super()._create_connection_from_db_file(db_file_path) if db_file_path else None)
         

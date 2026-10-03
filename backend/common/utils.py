@@ -1,5 +1,6 @@
 
 import re, calendar
+import pandas as pd
 
 
 """
@@ -10,24 +11,34 @@ It saves in 'CSV' or 'parquet' formats, depending on the 'dataset_format' parame
 """
 def generate_dataset_from_df(df, file_path_base, dataset_format):
     
-    if dataset_format:
+    if not dataset_format:
+        raise ValueError("The 'dataset_format' parameter must be provided and cannot be None.")
         
-        file_path = f"{file_path_base}.{dataset_format}"
-        
-        if dataset_format == "csv":
-            df.to_csv(file_path, index=False)
-        
-        elif dataset_format == "parquet":
-            df.to_parquet(file_path, index=False)
-        
-
-
-
-def add_temporal_feature(df_original, df_temporal, date_start_col, date_end_col, target_date_col, 
-                         source_col, target_col):
+    file_path = f"{file_path_base}.{dataset_format}"
     
-    pass
+    if dataset_format == "csv":
+        df.to_csv(file_path, index=False)
     
+    elif dataset_format == "parquet":
+        df.to_parquet(file_path, index=False)
+
+
+"""
+This function returns a dataframe from the local dataset specified by 'file_path_base' and in the format specified by 'dataset_format'
+
+"""
+def generate_df_from_dataset(file_path_base, dataset_format):
+    
+    if not dataset_format:
+        raise ValueError("The 'dataset_format' parameter must be provided and cannot be None.")
+        
+    file_path = f"{file_path_base}.{dataset_format}"
+    
+    if dataset_format == "csv":
+        return pd.read_csv(file_path)
+    
+    elif dataset_format == "parquet":
+        return pd.read_parquet(file_path)
 
 
 
@@ -35,6 +46,8 @@ def add_temporal_feature(df_original, df_temporal, date_start_col, date_end_col,
 # returns two dates: the first day of the month and the last day of the month
 # for example; '2022-01-01' and '2022-01-31'
 def transform_data_to_range(dt_string):
+    
+    ### FOR MONTHLY FORMATS
     
     # Pattern ('Month' de 'Year'); example: "Janeiro de 2022"
     match_month_year = re.fullmatch(
@@ -49,7 +62,6 @@ def transform_data_to_range(dt_string):
     if match_month_year or match_yyyy_mm:
         
         if match_month_year:
-            pass
         
             month_name, year = match_month_year.groups()
         
@@ -81,16 +93,21 @@ def transform_data_to_range(dt_string):
         return f"{year}-{month:02d}-01", f"{year}-{month:02d}-{last_day}"
     
     
-    # Pattern 'Year'; example: "2023"
-    match = re.fullmatch(r"(\d{4})", dt_string)
     
-    if match:
-        year = int(match.group())
-        
+    
+    ### FOR YEAR FORMATS
+    
+    # Pattern 'Year'; example: "2023"
+    match_year = re.fullmatch(r"(\d{4})", dt_string)
+    
+    if match_year:
+        year = int(match_year.group())
         return f"{year}-01-01", f"{year}-12-31"
     
     
-    # For trimester formats
+    
+    
+    ### FOR TRIMESTER FORMATS
     
     # "1.\u00ba Trimestre de 2026"
     match_extended_trimester = re.fullmatch(
@@ -134,21 +151,40 @@ def transform_data_to_range(dt_string):
         return f"{year}-{trimester_number:02d}-01", f"{year}-{trimester_number + 2:02d}-{last_day}"
     
     
+    
+    
+    ### FOR SEMESTER FORMATS
+    
     # For format "1.\u00ba Semestre de 2026"
-    match = re.fullmatch(
+    match_semester = re.fullmatch(
         r"(1.\u00ba Semestre|2.\u00ba Semestre) de (\d{4})",
         dt_string
     )
     
-    if match:
-        semester, year = match.groups()
+    # For format "YYYY-S1" or "YYYY-S2"
+    match_yyyy_ss = re.fullmatch(r"(\d{4})-S(\d{1})", dt_string)
+    
+    if match_semester or match_yyyy_ss:
+        
+        if match_semester:
+        
+            semester, year = match_semester.groups()
+        
+            semester_number = {
+                "1.\u00ba Semestre": 1,
+                "2.\u00ba Semestre": 7
+            }
+        
+        if match_yyyy_ss:
+            
+            year, semester = match_yyyy_ss.groups()
+            
+            semester_number = {
+                "1": 1,
+                "2": 7
+            }
         
         year = int(year)
-        
-        semester_number = {
-            "1.\u00ba Semestre": 1,
-            "2.\u00ba Semestre": 7
-        }
         
         semester_number = semester_number[semester]
         

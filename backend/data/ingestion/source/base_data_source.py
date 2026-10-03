@@ -14,7 +14,7 @@ indicated parameters and headers
 class BaseDataSource(ABC):
     
     """Base constructor for the BaseDataSource class, which initializes the datasets format ("csv" or "parquet")"""
-    def __init__(self, datasets_format=None, datasets_path=None):
+    def __init__(self, datasets_format, datasets_path=None):
         self._datasets_format = datasets_format
         self._datasets_path = datasets_path
     

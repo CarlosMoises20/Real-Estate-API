@@ -13,6 +13,13 @@ class Eurostat(BaseAPIDataSource):
         
         df = pd.read_csv(StringIO(super().get_source_data().text))
         
+        # NOTE uncomment if you want to generate CSV with the dataframe before pre-processing
+        #df.to_csv("./backend/datasets/external/eurostat_data_gdp_since_2010_v0.csv", index=False)
+        
+        # Remove samples where confidential status is C (confidential), N (not for publication) or P (information under non-statistical secrecy arrangements)
+        # since this means that the information cannot be published in another API
+        df = df[~df["CONF_STATUS"].isin(["C", "N", "P"])]
+        
         # Remove empty columns
         df = df.dropna(axis=1, how="all")
         
@@ -24,17 +31,19 @@ class Eurostat(BaseAPIDataSource):
             df["TIME_PERIOD"].apply(transform_data_to_range).tolist(),
             index=df.index
         )
-        
+    
         # Remove irrelevant attributes
-        df = df.drop(columns=["STRUCTURE", "STRUCTURE_ID", "freq", 
-                              "TIME_PERIOD", "OBS_FLAG"])
+        df = df.drop(columns=["STRUCTURE", "STRUCTURE_ID", "freq", "TIME_PERIOD", "OBS_FLAG"])
         
         # Rename relevant attributes
-        df = df.rename(columns={"OBS_VALUE": "gdp"})
+        df = df.rename(columns={
+            "OBS_VALUE": "gdp_value",
+            "geo": "country_code"
+        })
         
-        # Save final dataset (NOTE: optional)            
+        # Save final dataset            
         generate_dataset_from_df(df=df, 
-                                file_path_base=f"{self._datasets_path}/eurostat_data_gdp_since_2010",
+                                file_path_base=f"{self._datasets_path}/eurostat_gdp_data_since_2010",
                                 dataset_format=self._datasets_format)
         
         return df

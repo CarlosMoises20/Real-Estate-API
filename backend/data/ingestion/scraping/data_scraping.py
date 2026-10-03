@@ -1,131 +1,111 @@
 
-import os, kagglehub
 import pandas as pd
-from backend.data.ingestion.source.api.ine import INE
-from backend.data.ingestion.source.api.eurostat import Eurostat
-from backend.data.ingestion.source.api.geoapify import Geoapify
-from backend.data.ingestion.source.duckdb.fsq_os_places import FSQOSPlaces
-from dotenv import load_dotenv
+from backend.common.utils import generate_df_from_dataset
 
-
-def aggregate_external_data(datasets_format, external_datasets_path="./backend/datasets/external"):
-
-    ine = INE(
-                url="https://www.ine.pt/ine/json_indicador/pindica.jsp", 
-                headers={
-                        "User-Agent": "Mozilla/5.0",
-                        "Content-Type": "application/json"
-                    },
-                datasets_format=datasets_format,
-                datasets_path=external_datasets_path
-            )
-
-
-    df_ine = ine.get_api_data()
+def aggregate_external_data(datasets_format="parquet", 
+                            external_datasets_path="./backend/datasets/external"):
     
-    
-    # API Reference: https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-detailed-guidelines/api-statistics
-    # SMDX-2.0 CSV
-    # get GDP per capita data from Eurostat API (from 2010 to current year)
-    """eurostat = Eurostat(
-                    url="https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/nama_10_gdp/1.0",
-                    params={
-                        "format": "csvdata",
-                        "formatVersion": "2.0",
-                        "compress": "false",
-                        "c[GEO]": "PT",                     # Portugal data
-                        "c[TIME_PERIOD]": "ge:2010"         # From 2010 to current year      
-                    },
-                    headers={
-                            "User-Agent": "Mozilla/5.0",
-                            "Content-Type": "application/json"
-                        },
-                    datasets_format=datasets_format,
-                    datasets_path=external_datasets_path    
-                )
-    
-    df_eurostat = eurostat.get_api_data()"""
-    
-    # NOTE you need to create a .env file in the compose folder with the variable GEOAPIFY_API_KEY={your_api_key_here}
-    
-    load_dotenv(dotenv_path="./compose/.env")
-    
-    # TODO review if routes shouldn't also be included in the data retrieved from Geoapify API, and if so, implement it here
-    # Geoapify API Reference: https://apidocs.geoapify.com/docs/places/#introduction
-    geoapify = Geoapify(
-                    url="https://api.geoapify.com/v2/places",
-                    params={
-                        "categories": """
-                                        accommodation,activity,airport,catering,emergency,childcare,
-                                        entertainment,healthcare,highway,leisure,man_made,
-                                        maritime,waterway,natural,national_park,office,parking,
-                                        pet,power,production,railway,rental,service,tourism,
-                                        religion,amenity,beach,adult,building,ski,sport,public_transport,
-                                        administrative,political,low_emission_zone,memorial
-                                    """,
-                        "limit": 500,
-                        "apiKey": os.getenv("GEOAPIFY_API_KEY")
-                    },
-                    headers={
-                            "User-Agent": "Mozilla/5.0",
-                            "Content-Type": "application/json"
-                        },
-                    datasets_format=datasets_format,
-                    datasets_path=external_datasets_path
-                )
-    
-    df_geoapify = geoapify.get_api_data()
-    
-    
-    # Foursquare OS Places API Reference: https://docs.foursquare.com/data-products/docs/fsq-places-open-source
-    """fsq_os_places = FSQOSPlaces(
-        datasets_format=datasets_format,
-        access_token=os.getenv("FSQ_OS_PLACES_ACCESS_TOKEN"),
-        db_file_path="./backend/data/duckdb_source/fsq/fsq_os_places.db",
-        country_code="PT",
-        datasets_path=external_datasets_path
+    # Eurostat GDP dataset (with data related to GDP per capita in Portugal from 2010 to current year)
+    df_eurostat = generate_df_from_dataset(
+        file_path_base=f"{external_datasets_path}/eurostat_gdp_data_since_2010", 
+        dataset_format=datasets_format
     )
     
-    df_fsq = fsq_os_places.get_source_data()"""
-    
-    
     # RASI dataset (with data related to criminal records from 2024 and 2025)
-    df_rasi = pd.read_csv(f"{external_datasets_path}/rasi_data.csv", sep=",", encoding="utf-8")
+    df_rasi = generate_df_from_dataset(
+        file_path_base=f"{external_datasets_path}/rasi_data_2024_2025", 
+        dataset_format=datasets_format
+    )
+    
+    # FSQ Places
+    df_fsq = generate_df_from_dataset(
+        file_path_base=f"{external_datasets_path}/fsq_os_places",
+        dataset_format=datasets_format
+    )
+    
+    # Geoapify dataset (with data related to facilities in Portugal)
+    df_geoapify = generate_df_from_dataset(
+        file_path_base=f"{external_datasets_path}/geoapify_data_facilities",
+        dataset_format=datasets_format
+    )
+    
+    # INE data related to average salary in Portugal
+    df_ine_avg_salary = generate_df_from_dataset(
+        file_path_base=f"{external_datasets_path}/ine_data_avg_salary_euros",
+        dataset_format=datasets_format
+    )
+    
+    df_ine_inflation_absolute_value = generate_df_from_dataset(
+        file_path_base=f"{external_datasets_path}/ine_data_inflation_absolute_value",
+        dataset_format=datasets_format
+    )
+    
+    df_ine_inflation_homologous_variable = generate_df_from_dataset(
+        file_path_base=f"{external_datasets_path}/ine_data_inflation_homologous_variable",
+        dataset_format=datasets_format
+    )
+    
+    df_ine_inflation_monthly_variable = generate_df_from_dataset(
+        file_path_base=f"{external_datasets_path}/ine_data_inflation_monthly_variable",
+        dataset_format=datasets_format
+    )
+    
+    df_ine_inflation_yearly_variable = generate_df_from_dataset(
+        file_path_base=f"{external_datasets_path}/ine_data_inflation_yearly_variable",
+        dataset_format=datasets_format
+    )
+    
+    df_ine_housing_credit_rate = generate_df_from_dataset(
+        file_path_base=f"{external_datasets_path}/ine_data_housing_credit_rate",
+        dataset_format=datasets_format
+    )
+    
+    df_ine_unemployment_rate = generate_df_from_dataset(
+        file_path_base=f"{external_datasets_path}/ine_data_unemployment_rate",
+        dataset_format=datasets_format
+    )
+    
+    df_ine_housing_price_per_m2_euros = generate_df_from_dataset(
+        file_path_base=f"{external_datasets_path}/ine_data_housing_price_per_m2_euros",
+        dataset_format=datasets_format
+    )
     
     return {
-        "INE": df_ine,
-        #"Eurostat": df_eurostat,
-        "Geoapify": df_geoapify,
-        #"FSQ": df_fsq,
-        "RASI": df_rasi
+        "INE (Average salary)": df_ine_avg_salary,
+        "INE (Inflation - Absolute value)": df_ine_inflation_absolute_value,
+        "INE (Inflation - Homologous variation)": df_ine_inflation_homologous_variable,
+        "INE (Inflation - Monthly variation)": df_ine_inflation_monthly_variable,
+        "INE (Inflation - Yearly variation)": df_ine_inflation_yearly_variable,
+        "INE (Housing credit rate)": df_ine_housing_credit_rate,
+        "INE (Unemployment rate (%))": df_ine_unemployment_rate,
+        "INE (Housing price per square meter, euros)": df_ine_housing_price_per_m2_euros,
+        "GDP": df_eurostat,
+        "Geoapify Places": df_geoapify,
+        "FSQ Places": df_fsq,
+        "RASI Criminal Record": df_rasi
     }
     
 
     
     
     
-def aggregate_internal_data(datasets_format, internal_datasets_path="./backend/datasets/internal/"):
     
-    # Download CSV Kaggle dataset from the link
-    # https://www.kaggle.com/datasets/luvathoms/portugal-real-estate-2024
-    kaggle_dataset_path = kagglehub.dataset_download(handle="luvathoms/portugal-real-estate-2024", 
-                                                     path="portugal_listinigs.csv",
-                                                     force_download=True, 
-                                                     output_dir=internal_datasets_path)
+def aggregate_internal_data(datasets_format="parquet", 
+                            internal_datasets_path="./backend/datasets/internal/"):
     
-    df_kaggle = pd.read_csv(kaggle_dataset_path, sep=",", encoding="utf-8")
-    
+    # Read CSV Kaggle dataset from the local datasets
+    df_kaggle = pd.read_csv(f"{internal_datasets_path}/portugal_listinigs.csv", sep=",", encoding="utf-8")
     
     # TODO aggregate data from Idealista
 
-    return [df_kaggle]
+    return {
+            "Kaggle": df_kaggle
+        }
     
     
 # TODO remove this when no longer needed    
 if __name__ == "__main__":
     
-    data_format = "csv"
+    df_internal_list = aggregate_internal_data()
     
-    df_internal_list = aggregate_internal_data(datasets_format=data_format)
-    
-    df_external_list = aggregate_external_data(datasets_format=data_format)
+    df_external_list = aggregate_external_data()

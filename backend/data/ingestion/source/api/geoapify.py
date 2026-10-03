@@ -47,7 +47,7 @@ class Geoapify(BaseAPIDataSource):
             
         df_final = pd.concat(df_list, ignore_index=True)
         
-        # Save final dataset (NOTE: optional)            
+        # Save final dataset
         generate_dataset_from_df(df=df_final, 
                                 file_path_base=f"{self._datasets_path}/geoapify_data_facilities",
                                 dataset_format=self._datasets_format)

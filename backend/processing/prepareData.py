@@ -1,6 +1,8 @@
+
 import pandas as pd
 from backend.common.constants import COLUMN_RENAME_MAP, CATEGORICAL_COLUMNS
 from backend.data.ingestion.scraping.data_scraping import aggregate_external_data, aggregate_internal_data
+from backend.common.utils import generate_dataset_from_df
 
 
 """
@@ -80,47 +82,49 @@ def prepare_external_data(datasets_format):
 # Join internal and external datasets, using the appropriate keys in the join method
 def join_internal_and_external_data(df_internal, df_external_list_dict):
     
-    # TODO join each attribute from external datasets with 'df_internal'
-    # TODO fix this to use temporal attributes
+    df_final = df_internal
+    
+    ### TODO join each attribute from external datasets with 'df_internal', using temporal features (date_start, date_end, etc)
+    
+    # TODO GDP (Eurostat)
+    
+    df_gdp = df_external_list_dict["GDP"]
+    
     
     # TODO inflation (INE)
     
-    df_final = df_internal
+    df_inflation = df_external_list_dict["INE (Inflation - Monthly variation)"]
     
-    df_final["Inflation"] = df_external_list_dict["INE"]["Inflation Monthly Variation"]
     
     # TODO unemployment rate (INE)
     
-    df_final["Unemployment Rate (%)"] = df_external_list_dict["INE"]["Unemployment Rate (%)"]
+    df_unemployment = df_external_list_dict["INE (Unemployment rate (%))"]
     
     # TODO housing sold (INE); join using "date_start" and "date_end"
     
-    df_final["Sold Houses"] = df_external_list_dict["INE"]["Number of Sold Houses & Transactions"]
+    df_housing_sold = df_external_list_dict["INE (Housing sold)"]
     
     # TODO housing price per m2
     
-    df_final["Housing Price per m2"] = df_external_list_dict["INE"]["Housing Price per m2"]
+    df_housing_price = df_external_list_dict["INE (Housing price per square meter, euros)"]
     
     # TODO population
     
-    df_final["Population"] = df_external_list_dict["INE"]["Population"]
+    df_population = df_external_list_dict["INE (Population)"]
     
-    # TODO housing credit rate
+    # TODO INE (housing credit rate)
     
-    # TODO gross disposable income
+    # TODO INE (gross disposable income)
     
-    # TODO average salary
+    # TODO INE (average salary)
     
-    # TODO GDP (Eurostat)
+    
     
     # TODO FSQ (geospatial data)
     
     # TODO Geoapify (geospatial data)
     
     # TODO RASI (criminal data)
-    
-    
-    pass
     
 
 
@@ -165,17 +169,10 @@ def prepare_final_data(df_final, datasets_format, final_filename="real_estate_in
     
     df_final = df_final[COLUMN_ORDER]
     
-    # Save the final dataframe if the flag 'datasets_format' is provided
-    # If the flag is None, no dataset will be generated
-    if datasets_format:
-        
-        file_path = f"backend/datasets/{final_filename}.{datasets_format}"
-        
-        if datasets_format == "csv":
-            df_final.to_csv(file_path, index=False)
-        
-        elif datasets_format == "parquet":
-            df_final.to_parquet(file_path, index=False)
+    # Save the final dataframe in the format indicated by 'datasets_format' (CSV or Parquet)            
+    generate_dataset_from_df(df=df_final, 
+                             file_path_base=f"backend/datasets/{final_filename}",
+                             dataset_format=datasets_format)
     
     return df_final
 
