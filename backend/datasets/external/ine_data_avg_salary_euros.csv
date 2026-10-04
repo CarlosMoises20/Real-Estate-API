@@ -23,3 +23,39 @@ date_start,date_end,geocod,geodsg,dim_3,dim_3_t,dim_4,dim_4_t,avg_salary_euros
 2026-06-01,2026-06-30,PT,Portugal,1,Regular,T,Total,1436
 2026-06-01,2026-06-30,PT,Portugal,11,Base,T,Total,1342
 2026-06-01,2026-06-30,PT,Portugal,T,Total,T,Total,1835
+2026-06-01,2026-06-30,PT,Portugal,1,Regular,1,Transacionável,1300
+2026-06-01,2026-06-30,PT,Portugal,11,Base,1,Transacionável,1232
+2026-06-01,2026-06-30,PT,Portugal,T,Total,1,Transacionável,1588
+2026-06-01,2026-06-30,PT,Portugal,1,Regular,2,Não transacionável mercantil,1349
+2026-06-01,2026-06-30,PT,Portugal,11,Base,2,Não transacionável mercantil,1256
+2026-06-01,2026-06-30,PT,Portugal,T,Total,2,Não transacionável mercantil,1698
+2026-06-01,2026-06-30,PT,Portugal,1,Regular,3,Não transacionável não mercantil,1752
+2026-06-01,2026-06-30,PT,Portugal,11,Base,3,Não transacionável não mercantil,1636
+2026-06-01,2026-06-30,PT,Portugal,T,Total,3,Não transacionável não mercantil,2355
+2026-06-01,2026-06-30,PT,Portugal,1,Regular,T,Total,1436
+2026-06-01,2026-06-30,PT,Portugal,11,Base,T,Total,1342
+2026-06-01,2026-06-30,PT,Portugal,T,Total,T,Total,1835
+2026-06-01,2026-06-30,PT,Portugal,1,Regular,1,Transacionável,1300
+2026-06-01,2026-06-30,PT,Portugal,11,Base,1,Transacionável,1232
+2026-06-01,2026-06-30,PT,Portugal,T,Total,1,Transacionável,1588
+2026-06-01,2026-06-30,PT,Portugal,1,Regular,2,Não transacionável mercantil,1349
+2026-06-01,2026-06-30,PT,Portugal,11,Base,2,Não transacionável mercantil,1256
+2026-06-01,2026-06-30,PT,Portugal,T,Total,2,Não transacionável mercantil,1698
+2026-06-01,2026-06-30,PT,Portugal,1,Regular,3,Não transacionável não mercantil,1752
+2026-06-01,2026-06-30,PT,Portugal,11,Base,3,Não transacionável não mercantil,1636
+2026-06-01,2026-06-30,PT,Portugal,T,Total,3,Não transacionável não mercantil,2355
+2026-06-01,2026-06-30,PT,Portugal,1,Regular,T,Total,1436
+2026-06-01,2026-06-30,PT,Portugal,11,Base,T,Total,1342
+2026-06-01,2026-06-30,PT,Portugal,T,Total,T,Total,1835
+2026-06-01,2026-06-30,PT,Portugal,1,Regular,1,Transacionável,1300
+2026-06-01,2026-06-30,PT,Portugal,11,Base,1,Transacionável,1232
+2026-06-01,2026-06-30,PT,Portugal,T,Total,1,Transacionável,1588
+2026-06-01,2026-06-30,PT,Portugal,1,Regular,2,Não transacionável mercantil,1349
+2026-06-01,2026-06-30,PT,Portugal,11,Base,2,Não transacionável mercantil,1256
+2026-06-01,2026-06-30,PT,Portugal,T,Total,2,Não transacionável mercantil,1698
+2026-06-01,2026-06-30,PT,Portugal,1,Regular,3,Não transacionável não mercantil,1752
+2026-06-01,2026-06-30,PT,Portugal,11,Base,3,Não transacionável não mercantil,1636
+2026-06-01,2026-06-30,PT,Portugal,T,Total,3,Não transacionável não mercantil,2355
+2026-06-01,2026-06-30,PT,Portugal,1,Regular,T,Total,1436
+2026-06-01,2026-06-30,PT,Portugal,11,Base,T,Total,1342
+2026-06-01,2026-06-30,PT,Portugal,T,Total,T,Total,1835

@@ -21,18 +21,17 @@ class Eurostat(BaseAPIDataSource):
         df = df[~df["CONF_STATUS"].isin(["C", "N", "P"])]
         
         # Keep samples with "unit" attribute with values representing relevant metrics
-        # CLV20_MEUR: Chain linked volumes, reference year 2020, million euro
         # CLV_PCH_PRE: Chain linked volumes, percentage change on previous period
-        # CP_MPPS_EU27_2020: Current prices, million purchasing power standard (EU27_2020)
-        # TODO review this, add more relevant metrics or remove if necessary
-        df = df[df["unit"].isin(["CLV20_MEUR", "CLV_PCH_PRE", "CP_MPPS_EU27_2020"])]
+        # TODO include this metric when starting to expand to another countries
+        #   CP_MPPS_EU27_2020: Current prices, million purchasing power standard (EU27_2020)
+        df = df[df["unit"] == "CLV_PCH_PRE"]
         
         # Keep samples with "na_item" attribute with values representing relevant metrics
         # B1GQ: Gross domestic product at market prices
-        # P31_S14: Gross domestic product per capita at current market prices
+        # P31_S14: Final consumption expenditure of household
         # P51G: Gross fixed capital formation
         # TODO finish this, add more relevant metrics or remove if necessary
-        df = df[df["na_item"].isin(["B1GQ", "P31_S14", "P51G"])]
+        df = df[df["na_item"].isin(["B1GQ", "P31_S14"])]
         
         # Remove empty columns
         df = df.dropna(axis=1, how="all")

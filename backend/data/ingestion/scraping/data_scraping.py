@@ -35,27 +35,9 @@ def aggregate_external_data(datasets_format="parquet",
         dataset_format=datasets_format
     )
     
-    # INE data related to inflation (absolute value) in Portugal
-    df_ine_inflation_absolute_value = generate_df_from_dataset(
-        file_path_base=f"{external_datasets_path}/ine_data_inflation_absolute_value",
-        dataset_format=datasets_format
-    )
-    
     # INE data related to inflation (homologous variation) in Portugal
     df_ine_inflation_homologous_variable = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/ine_data_inflation_homologous_variable",
-        dataset_format=datasets_format
-    )
-    
-    # INE data related to inflation (monthly variation) in Portugal
-    df_ine_inflation_monthly_variable = generate_df_from_dataset(
-        file_path_base=f"{external_datasets_path}/ine_data_inflation_monthly_variable",
-        dataset_format=datasets_format
-    )
-    
-    # INE data related to inflation (yearly variation) in Portugal
-    df_ine_inflation_yearly_variable = generate_df_from_dataset(
-        file_path_base=f"{external_datasets_path}/ine_data_inflation_yearly_variable",
         dataset_format=datasets_format
     )
     
@@ -79,10 +61,7 @@ def aggregate_external_data(datasets_format="parquet",
     
     return {
         "INE (Average salary)": df_ine_avg_salary,
-        "INE (Inflation - Absolute value)": df_ine_inflation_absolute_value,
         "INE (Inflation - Homologous variation)": df_ine_inflation_homologous_variable,
-        "INE (Inflation - Monthly variation)": df_ine_inflation_monthly_variable,
-        "INE (Inflation - Yearly variation)": df_ine_inflation_yearly_variable,
         "INE (Housing credit rate)": df_ine_housing_credit_rate,
         "INE (Unemployment rate (%))": df_ine_unemployment_rate,
         "INE (Housing price per square meter, euros)": df_ine_housing_price_per_m2_euros,

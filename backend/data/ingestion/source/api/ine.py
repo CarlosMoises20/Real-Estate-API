@@ -75,12 +75,6 @@ class INE(BaseAPIDataSource):
         # Inflation
         # https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_api_db
         # https://smi.ine.pt/Indicador
-        
-        # Inflation (absolute value)
-        self.__extract_data_from_varcd(varcd="0014639",
-                                        value_attr_name="inflation_absolute_value",
-                                        value_attr_old_name="valor",
-                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
 
         # Inflation (homologous variation)
         self.__extract_data_from_varcd(varcd="0014647", 
@@ -88,19 +82,7 @@ class INE(BaseAPIDataSource):
                                         value_attr_old_name="valor",   
                                         cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
         
-        # Inflation (monthly variation)
-        self.__extract_data_from_varcd(varcd="0014645", 
-                                        value_attr_name="inflation_monthly_variable",  
-                                        value_attr_old_name="valor", 
-                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
-        
-        # Inflation (yearly variation)
-        self.__extract_data_from_varcd(varcd="0014649", 
-                                        value_attr_name="inflation_yearly_variable",  
-                                        value_attr_old_name="valor", 
-                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
-        
-         # Inflation (yearly variation)
+        # Housing credit rate
         self.__extract_data_from_varcd(varcd="0001972", 
                                         value_attr_name="housing_credit_rate",  
                                         value_attr_old_name="valor", 
@@ -122,12 +104,6 @@ class INE(BaseAPIDataSource):
         # Unemployment rate (%)
         self.__extract_data_from_varcd(varcd="0012136", 
                                         value_attr_name="unemployment_rate",  
-                                        value_attr_old_name="valor", 
-                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
-          
-        # Housing price per square meter (euros)
-        self.__extract_data_from_varcd(varcd="0012255", 
-                                        value_attr_name="housing_price_per_m2_euros",  
                                         value_attr_old_name="valor", 
                                         cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
               
