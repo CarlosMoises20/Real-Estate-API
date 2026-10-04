@@ -4,7 +4,7 @@ import pandas as pd
 
 
 """
-This function generates a dataset from a dataframe (df) and
+This function generates a dataset from a Pandas dataframe (df) and
 saves it to a file in the specified format and in a path defined by 'file_path_base'
 It saves in 'CSV' or 'parquet' formats, depending on the 'dataset_format' parameter
 
@@ -24,7 +24,8 @@ def generate_dataset_from_df(df, file_path_base, dataset_format):
 
 
 """
-This function returns a dataframe from the local dataset specified by 'file_path_base' and in the format specified by 'dataset_format'
+This function returns a Pandas dataframe from the local dataset specified by 'file_path_base' and in the 
+format specified by 'dataset_format'
 
 """
 def generate_df_from_dataset(file_path_base, dataset_format):

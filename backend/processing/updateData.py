@@ -105,7 +105,7 @@ def update_datasets(datasets_format="parquet",
 # to update the data (including local datasets) to be consumed by the API
 if __name__ == "__main__":
     
-    update_datasets()
+    update_datasets(datasets_format="csv")
     
     """scheduler = BackgroundScheduler()
 

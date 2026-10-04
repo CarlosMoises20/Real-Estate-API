@@ -35,36 +35,43 @@ def aggregate_external_data(datasets_format="parquet",
         dataset_format=datasets_format
     )
     
+    # INE data related to inflation (absolute value) in Portugal
     df_ine_inflation_absolute_value = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/ine_data_inflation_absolute_value",
         dataset_format=datasets_format
     )
     
+    # INE data related to inflation (homologous variation) in Portugal
     df_ine_inflation_homologous_variable = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/ine_data_inflation_homologous_variable",
         dataset_format=datasets_format
     )
     
+    # INE data related to inflation (monthly variation) in Portugal
     df_ine_inflation_monthly_variable = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/ine_data_inflation_monthly_variable",
         dataset_format=datasets_format
     )
     
+    # INE data related to inflation (yearly variation) in Portugal
     df_ine_inflation_yearly_variable = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/ine_data_inflation_yearly_variable",
         dataset_format=datasets_format
     )
     
+    # INE data related to housing credit rate in Portugal
     df_ine_housing_credit_rate = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/ine_data_housing_credit_rate",
         dataset_format=datasets_format
     )
     
+    # INE data related to unemployment rate in Portugal   
     df_ine_unemployment_rate = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/ine_data_unemployment_rate",
         dataset_format=datasets_format
     )
     
+    # INE data related to housing price per square meter (euros) in Portugal
     df_ine_housing_price_per_m2_euros = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/ine_data_housing_price_per_m2_euros",
         dataset_format=datasets_format

@@ -14,19 +14,33 @@ class Eurostat(BaseAPIDataSource):
         df = pd.read_csv(StringIO(super().get_source_data().text))
         
         # NOTE uncomment if you want to generate CSV with the dataframe before pre-processing
-        #df.to_csv("./backend/datasets/external/eurostat_data_gdp_since_2010_v0.csv", index=False)
+        #df.to_csv("./backend/datasets/external/eurostat_gdp_data_since_2010_v0.csv", index=False)
         
         # Remove samples where confidential status is C (confidential), N (not for publication) or P (information under non-statistical secrecy arrangements)
         # since this means that the information cannot be published in another API
         df = df[~df["CONF_STATUS"].isin(["C", "N", "P"])]
         
+        # Keep samples with "unit" attribute with values representing relevant metrics
+        # CLV20_MEUR: Chain linked volumes, reference year 2020, million euro
+        # CLV_PCH_PRE: Chain linked volumes, percentage change on previous period
+        # CP_MPPS_EU27_2020: Current prices, million purchasing power standard (EU27_2020)
+        # TODO review this, add more relevant metrics or remove if necessary
+        df = df[df["unit"].isin(["CLV20_MEUR", "CLV_PCH_PRE", "CP_MPPS_EU27_2020"])]
+        
+        # Keep samples with "na_item" attribute with values representing relevant metrics
+        # B1GQ: Gross domestic product at market prices
+        # P31_S14: Gross domestic product per capita at current market prices
+        # P51G: Gross fixed capital formation
+        # TODO finish this, add more relevant metrics or remove if necessary
+        df = df[df["na_item"].isin(["B1GQ", "P31_S14", "P51G"])]
+        
         # Remove empty columns
         df = df.dropna(axis=1, how="all")
         
-        # Create columns "date_start" and "date_end" from column "TIME_PERIOD"
-        
-        df["TIME_PERIOD"] = df["TIME_PERIOD"].astype("string")      # Convert to string
-        
+        # Convert "TIME_PERIOD" column to string type to avoid issues when applying the function "transform_data_to_range"
+        df["TIME_PERIOD"] = df["TIME_PERIOD"].astype("string")      
+
+        # Create "date_start" and "date_end" columns from column "TIME_PERIOD"
         df[["date_start", "date_end"]] = pd.DataFrame(
             df["TIME_PERIOD"].apply(transform_data_to_range).tolist(),
             index=df.index
