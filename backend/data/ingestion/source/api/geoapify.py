@@ -1,55 +1,71 @@
 
 from backend.data.ingestion.source.api.base_api_data_source import BaseAPIDataSource
 import pandas as pd
-from backend.common.constants import PORTUGAL_COORDINATES_LIST
-from backend.common.utils import generate_dataset_from_df
 
 
 """This class is used to retrieve relevant data from the API of Geoapify"""
 class Geoapify(BaseAPIDataSource):
     
     """Retrieve JSON data from the API of Geoapify and return dataframe with relevant data"""
-    def get_api_data(self):
+    def get_api_data(self, categories_list, latitude, longitude, radius_meters):
         
-        # Return data from Portugal Continent, Azores and Madeira
-        # NOTE: in the future, this will be simplified to use countrycode:PT when the parameter is available, but for now,
-        # we will use the coordinates of Portugal Continent, Azores and Madeira to get the data from Geoapify API
+        self._params["categories"] = ",".join(categories_list)    
         
-        df_list = []
+        self._params["filter"] = f"circle:{longitude},{latitude},{radius_meters}"
+
+        data = super().get_source_data().json()
+
+        filtered_data = [
+            {
+                "name": elem["properties"].get("address_line1"),
+                "address": elem["properties"].get("formatted"),
+                "latitude": elem["properties"].get("lat"),
+                "longitude": elem["properties"].get("lon"),
+                "country": elem["properties"]["country_code"].upper() if elem["properties"].get("country_code") else None,
+                "category": ";".join(elem["properties"]["categories"]) if elem["properties"].get("categories") else None
+            } 
+            for elem in data.get("features", [])
+        ]
         
-        for coordinates in PORTUGAL_COORDINATES_LIST:
-            
-            region_name = list(coordinates.keys())[0] 
-            
-            coords = coordinates[region_name]
-            
-            self._params["filter"] = f"rect:{coords['min_lon']},{coords['min_lat']},{coords['max_lon']},{coords['max_lat']}"
-            
-            data = super().get_source_data().json()
+        return pd.DataFrame(filtered_data)
     
-            data = [
-                {
-                    "name": elem["properties"].get("address_line1"),
-                    "address": elem["properties"].get("formatted"),
-                    "latitude": elem["properties"].get("lat"),
-                    "longitude": elem["properties"].get("lon"),
-                    "country": elem["properties"]["country_code"].upper() if elem["properties"].get("country_code") else None,
-                    "category": ";".join(elem["properties"]["categories"]) if elem["properties"].get("categories") else None
-                } 
-                for elem in data.get("features", [])
-                if (
-                    elem.get("properties", {}).get("country_code") == "pt"
-                    or elem.get("properties", {}).get("country") == "Portugal"
-                )
-            ]
-            
-            df_list.append(pd.DataFrame(data))
-            
-        df_final = pd.concat(df_list, ignore_index=True)
-        
-        # Save final dataset
-        generate_dataset_from_df(df=df_final, 
-                                file_path_base=f"{self._datasets_path}/geoapify_data_facilities",
-                                dataset_format=self._datasets_format)
-        
-        return df_final
+    
+
+
+"""# NOTE these values are only examples, these must be reviewed before uncommenting the code and implement it
+
+# Latitude of the location
+geoapify_latitude = 38.79556645168411
+
+# Longitude of the location
+geoapify_longitude = -9.330647695664439
+
+# 50 km radius around place on the indicated latitude and longitude coordinates
+geoapify_radius_meters = 50000  
+
+categories_list = [
+    "healthcare", "public_transport", "emergency",
+    "childcare", "catering", "service", "maritime", "parking",
+    "entertainment", "leisure", "low_emission_zone", "natural",
+    "national_park"
+]
+
+# Geoapify API Reference: https://apidocs.geoapify.com/docs/places/#introduction
+geoapify = Geoapify(
+                url="https://api.geoapify.com/v2/places",
+                params={
+                    "limit": 500,
+                    "apiKey": os.getenv("GEOAPIFY_API_KEY")
+                },
+                headers={
+                        "User-Agent": "Mozilla/5.0",
+                        "Content-Type": "application/json"
+                    },
+                datasets_format=datasets_format,
+                datasets_path=external_datasets_path
+            )
+
+geoapify.get_api_data(categories_list=categories_list, 
+                        latitude=geoapify_latitude, 
+                        longitude=geoapify_longitude, 
+                        radius_meters=geoapify_radius_meters)"""

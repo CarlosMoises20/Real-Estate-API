@@ -8,8 +8,30 @@ from backend.common.utils import generate_dataset_from_df, transform_data_to_ran
 """This class is used to retrieve relevant data from the API of Eurostat"""
 class Eurostat(BaseAPIDataSource):
     
-    """Retrieve JSON data from the API of INE and return dataframe with relevant data"""
-    def get_api_data(self):
+    """
+    Retrieve JSON data from the API of INE and return dataframe with relevant data
+    
+    Parameters:
+        - country_code: The country code for which to retrieve data (e.g., "PT" for Portugal)
+        - time_period: The time period for which to retrieve data. Examples:
+            "ge:2010" for data from 2010 to the current year
+            "eq:2020" for data from 2020 only
+            "gt:2015" for data from 2015 onwards (greater than 2015)
+            "lt:2018" for data until 2018 (less than 2018)
+            "ge:2010,lt:2018" for data from 2010 to 2018
+            
+        - dataset_code: The dataset code for the specific data to retrieve (e.g., "nama_10_gdp" for GDP data)
+    
+    Source: https://ec.europa.eu/eurostat/fr/web/user-guides/data-browser/api-data-access/api-getting-started/sdmx3.0
+    
+    """
+    def get_api_data(self, country_code, time_period, dataset_code):
+        
+        self._url += f"{dataset_code}/1.0"
+        
+        self._params["c[GEO]"] = country_code
+        
+        self._params["c[TIME_PERIOD]"] = time_period
         
         df = pd.read_csv(StringIO(super().get_source_data().text))
         
@@ -22,15 +44,13 @@ class Eurostat(BaseAPIDataSource):
         
         # Keep samples with "unit" attribute with values representing relevant metrics
         # CLV_PCH_PRE: Chain linked volumes, percentage change on previous period
-        # TODO include this metric when starting to expand to another countries
+        # NOTE include the metric below when starting to expand to another countries
         #   CP_MPPS_EU27_2020: Current prices, million purchasing power standard (EU27_2020)
         df = df[df["unit"] == "CLV_PCH_PRE"]
         
         # Keep samples with "na_item" attribute with values representing relevant metrics
         # B1GQ: Gross domestic product at market prices
         # P31_S14: Final consumption expenditure of household
-        # P51G: Gross fixed capital formation
-        # TODO finish this, add more relevant metrics or remove if necessary
         df = df[df["na_item"].isin(["B1GQ", "P31_S14"])]
         
         # Remove empty columns

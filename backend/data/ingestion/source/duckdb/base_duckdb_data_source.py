@@ -15,7 +15,7 @@ class BaseDuckDBDataSource(BaseDataSource):
     connection and the datasets format
     
     """
-    def __init__(self, datasets_format, datasets_path=None, connection=None):
+    def __init__(self, datasets_format, datasets_path, connection=None):
         super().__init__(datasets_format=datasets_format,
                          datasets_path=datasets_path)
         self._connection = duckdb.connect() if not connection else connection

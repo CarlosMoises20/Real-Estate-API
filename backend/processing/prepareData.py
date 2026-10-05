@@ -84,12 +84,31 @@ def join_internal_and_external_data(df_internal, df_external_list_dict):
     
     df_final = df_internal
     
-    ### TODO join each attribute from external datasets with 'df_internal', using temporal features (date_start, date_end, etc)
+    ##### TODO join each attribute from external datasets with 'df_internal', using temporal features (date_start, date_end, country_code, etc)
     
-    # TODO GDP (Eurostat)
+    ## TODO GDP (Eurostat)
     
-    df_gdp = df_external_list_dict["GDP"]
+    df_gdp = df_external_list_dict["Eurostat GDP"]
     
+    df_gdp_market_prices = df_gdp[df_gdp["na_item"] == "B1GQ"]
+    
+    df_gdp_final_consumption = df_gdp[df_gdp["na_item"] == "P31_S14"]
+    
+    # Join the GDP data with the internal dataset using the "date_start" and "date_end" columns
+    # TODO review this and fix if necessary; the join should be done using the "date_start" and "date_end" columns, but the internal dataset may not have these columns, so we need to ensure that the join is done correctly
+    df_final = pd.merge(df_final, df_gdp_market_prices, on=["date_start", "date_end"])  
+    df_final = pd.merge(df_final, df_gdp_final_consumption, on=["date_start", "date_end"])
+    
+    
+    # TODO unemployment rate (INE)
+    
+    df_unemployment = df_external_list_dict["INE (Unemployment rate (%))"]
+    
+    # TODO housing sold (INE); join using "date_start" and "date_end"
+    
+    df_housing_sold = df_external_list_dict["INE (Housing sold)"]
+    
+    # TODO housing price per m2
     
     # TODO inflation (INE)
     
@@ -126,6 +145,8 @@ def join_internal_and_external_data(df_internal, df_external_list_dict):
     
     # TODO RASI (criminal data)
     
+    
+    return df_final
 
 
 def prepare_final_data(df_final, datasets_format, final_filename="real_estate_internal_data_final"):

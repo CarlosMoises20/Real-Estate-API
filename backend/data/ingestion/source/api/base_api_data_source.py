@@ -22,7 +22,7 @@ class BaseAPIDataSource(BaseDataSource):
         # datasets_format: format of the dataset to be generated (csv or parquet)
         
     """
-    def __init__(self, url, datasets_format, datasets_path=None, params=None, headers=None):
+    def __init__(self, url, datasets_format, datasets_path, params=None, headers=None):
         
         super().__init__(datasets_format=datasets_format, 
                          datasets_path=datasets_path)
@@ -31,7 +31,7 @@ class BaseAPIDataSource(BaseDataSource):
         self._headers = headers
     
     """Implement abstract method to retrieve data from an indicated API, using the url, parameters and headers indicated in the constructor"""
-    def get_source_data(self, retries=5):
+    def get_source_data(self, retries=10):
         
         for attempt in range(retries):
             try:

@@ -1,59 +1,59 @@
 
 import pandas as pd
 from backend.common.utils import generate_df_from_dataset
+import os
+from backend.data.ingestion.source.duckdb.fsq_os_places import FSQOSPlaces
 
 def aggregate_external_data(datasets_format="parquet", 
                             external_datasets_path="./backend/datasets/external"):
     
-    # Eurostat GDP dataset (with data related to GDP per capita in Portugal from 2010 to current year)
+    ### Eurostat GDP dataset (with data related to GDP per capita in Portugal from 2010 to current year)
     df_eurostat = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/eurostat_gdp_data_since_2010", 
         dataset_format=datasets_format
     )
     
-    # RASI dataset (with data related to criminal records from 2024 and 2025)
+    ### RASI dataset (with data related to criminal records from 2024 and 2025)
     df_rasi = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/rasi_data_2024_2025", 
         dataset_format=datasets_format
     )
     
-    # FSQ Places
-    df_fsq = generate_df_from_dataset(
-        file_path_base=f"{external_datasets_path}/fsq_os_places",
-        dataset_format=datasets_format
+    ### FSQ Places
+    fsq_os_places = FSQOSPlaces(
+        datasets_format=datasets_format,
+        access_token=os.getenv("FSQ_OS_PLACES_ACCESS_TOKEN"),
+        db_file_path="./backend/data/duckdb_source/fsq/fsq_os_places.db",
+        datasets_path=external_datasets_path
     )
     
-    # Geoapify dataset (with data related to facilities in Portugal)
-    df_geoapify = generate_df_from_dataset(
-        file_path_base=f"{external_datasets_path}/geoapify_data_facilities",
-        dataset_format=datasets_format
-    )
+    df_fsq_os_places = fsq_os_places.get_source_data(country_code="PT")
     
-    # INE data related to average salary in Portugal
+    ### INE data related to average salary in Portugal
     df_ine_avg_salary = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/ine_data_avg_salary_euros",
         dataset_format=datasets_format
     )
     
-    # INE data related to inflation (homologous variation) in Portugal
+    ### INE data related to inflation (homologous variation) in Portugal
     df_ine_inflation_homologous_variable = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/ine_data_inflation_homologous_variable",
         dataset_format=datasets_format
     )
     
-    # INE data related to housing credit rate in Portugal
+    ### INE data related to housing credit rate in Portugal
     df_ine_housing_credit_rate = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/ine_data_housing_credit_rate",
         dataset_format=datasets_format
     )
     
-    # INE data related to unemployment rate in Portugal   
+    ### INE data related to unemployment rate in Portugal   
     df_ine_unemployment_rate = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/ine_data_unemployment_rate",
         dataset_format=datasets_format
     )
     
-    # INE data related to housing price per square meter (euros) in Portugal
+    ### INE data related to housing price per square meter (euros) in Portugal
     df_ine_housing_price_per_m2_euros = generate_df_from_dataset(
         file_path_base=f"{external_datasets_path}/ine_data_housing_price_per_m2_euros",
         dataset_format=datasets_format
@@ -65,9 +65,8 @@ def aggregate_external_data(datasets_format="parquet",
         "INE (Housing credit rate)": df_ine_housing_credit_rate,
         "INE (Unemployment rate (%))": df_ine_unemployment_rate,
         "INE (Housing price per square meter, euros)": df_ine_housing_price_per_m2_euros,
-        "GDP": df_eurostat,
-        "Geoapify Places": df_geoapify,
-        "FSQ Places": df_fsq,
+        "Eurostat GDP": df_eurostat,
+        "FSQ Places": df_fsq_os_places,
         "RASI Criminal Record": df_rasi
     }
     

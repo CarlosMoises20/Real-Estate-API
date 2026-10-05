@@ -8,15 +8,13 @@ import os                                                                       
 class FSQOSPlaces(BaseDuckDBDataSource):
     
     """Constructor for the FSQOSPlaces class"""
-    def __init__(self, access_token, country_code, db_file_path, datasets_format, datasets_path=None):
+    def __init__(self, access_token, db_file_path, datasets_format, datasets_path):
 
         super().__init__(datasets_format=datasets_format, 
                          datasets_path=datasets_path,
                          connection=super()._create_connection_from_db_file(db_file_path) if db_file_path else None)
         
         self.__access_token = access_token
-        self.__country_code = country_code
-        self.__dataset_full_path = f"{self._datasets_path}/fsq_{self.__country_code.lower()}_places.{self._datasets_format}"
         
         self._initial_setup()                         # Setup the environment before fetching data from Foursquare OS Places
     
@@ -56,14 +54,16 @@ class FSQOSPlaces(BaseDuckDBDataSource):
     we need to update the local dataset to apply the latest changes
     
     """    
-    def update_data(self):
+    def update_data(self, country_code):
+        
+        dataset_full_path = f"{self._datasets_path}/fsq_{country_code.lower()}_places.{self._datasets_format}"
         
         query = f"""
                     COPY (SELECT p.name, p.latitude, p.longitude, p.address,
                             p.country, p.date_created, p.fsq_category_labels
                         FROM fsq.datasets.places_os AS p
-                        WHERE p.country = '{self.__country_code}') 
-                        TO '{self.__dataset_full_path}'
+                        WHERE p.country = '{country_code}') 
+                        TO '{dataset_full_path}'
                 """
 
         # even if the user does not manually define datasets_format, the dataset will always be created (by default, in parquet format),
@@ -79,14 +79,16 @@ class FSQOSPlaces(BaseDuckDBDataSource):
     for faster processing ("cache" method), calling the API only when there is no local dataset
     
     """
-    def get_source_data(self):
+    def get_source_data(self, country_code):
+        
+        dataset_full_path = f"{self._datasets_path}/fsq_{country_code.lower()}_places.{self._datasets_format}"
         
         # verify local dataset with places from FSQ OS Places
-        if not os.path.exists(self.__dataset_full_path):        
-            self.update_data()
+        if not os.path.exists(dataset_full_path):        
+            self.update_data(country_code)      # update the dataset with data from FSQ OS Places API if it does not exist locally
         
         # Read and return the dataset
-        return pd.read_parquet(self.__dataset_full_path) if self._datasets_format == "parquet" else pd.read_csv(self.__dataset_full_path)
+        return pd.read_parquet(dataset_full_path) if self._datasets_format == "parquet" else pd.read_csv(dataset_full_path)
     
         
     
