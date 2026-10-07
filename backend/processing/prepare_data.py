@@ -1,7 +1,7 @@
 
 import pandas as pd
 from backend.common.constants import COLUMN_RENAME_MAP, CATEGORICAL_COLUMNS
-from backend.data.ingestion.aggregation.data_aggregation import aggregate_external_data, aggregate_internal_data
+from backend.data.ingestion.processing.portugal_data_processor import PortugalDataProcessor
 from backend.common.utils import generate_dataset_from_df
 
 
@@ -19,8 +19,9 @@ def prepare_internal_data(datasets_format):
     
     # TODO finish this
     
-    df_returned_list = aggregate_internal_data(datasets_format=datasets_format, 
-                                               internal_datasets_path="backend/datasets/internal")
+    pt = PortugalDataProcessor(datasets_format=datasets_format)
+    
+    df_returned_list = pt._aggregate_internal_data()
     
     df_list = [df.rename(columns=COLUMN_RENAME_MAP) for df in df_returned_list]
 
@@ -70,7 +71,9 @@ Returns:
 """
 def prepare_external_data(datasets_format):
     
-    df_dict = aggregate_external_data(datasets_format=datasets_format)
+    pt = PortugalDataProcessor(datasets_format=datasets_format)
+    
+    df_dict = pt._aggregate_external_data()
     
     for df_name, df in df_dict.items():
         
