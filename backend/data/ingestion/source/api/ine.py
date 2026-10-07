@@ -61,6 +61,8 @@ class INE(BaseAPIDataSource):
             for file in glob.glob(f"{self._datasets_path}/ine_data_{value_attr_name}*.{self._datasets_format}")
         ])
         
+        df_list = df_list.drop_duplicates()
+        
         # Save the merged dataset
         generate_dataset_from_df(df=df_list, 
                                  file_path_base=f"{self._datasets_path}/ine_data_{value_attr_name}",

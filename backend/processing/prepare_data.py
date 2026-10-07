@@ -1,7 +1,7 @@
 
 import pandas as pd
 from backend.common.constants import COLUMN_RENAME_MAP, CATEGORICAL_COLUMNS
-from backend.data.ingestion.scraping.data_scraping import aggregate_external_data, aggregate_internal_data
+from backend.data.ingestion.aggregation.data_aggregation import aggregate_external_data, aggregate_internal_data
 from backend.common.utils import generate_dataset_from_df
 
 

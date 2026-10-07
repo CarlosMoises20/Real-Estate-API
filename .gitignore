@@ -2,27 +2,8 @@
 # Datasets
 # ============================================================
 
-# Ignore all dataset subdirectories by default
-backend/datasets/*/
-
 # Generated real-estate datasets
-backend/datasets/real_estate_*_data_final*.csv
-backend/datasets/real_estate_*_data_final*.parquet
-
-# Data preparation pipeline markers
-backend/datasets/internal/.complete*
-backend/datasets/external/.complete*
-
-# Ignore V0 / V1 raw datasets
-backend/datasets/external/*v0*
-backend/datasets/external/*v1*
-
-# Keep dataset directory structure
-!backend/datasets/internal/
-!backend/datasets/external/
-
-# External datasets: only CSV / Parquet are versioned
-backend/datasets/external/*.json
+backend/datasets/*/*
 
 
 # ============================================================
@@ -89,7 +70,8 @@ __pycache__/
 # ============================================================
 # Test files
 # ============================================================
-*test*.py
+*test*.*
+*v0*.*
 
 # ============================================================
 # OS generated files

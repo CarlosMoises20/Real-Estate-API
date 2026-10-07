@@ -12,7 +12,8 @@ class Eurostat(BaseAPIDataSource):
     Retrieve JSON data from the API of INE and return dataframe with relevant data
     
     Parameters:
-        - country_code: The country code for which to retrieve data (e.g., "PT" for Portugal)
+        - country_code_list: A list of country codes for which to retrieve data (e.g., "PT,ES" for Portugal and Spain or "PT" for Portugal only)
+        
         - time_period: The time period for which to retrieve data. Examples:
             "ge:2010" for data from 2010 to the current year
             "eq:2020" for data from 2020 only
@@ -27,16 +28,22 @@ class Eurostat(BaseAPIDataSource):
     """
     def get_api_data(self, country_code, time_period, dataset_code):
         
-        self._url += f"{dataset_code}/1.0"
-        
         self._params["c[GEO]"] = country_code
         
         self._params["c[TIME_PERIOD]"] = time_period
         
+        url_base = self._url
+                
+        self._url += f"{dataset_code}/1.0"
+        
         df = pd.read_csv(StringIO(super().get_source_data().text))
         
+        self._url = url_base
+        
+        dataset_path = f"{self._datasets_path}/eurostat_gdp_{country_code.lower()}_data_{time_period.replace(':', '_')}"
+        
         # NOTE uncomment if you want to generate CSV with the dataframe before pre-processing
-        #df.to_csv("./backend/datasets/external/eurostat_gdp_data_since_2010_v0.csv", index=False)
+        df.to_csv(dataset_path, index=False)
         
         # Remove samples where confidential status is C (confidential), N (not for publication) or P (information under non-statistical secrecy arrangements)
         # since this means that the information cannot be published in another API
@@ -44,8 +51,6 @@ class Eurostat(BaseAPIDataSource):
         
         # Keep samples with "unit" attribute with values representing relevant metrics
         # CLV_PCH_PRE: Chain linked volumes, percentage change on previous period
-        # NOTE include the metric below when starting to expand to another countries
-        #   CP_MPPS_EU27_2020: Current prices, million purchasing power standard (EU27_2020)
         df = df[df["unit"] == "CLV_PCH_PRE"]
         
         # Keep samples with "na_item" attribute with values representing relevant metrics
@@ -66,17 +71,14 @@ class Eurostat(BaseAPIDataSource):
         )
     
         # Remove irrelevant attributes
-        df = df.drop(columns=["STRUCTURE", "STRUCTURE_ID", "freq", "TIME_PERIOD", "OBS_FLAG"])
+        df = df.drop(columns=["STRUCTURE", "STRUCTURE_ID", "freq", 
+                              "TIME_PERIOD", "OBS_FLAG", "unit", "geo"])
         
-        # Rename relevant attributes
-        df = df.rename(columns={
-            "OBS_VALUE": "gdp_value",
-            "geo": "country_code"
-        })
+        df = df.drop_duplicates()
         
         # Save final dataset            
         generate_dataset_from_df(df=df, 
-                                file_path_base=f"{self._datasets_path}/eurostat_gdp_data_since_2010",
+                                file_path_base=dataset_path,
                                 dataset_format=self._datasets_format)
         
         return df
