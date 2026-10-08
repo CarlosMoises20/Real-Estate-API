@@ -2,17 +2,38 @@
 from backend.data.ingestion.source.api.base_api_data_source import BaseAPIDataSource
 import pandas as pd
 from io import StringIO
-from backend.common.utils import generate_dataset_from_df, transform_data_to_range
+from backend.common.utils import generate_dataset_from_df, transform_data_to_range, convert_pd_df_columns_to_datetime
+from backend.common.dataset_names import get_eurostat_dataset_name
 
 
 """This class is used to retrieve relevant data from the API of Eurostat"""
 class Eurostat(BaseAPIDataSource):
+
+    """Constructor of Eurostat class, with the default parameters"""
+    def __init__(self, datasets_format, datasets_path):
+        
+        super().__init__(
+            url="https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/",
+            params={
+                "format": "csvdata",
+                "formatVersion": "2.0",
+                "compress": "false"      
+            },
+            headers={
+                "User-Agent": "Mozilla/5.0",
+                "Content-Type": "application/json"
+            },
+            datasets_format=datasets_format, 
+            datasets_path=datasets_path
+        )
+
     
     """
     Retrieve JSON data from the API of INE and return dataframe with relevant data
     
     Parameters:
-        - country_code_list: A list of country codes for which to retrieve data (e.g., "PT,ES" for Portugal and Spain or "PT" for Portugal only)
+        - country_code: A country code or list of country codes for which to retrieve data 
+                        (e.g., "PT,ES" for Portugal and Spain or "PT" for Portugal only)
         
         - time_period: The time period for which to retrieve data. Examples:
             "ge:2010" for data from 2010 to the current year
@@ -40,10 +61,15 @@ class Eurostat(BaseAPIDataSource):
         
         self._url = url_base
         
-        dataset_path = f"{self._datasets_path}/eurostat_gdp_{country_code.lower()}_data_{time_period.replace(':', '_')}"
+        # In case of multiple country codes, whose names are separated by commas, replace commas with underscores
+        # since this will be used for the dataset name
+        if "," in country_code:
+            country_code = country_code.replace(",", "_")
+        
+        dataset_path = f"{self._datasets_path}/{get_eurostat_dataset_name(dataset_code, country_code, time_period)}"
         
         # NOTE uncomment if you want to generate CSV with the dataframe before pre-processing
-        df.to_csv(dataset_path, index=False)
+        #df.to_csv(dataset_path, index=False)
         
         # Remove samples where confidential status is C (confidential), N (not for publication) or P (information under non-statistical secrecy arrangements)
         # since this means that the information cannot be published in another API
@@ -75,6 +101,8 @@ class Eurostat(BaseAPIDataSource):
                               "TIME_PERIOD", "OBS_FLAG", "unit", "geo"])
         
         df = df.drop_duplicates()
+        
+        convert_pd_df_columns_to_datetime(df, ["date_start", "date_end"])
         
         # Save final dataset            
         generate_dataset_from_df(df=df, 

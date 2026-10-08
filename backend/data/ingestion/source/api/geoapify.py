@@ -1,10 +1,26 @@
 
 from backend.data.ingestion.source.api.base_api_data_source import BaseAPIDataSource
 import pandas as pd
+import os
 
 
 """This class is used to retrieve relevant data from the API of Geoapify"""
 class Geoapify(BaseAPIDataSource):
+    
+    def __init__(self, datasets_format, datasets_path):
+        super().__init__(
+            url="https://api.geoapify.com/v2/places",
+            params={
+                "limit": 500,
+                "apiKey": os.getenv("GEOAPIFY_API_KEY")
+            },  
+            headers={
+                "User-Agent": "Mozilla/5.0",
+                "Content-Type": "application/json"
+            },
+            datasets_format=datasets_format, 
+            datasets_path=datasets_path
+        )
     
     """Retrieve JSON data from the API of Geoapify and return dataframe with relevant data"""
     def get_api_data(self, categories_list, latitude, longitude, radius_meters):
@@ -27,7 +43,7 @@ class Geoapify(BaseAPIDataSource):
             for elem in data.get("features", [])
         ]
         
-        return pd.DataFrame(filtered_data)
+        return pd.DataFrame(filtered_data).drop_duplicates()
     
     
 

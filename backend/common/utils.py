@@ -1,6 +1,57 @@
 
-import re, calendar
+import re, calendar, os
 import pandas as pd
+from pathlib import Path
+
+
+"""
+Generic methods to convert columns from a Pandas dataframe, to datetime format
+
+    df - a Pandas dataframe
+    cols - a list of strings representing column names of the 'df' dataframe
+
+"""
+def convert_pd_df_columns_to_datetime(df, cols):
+    for col in cols:
+        if not pd.api.types.is_datetime64_any_dtype(df[col]):
+            df[col] = pd.to_datetime(df[col]) 
+        
+        
+
+"""
+Generic method to join internal data (df) with external data (df_external) by date range (by default,
+"date_start" and "date_end" columns)
+
+    df: a Pandas dataframe with data representing internal factors (number of rooms, number of WC, price, etc.)
+    df_external: a Pandas dataframe (or a list of Pandas dataframes) with data representing external factors (inflation, average salary, etc.)
+    old_col_name: a string representing the old name of the column representing the value of the parameter to be joined
+    new_col_name: a string representing the name of the column to be created, representing the value of the parameter to be joined
+
+    left_date_col: a string representing the name of the left date column in the 'df' dataframe
+    right_start_date_col: a string representing the name of the start date column in the 'df_external' dataframe
+    right_end_date_col: a string representing the name of the end date column in the 'df_external' dataframe
+
+"""
+def join_df_by_date_range(df, df_external, old_col_name, new_col_name, 
+                            left_date_col="PublishDate", 
+                            right_start_date_col="date_start", 
+                            right_end_date_col="date_end"):
+    
+    df_result = df.merge(
+        df_external[[right_start_date_col, right_end_date_col, old_col_name]],
+        how="cross"
+    )
+    
+    df_result = df_result[
+        (df_result[left_date_col] >= df_result[right_start_date_col]) & 
+        (df_result[left_date_col] <= df_result[right_end_date_col])
+    ]
+    
+    df_result = df_result.rename(columns={old_col_name: new_col_name})
+    
+    df_result = df_result.drop(columns=[right_start_date_col, right_end_date_col])
+    
+    return df_result
 
 
 """
@@ -11,10 +62,12 @@ It saves in 'CSV' or 'parquet' formats, depending on the 'dataset_format' parame
 """
 def generate_dataset_from_df(df, file_path_base, dataset_format):
     
-    if not dataset_format:
+    if not dataset_format or dataset_format not in ["csv", "parquet"]:
         raise ValueError("The 'dataset_format' parameter must be provided and cannot be None.")
-        
+    
     file_path = f"{file_path_base}.{dataset_format}"
+    
+    os.makedirs(Path(file_path).parent, exist_ok=True)
     
     if dataset_format == "csv":
         df.to_csv(file_path, index=False)

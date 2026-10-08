@@ -7,6 +7,21 @@ python -m venv .venv -> create a virtual environment to install all packages you
 pip install -r requirements.txt -> install all packages inside the file "requirements.txt"
 
 
+Environment variables that you need to set on the .env file inside the "compose" folder
+
+- GEOAPIFY_API_KEY
+   The API Key of Geoapify. Create an account on Geoapify and generate an API Key that you will use to access your data
+
+
+- FSQ_OS_PLACES_ACCESS_TOKEN
+
+    The Access Token of FSQ OS Places. Create an account on FSQ OS Places and generate an API Key that you will use to access your data
+
+
+- IDEALISTA_API_KEY
+
+    The API Key of Idealista. Create an account on Idealista and generate an API Key that you will use to access your data
+
 
 Datasets Source:
 

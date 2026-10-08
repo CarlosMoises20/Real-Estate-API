@@ -1,12 +1,26 @@
 
 from backend.data.ingestion.source.api.base_api_data_source import BaseAPIDataSource
 from backend.common.utils import *
+from backend.common.dataset_names import get_ine_dataset_name
 import pandas as pd
 import json, glob
 from pathlib import Path
 
 """This class is used to retrieve relevant data from the API of INE (Instituto Nacional de Estatística)"""
 class INE(BaseAPIDataSource):
+    
+    def __init__(self, datasets_format, datasets_path):
+        
+        super().__init__(
+            url="https://www.ine.pt/ine/json_indicador/pindica.jsp", 
+            headers={
+                "User-Agent": "Mozilla/5.0",
+                "Content-Type": "application/json"
+            },
+            datasets_format=datasets_format, 
+            datasets_path=datasets_path
+        )
+    
     
     """Retrieve JSON data from specific 'varcd' of the API of INE"""
     def __extract_data_from_varcd(self, varcd, cols, value_attr_old_name, value_attr_name):
@@ -25,8 +39,11 @@ class INE(BaseAPIDataSource):
         
         last_period_start, last_period_end = transform_data_to_range(period)
         
-        with open(f"{self._datasets_path}/ine_data_{value_attr_name}_from_{last_period_start}_to_{last_period_end}.json", "w") as f:
-            json.dump(data, f, indent=2)
+        dataset_name = get_ine_dataset_name(value_attr_name)
+        
+        # NOTE uncomment this if you want to save the data in raw format
+        """with open(f"{self._datasets_path}/{dataset_name}_from_{last_period_start}_to_{last_period_end}.json", "w") as f:
+            json.dump(data, f, indent=2)"""
             
         extracted_data = data[0]["Dados"][period]
         
@@ -45,32 +62,31 @@ class INE(BaseAPIDataSource):
                     else int(elem.get(value_attr_old_name))
             })
             
-        final_df = pd.DataFrame(final_data)
+        final_df = pd.DataFrame(final_data).drop_duplicates()
         
         # NOTE here it is necessary to generate because the API only stores data from the most recent months
         # generate the dataset that will be later used to train the model after being joined with other datasets
         generate_dataset_from_df(df=final_df, 
-                                 file_path_base=f"{self._datasets_path}/ine_data_{value_attr_name}_from_{last_period_start}_to_{last_period_end}", 
+                                 file_path_base=f"{self._datasets_path}/{dataset_name}_from_{last_period_start}_to_{last_period_end}", 
                                  dataset_format=self._datasets_format)
         
-        # Gather all datasets with name starting with "ine_data_{value_attr_name}" and merge them into a single dataset
+        # Gather all datasets with name starting with "{dataset_name}" and merge them into a single dataset
+        # Because this will include older datasets
         df_list = pd.concat([
             generate_df_from_dataset(file_path_base=f"{self._datasets_path}/{Path(file).stem}", 
                                      dataset_format=self._datasets_format)
             
-            for file in glob.glob(f"{self._datasets_path}/ine_data_{value_attr_name}*.{self._datasets_format}")
+            for file in glob.glob(f"{self._datasets_path}/{dataset_name}*.{self._datasets_format}")
         ])
         
-        df_list = df_list.drop_duplicates()
+        convert_pd_df_columns_to_datetime(df_list, ["date_start", "date_end"])
         
         # Save the merged dataset
         generate_dataset_from_df(df=df_list, 
-                                 file_path_base=f"{self._datasets_path}/ine_data_{value_attr_name}",
+                                 file_path_base=f"{self._datasets_path}/{dataset_name}",
                                  dataset_format=self._datasets_format)
         
         
-    
-
     """Retrieve JSON data from the API of INE and return a pandas dataframe with extracted relevant data"""
     def get_api_data(self):
         

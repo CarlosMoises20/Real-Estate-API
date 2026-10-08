@@ -56,5 +56,5 @@ class BaseDuckDBDataSource(BaseDataSource):
         
     """Abstract method used by subclasses to update data from the source, using the DuckDB connection"""
     @abstractmethod
-    def update_data(self):
+    def get_source_data(self):
         """..."""

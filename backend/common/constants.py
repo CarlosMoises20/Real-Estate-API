@@ -25,30 +25,3 @@ CATEGORICAL_COLUMNS = ["Type", "District", "City", "Town",
                        "EnergyCertificate", "ConservationStatus", "Floor"]
 
 
-# List of coordinates for Portugal Continent, Azores, and Madeira to retrieve geospatial data
-PORTUGAL_COORDINATES_LIST = [
-    {
-        "portugal_continent": {
-            "min_lon": -9.6,
-            "min_lat": 36.9,
-            "max_lon": -6.1,
-            "max_lat": 42.2
-        }
-    },
-    {
-        "portugal_azores": {
-            "min_lon": -31.4,
-            "min_lat": 36.8,
-            "max_lon": -24.9,
-            "max_lat": 39.8
-        }
-    },
-    {
-        "portugal_madeira": {
-            "min_lon": -17.4,
-            "min_lat": 30.0,
-            "max_lon": -15.8,
-            "max_lat": 33.2
-        }
-    }
-]
