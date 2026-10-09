@@ -170,13 +170,10 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         # Aggregate external data
         df_external_list_dict = self._aggregate_external_data()
         
-        # Aggregate internal data
-        df_internal = self._aggregate_internal_data()
-        
         # Final dataset starts with data from internal factors
-        df_final = df_internal
+        df_final = self._aggregate_internal_data()
         
-        ## TODO Join GDP data from Eurostat with final dataset
+        ## Join GDP data from Eurostat with final dataset
         
         df_gdp = df_external_list_dict["Eurostat GDP"]
         
@@ -278,6 +275,11 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             "Price (euros)"
         ]
         
+        dropped = [c for c in df_final.columns if c not in COLUMN_ORDER]
+        
+        if dropped:
+            print(f"Colunas descartadas pelo COLUMN_ORDER: {dropped}")
+            
         df_final = df_final[COLUMN_ORDER]
         
         # Save the final dataframe in the format indicated by 'datasets_format' (CSV or Parquet)         

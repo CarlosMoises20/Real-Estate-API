@@ -1,6 +1,7 @@
 
 import re, calendar, os
 import pandas as pd
+import numpy as np
 from pathlib import Path
 
 
@@ -14,7 +15,7 @@ Generic methods to convert columns from a Pandas dataframe, to datetime format
 def convert_pd_df_columns_to_datetime(df, cols):
     for col in cols:
         if not pd.api.types.is_datetime64_any_dtype(df[col]):
-            df[col] = pd.to_datetime(df[col]) 
+            df[col] = pd.to_datetime(df[col]).astype("datetime64[ns]")
         
         
 
@@ -37,21 +38,35 @@ def join_df_by_date_range(df, df_external, old_col_name, new_col_name,
                             right_start_date_col="date_start", 
                             right_end_date_col="date_end"):
     
-    df_result = df.merge(
-        df_external[[right_start_date_col, right_end_date_col, old_col_name]],
-        how="cross"
+    # lambda to convert column into datetime
+    to_ns = lambda s: pd.to_datetime(s, errors="coerce").astype("datetime64[ns]")
+
+    # renumerate lines from 0 to m-1, because each interval's position is later used as label
+    ext = df_external.reset_index(drop=True)
+    
+    # creates list of m intervals, closed on both sides (start <= data <= end)
+    intervals = pd.IntervalIndex.from_arrays(
+        to_ns(ext[right_start_date_col]),
+        to_ns(ext[right_end_date_col]),
+        closed="both",                      
     )
+
+    # properties data
+    dates = to_ns(df[left_date_col])
     
-    df_result = df_result[
-        (df_result[left_date_col] >= df_result[right_start_date_col]) & 
-        (df_result[left_date_col] <= df_result[right_end_date_col])
-    ]
+    # mask of non-null dates
+    valid = dates.notna().to_numpy()
+
+    # -1 = no match
+    pos = np.full(len(df), -1)                          
     
-    df_result = df_result.rename(columns={old_col_name: new_col_name})
+    # null dates are ignored
+    pos[valid] = intervals.get_indexer(dates[valid])    
+
+    # -1 → NaN
+    df[new_col_name] = ext[old_col_name].reindex(pos).to_numpy()   
     
-    df_result = df_result.drop(columns=[right_start_date_col, right_end_date_col])
-    
-    return df_result
+    return df
 
 
 """
