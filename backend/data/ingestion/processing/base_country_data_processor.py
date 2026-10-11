@@ -39,7 +39,7 @@ class BaseCountryDataProcessor(ABC):
     def _get_datasets_path(self, data_type):
         
         if data_type not in ["internal", "external", "final"]:
-            raise ValueError("data_type must be 'internal' or 'external'")
+            raise ValueError("data_type must be 'internal', 'external' or 'final'")
         
         return f"./backend/datasets/{self._get_country_code().lower()}/{data_type}" 
     

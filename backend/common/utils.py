@@ -10,18 +10,21 @@ Generic methods to convert columns from a Pandas dataframe, to datetime format
 
     df - a Pandas dataframe
     cols - a list of strings representing column names of the 'df' dataframe
+    format - similar to the 'format' parameter of the 'to_datetime' method from Pandas
 
 """
-def convert_pd_df_columns_to_datetime(df, cols):
+def convert_pd_df_columns_to_datetime(df, cols, format=None):
     for col in cols:
         if not pd.api.types.is_datetime64_any_dtype(df[col]):
-            df[col] = pd.to_datetime(df[col]).astype("datetime64[ns]")
+            df[col] = pd.to_datetime(df[col], format=format)
         
-        
+ 
 
 """
 Generic method to join internal data (df) with external data (df_external) by date range (by default,
-"date_start" and "date_end" columns)
+"date_end" column, based on the rule "right_end_date_col < PublishDate", to use the latest available metric
+that was published in the moment that the property was published; for example, a property from 2026 is associated
+to the inflation of 2025, because at the moment that property was published, the inflation of 2026 was not yet known)
 
     df: a Pandas dataframe with data representing internal factors (number of rooms, number of WC, price, etc.)
     df_external: a Pandas dataframe (or a list of Pandas dataframes) with data representing external factors (inflation, average salary, etc.)
@@ -29,43 +32,39 @@ Generic method to join internal data (df) with external data (df_external) by da
     new_col_name: a string representing the name of the column to be created, representing the value of the parameter to be joined
 
     left_date_col: a string representing the name of the left date column in the 'df' dataframe
-    right_start_date_col: a string representing the name of the start date column in the 'df_external' dataframe
     right_end_date_col: a string representing the name of the end date column in the 'df_external' dataframe
 
 """
 def join_df_by_date_range(df, df_external, old_col_name, new_col_name, 
                             left_date_col="PublishDate", 
-                            right_start_date_col="date_start", 
                             right_end_date_col="date_end"):
     
-    # lambda to convert column into datetime
-    to_ns = lambda s: pd.to_datetime(s, errors="coerce").astype("datetime64[ns]")
+    # Prepare dates and external data
+    dates = df[left_date_col]
 
-    # renumerate lines from 0 to m-1, because each interval's position is later used as label
-    ext = df_external.reset_index(drop=True)
-    
-    # creates list of m intervals, closed on both sides (start <= data <= end)
-    intervals = pd.IntervalIndex.from_arrays(
-        to_ns(ext[right_start_date_col]),
-        to_ns(ext[right_end_date_col]),
-        closed="both",                      
+    ext = df_external[[right_end_date_col, old_col_name]]
+
+    ext = (
+        ext.dropna(subset=[right_end_date_col, old_col_name])
+        .sort_values(right_end_date_col)
+        .reset_index(drop=True)
     )
 
-    # properties data
-    dates = to_ns(df[left_date_col])
-    
-    # mask of non-null dates
+    # Find the latest date_end < PublishDate
     valid = dates.notna().to_numpy()
+    pos = np.full(len(df), -1, dtype=int)
 
-    # -1 = no match
-    pos = np.full(len(df), -1)                          
-    
-    # null dates are ignored
-    pos[valid] = intervals.get_indexer(dates[valid])    
+    pos[valid] = (
+        np.searchsorted(
+            ext[right_end_date_col].to_numpy(dtype="datetime64[ns]"),
+            dates[valid].to_numpy(dtype="datetime64[ns]"),
+            side="left",
+        ) - 1
+    )
 
-    # -1 → NaN
-    df[new_col_name] = ext[old_col_name].reindex(pos).to_numpy()   
-    
+    # Assign matching values
+    df[new_col_name] = ext[old_col_name].reindex(pos).to_numpy()
+
     return df
 
 
@@ -261,4 +260,4 @@ def transform_data_to_range(dt_string):
         
         return f"{year}-{semester_number:02d}-01", f"{year}-{semester_number + 5:02d}-{last_day}"
     
-    
+

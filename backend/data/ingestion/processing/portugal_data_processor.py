@@ -3,7 +3,7 @@ import pandas as pd
 from backend.data.ingestion.source.api.ine import INE
 from backend.data.ingestion.processing.base_country_data_processor import BaseCountryDataProcessor
 from backend.common.constants import COLUMN_RENAME_MAP
-from backend.common.utils import generate_dataset_from_df, join_df_by_date_range
+from backend.common.utils import generate_dataset_from_df, join_df_by_date_range, convert_pd_df_columns_to_datetime
 from backend.common.dataset_names import *
 
 
@@ -40,12 +40,6 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             data_type="external"
         )
         
-        ### INE data related to average salary in Portugal
-        df_ine_avg_salary = super()._read_dataset(
-            name=get_ine_dataset_name(value_attr_name="avg_salary_euros"), 
-            data_type="external"
-        )
-        
         ### INE data related to inflation (homologous variation) in Portugal
         df_ine_inflation_homologous_variable = super()._read_dataset(
             name=get_ine_dataset_name(value_attr_name="inflation_homologous_variable"), 
@@ -58,15 +52,21 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             data_type="external"
         )
         
-        ### INE data related to unemployment rate in Portugal   
-        df_ine_unemployment_rate = super()._read_dataset(
-            name=get_ine_dataset_name("unemployment_rate"), 
+        ### INE data related to average salary in Portugal
+        df_ine_avg_salary = super()._read_dataset(
+            name=get_ine_dataset_name(value_attr_name="avg_salary_euros"), 
             data_type="external"
         )
         
-        ### INE data related to housing price per square meter (euros) in Portugal
-        df_ine_housing_price_per_m2_euros = super()._read_dataset(
-            name=get_ine_dataset_name("housing_price_per_m2_euros"), 
+        ### INE gross disposable income (€)
+        df_ine_gross_disposable_income = super()._read_dataset(
+            name=get_ine_dataset_name(value_attr_name="gross_disposable_income_euros"), 
+            data_type="external"
+        )
+        
+        ### INE data related to unemployment rate in Portugal   
+        df_ine_unemployment_rate = super()._read_dataset(
+            name=get_ine_dataset_name("unemployment_rate"), 
             data_type="external"
         )
         
@@ -75,14 +75,20 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             name=get_ine_dataset_name("housing_sold_num_transactions"), 
             data_type="external"
         )
+        
+        df_ine_housing_price_per_m2_euros = super()._read_dataset(
+            name=get_ine_dataset_name("housing_price_per_m2_euros"), 
+            data_type="external"
+        )
             
         return {
-            "INE (Average salary)": df_ine_avg_salary,
             "INE (Inflation - Homologous variation)": df_ine_inflation_homologous_variable,
             "INE (Housing credit rate)": df_ine_housing_credit_rate,
+            "INE (Average salary)": df_ine_avg_salary,
+            "INE (Gross Disposable Income - Euros)": df_ine_gross_disposable_income,
             "INE (Unemployment rate (%))": df_ine_unemployment_rate,
-            "INE (Housing price per square meter, euros)": df_ine_housing_price_per_m2_euros,
             "INE (Housing sold, number of transactions)": df_ine_housing_sold_num_transactions,
+            "INE (Housing price per square meter - Euros)": df_ine_housing_price_per_m2_euros,
             "Eurostat GDP": df_eurostat,
             "FSQ Places": df_fsq_os_places,
             "RASI Criminal Record": df_rasi
@@ -123,6 +129,8 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                             "NumberOfBathrooms", "NumberOfWC"]:
             
             df_internal[attr_name] = df_internal[attr_name].abs()
+            
+        convert_pd_df_columns_to_datetime(df=df_internal, cols=["PublishDate"], format="mixed")
         
         # Split the data into training and testing sets (Train-Test Split)
         return df_internal
@@ -173,7 +181,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         # Final dataset starts with data from internal factors
         df_final = self._aggregate_internal_data()
         
-        ## Join GDP data from Eurostat with final dataset
+        ### Join GDP data from Eurostat with final dataset
         
         df_gdp = df_external_list_dict["Eurostat GDP"]
         
@@ -186,6 +194,8 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          old_col_name="OBS_VALUE", 
                                          new_col_name=df_gdp_market_growth_output_col)
         
+        print("df:", df_final[["PublishDate"]].min(), df_final[["PublishDate"]].max())
+        
         df_gdp_final_consumption = df_gdp[df_gdp["na_item"] == "P31_S14"]
         
         df_gdp_final_cons_output_col = "household_consumption_growth_rate"
@@ -196,37 +206,42 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          new_col_name=df_gdp_final_cons_output_col)
         
         
-        # TODO Join Average Salary from INE with final dataset
-        
-        df_ine_avg_salary = df_external_list_dict["INE (Average salary)"]
-        
-        
-        # TODO Inflation (Homologous variation)
+        ### TODO Inflation (Homologous variation)
         
         df_inflation = df_external_list_dict["INE (Inflation - Homologous variation)"]
         
         
-        # TODO Housing credit rate
+        ### TODO Housing credit rate
         
         df_ine_housing_credit_rate = df_external_list_dict["INE (Housing credit rate)"]
         
-        # TODO Unemployment rate (%)
+        
+        ### TODO Average Salary
+        
+        df_ine_avg_salary = df_external_list_dict["INE (Average salary)"]
+        
+        
+        ### TODO Gross disposable income
+                
+        df_gross_disposable_income = df_external_list_dict["INE (Gross Disposable Income - Euros)"]
+        
+        ### TODO Unemployment rate (%)
         
         df_ine_unemployment_rate = df_external_list_dict["INE (Unemployment rate (%))"]
         
-        # TODO Housing price per square meter, euros
-        
-        df_ine_housing_price_per_m2_euros = df_external_list_dict["INE (Housing price per square meter, euros)"]
-        
-        # TODO Housing sold, number of transactions
+        ### TODO Housing sold, number of transactions
         
         df_ine_housing_sold_num_transactions = df_external_list_dict["INE (Housing sold, number of transactions)"]
         
-        # TODO FSQ Places
+        ### TODO Price per square meter
+        
+        df_ine_price_per_square_meter = df_external_list_dict["INE (Housing price per square meter - Euros)"]
+        
+        ### TODO FSQ Places
         
         df_fsq_places = df_external_list_dict["FSQ Places"]
         
-        # TODO RASI Criminal Record
+        ### TODO RASI Criminal Record
         
         df_rasi = df_external_list_dict["RASI Criminal Record"]
 
@@ -238,12 +253,10 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         # process, and use consistently throughout the machine learning pipeline.
         COLUMN_ORDER = [
             # Property type
-            *sorted(col for col in df_final.columns if col.startswith("Type_")),
+            "Type",
     
             # Location
-            *sorted(col for col in df_final.columns if col.startswith("District_")),
-            *sorted(col for col in df_final.columns if col.startswith("City_")),
-            *sorted(col for col in df_final.columns if col.startswith("Town_")),
+            "District", "City", "Town",
     
             # Property characteristics
             "NumberOfBedrooms", "NumberOfBathrooms", "NumberOfWC", "TotalRooms",
@@ -252,15 +265,13 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             "Built Area (m2)", "Living Area (m2)", "Total Area (m2)", "LotSize",
     
             # Building characteristics
-            *sorted(col for col in df_final.columns if col.startswith("Floor_")),
-            "Elevator", "Garage", "ConstructionYear", "Parking",
+            "Floor", "Elevator", "Garage", "ConstructionYear", "Parking",
     
             # Energy
-            *sorted(col for col in df_final.columns if col.startswith("EnergyCertificate_")),
-            "ElectricCarsCharging",
+            "EnergyCertificate", "ElectricCarsCharging",
     
             # Conservation
-            *sorted(col for col in df_final.columns if col.startswith("ConservationStatus_")),
+            "ConservationStatus",
     
             # Publish date
             "PublishDate",
@@ -295,7 +306,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
 # to update the data (including local datasets) to be consumed by the API
 if __name__ == "__main__":
     
-    pt = PortugalDataProcessor(datasets_format="csv")
+    pt = PortugalDataProcessor(datasets_format="parquet")
     
     # PARQUET format is more efficient for large datasets, 
     # but CSV format is more compatible with other tools and easier to read and edit manually
@@ -303,12 +314,14 @@ if __name__ == "__main__":
     # PARQUET format
     #pt.update_datasets()
     
-    pt.join_and_save_data()
+    pt.__setattr__("_datasets_format", "csv")
     
-    #pt.__setattr__("_datasets_format", "csv")
+    pt.join_and_save_data()
     
     # CSV format
     #pt.update_datasets() 
+    
+    #pt.join_and_save_data()
     
     """scheduler = BackgroundScheduler()
 

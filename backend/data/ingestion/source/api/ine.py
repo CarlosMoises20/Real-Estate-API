@@ -70,16 +70,22 @@ class INE(BaseAPIDataSource):
                                  file_path_base=f"{self._datasets_path}/{dataset_name}_from_{last_period_start}_to_{last_period_end}", 
                                  dataset_format=self._datasets_format)
         
-        # Gather all datasets with name starting with "{dataset_name}" and merge them into a single dataset
+        # Gather all datasets with name starting with "{dataset_name}", except the final one called "{dataset_name}"
+        # and merge them into a single dataset 
         # Because this will include older datasets
         df_list = pd.concat([
             generate_df_from_dataset(file_path_base=f"{self._datasets_path}/{Path(file).stem}", 
                                      dataset_format=self._datasets_format)
             
-            for file in glob.glob(f"{self._datasets_path}/{dataset_name}*.{self._datasets_format}")
+            for file in glob.glob(
+                f"{self._datasets_path}/{dataset_name}*.{self._datasets_format}"
+            ) if Path(file).stem != dataset_name
         ])
         
         convert_pd_df_columns_to_datetime(df_list, ["date_start", "date_end"])
+        
+        # Based on all columns except for "last_period_update", remove duplicated entries
+        df_list = df_list.drop_duplicates()
         
         # Save the merged dataset
         generate_dataset_from_df(df=df_list, 
@@ -131,3 +137,9 @@ class INE(BaseAPIDataSource):
                                         value_attr_old_name="valor", 
                                         cols=["geocod", "geodsg", "dim_3", "dim_3_t", 
                                                 "dim_4", "dim_4_t", "dim_5", "dim_5_t"])
+        
+        # Housing price per square meter (euros)
+        self.__extract_data_from_varcd(varcd="0012255", 
+                                        value_attr_name="housing_price_per_m2_euros",  
+                                        value_attr_old_name="valor", 
+                                        cols=["geocod", "geodsg", "dim_3", "dim_3_t"])
