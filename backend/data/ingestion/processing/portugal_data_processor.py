@@ -3,7 +3,7 @@ import pandas as pd
 from backend.data.ingestion.source.api.ine import INE
 from backend.data.ingestion.processing.base_country_data_processor import BaseCountryDataProcessor
 from backend.common.constants import COLUMN_RENAME_MAP
-from backend.common.utils import generate_dataset_from_df, join_df_by_date_range, convert_pd_df_columns_to_datetime
+from backend.common.utils import generate_dataset_from_df, join_df_with_external_data, convert_pd_df_columns_to_datetime
 from backend.common.dataset_names import *
 
 
@@ -181,6 +181,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         # Final dataset starts with data from internal factors
         df_final = self._aggregate_internal_data()
         
+        
         ### Join GDP data from Eurostat with final dataset
         
         df_gdp = df_external_list_dict["Eurostat GDP"]
@@ -189,61 +190,138 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         df_gdp_market_growth_output_col = "gdp_growth_rate"
         
-        df_final = join_df_by_date_range(df=df_final, 
+        df_final = join_df_with_external_data(df=df_final, 
                                          df_external=df_gdp_market_prices, 
                                          old_col_name="OBS_VALUE", 
                                          new_col_name=df_gdp_market_growth_output_col)
-        
-        print("df:", df_final[["PublishDate"]].min(), df_final[["PublishDate"]].max())
         
         df_gdp_final_consumption = df_gdp[df_gdp["na_item"] == "P31_S14"]
         
         df_gdp_final_cons_output_col = "household_consumption_growth_rate"
         
-        df_final = join_df_by_date_range(df=df_final, 
+        df_final = join_df_with_external_data(df=df_final, 
                                          df_external=df_gdp_final_consumption, 
                                          old_col_name="OBS_VALUE", 
                                          new_col_name=df_gdp_final_cons_output_col)
         
         
-        ### TODO Inflation (Homologous variation)
+        ### INFLATION (Homologous variation)
         
         df_inflation = df_external_list_dict["INE (Inflation - Homologous variation)"]
         
+        # Filter by geodsg=Portugal (contains results from Portugal instead of being specific
+        # to the continent; the difference is almost irrelevant) and dim_3_t=Total, since
+        # it aggregates the inflation results from every category
+        df_inflation = df_inflation[(df_inflation["geodsg"] == "Portugal") & (df_inflation["dim_3_t"] == "Total")]
         
-        ### TODO Housing credit rate
+        inflation_col = "inflation_growth_rate"
+        
+        df_final = join_df_with_external_data(df=df_final,
+                                         df_external=df_inflation, 
+                                         old_col_name="inflation_homologous_variable", 
+                                         new_col_name=inflation_col)
+        
+        
+        ### HOUSING CREDIT RATE
         
         df_ine_housing_credit_rate = df_external_list_dict["INE (Housing credit rate)"]
         
+        housing_credit_rate_col_name = "housing_credit_rate"
         
-        ### TODO Average Salary
+        df_final = join_df_with_external_data(df=df_final,
+                                         df_external=df_ine_housing_credit_rate, 
+                                         old_col_name=housing_credit_rate_col_name, 
+                                         new_col_name=housing_credit_rate_col_name,
+                                         right_region_col="geodsg")
+        
+        
+        ### AVERAGE SALARY
         
         df_ine_avg_salary = df_external_list_dict["INE (Average salary)"]
         
+        df_ine_avg_salary = df_ine_avg_salary[(df_ine_avg_salary["dim_3_t"] == "Total") & (df_ine_avg_salary["dim_4_t"] == "Total")]
         
-        ### TODO Gross disposable income
+        avg_salary_col_name = "avg_salary_euros"
+        
+        df_final = join_df_with_external_data(df=df_final,
+                                         df_external=df_ine_avg_salary, 
+                                         old_col_name=avg_salary_col_name, 
+                                         new_col_name=avg_salary_col_name,
+                                         right_region_col="geodsg")
+        
+        
+        ### GROSS DISPOSABLE INCOME (€)
                 
         df_gross_disposable_income = df_external_list_dict["INE (Gross Disposable Income - Euros)"]
         
-        ### TODO Unemployment rate (%)
+        gross_disposable_income_col_name = "gross_disposable_income_euros"
+        
+        df_final = join_df_with_external_data(df=df_final,
+                                         df_external=df_gross_disposable_income, 
+                                         old_col_name=gross_disposable_income_col_name, 
+                                         new_col_name=gross_disposable_income_col_name,
+                                         right_region_col="geodsg")
+        
+        
+        ### UNEMPLOYMENT RATE (%)
         
         df_ine_unemployment_rate = df_external_list_dict["INE (Unemployment rate (%))"]
         
-        ### TODO Housing sold, number of transactions
+        df_ine_unemployment_rate = df_ine_unemployment_rate[df_ine_unemployment_rate["dim_3_t"] == "HM"]
+        
+        unemp_rate_col_name = "unemployment_rate"
+        
+        df_final = join_df_with_external_data(df=df_final,
+                                         df_external=df_ine_unemployment_rate, 
+                                         old_col_name=unemp_rate_col_name, 
+                                         new_col_name=unemp_rate_col_name,
+                                         right_region_col="geodsg")
+        
+        
+        ### HOUSING SOLD (NUMBER OF TRANSACTIONS)
         
         df_ine_housing_sold_num_transactions = df_external_list_dict["INE (Housing sold, number of transactions)"]
         
-        ### TODO Price per square meter
+        df_ine_housing_sold_num_transactions = df_ine_housing_sold_num_transactions[
+            (df_ine_housing_sold_num_transactions["dim_3_t"] == "Total") & 
+            (df_ine_housing_sold_num_transactions["dim_4_t"] == "Total") & 
+            (df_ine_housing_sold_num_transactions["dim_5_t"] == "Total")
+        ]
+        
+        housing_sold_transactions_col_name = "housing_sold_num_transactions"
+        
+        df_final = join_df_with_external_data(df=df_final,
+                                         df_external=df_ine_housing_sold_num_transactions, 
+                                         old_col_name=housing_sold_transactions_col_name, 
+                                         new_col_name=housing_sold_transactions_col_name,
+                                         right_region_col="geodsg")
+        
+        ### PRICE PER SQUARE METER (€)
         
         df_ine_price_per_square_meter = df_external_list_dict["INE (Housing price per square meter - Euros)"]
         
-        ### TODO FSQ Places
+        df_ine_price_per_square_meter = df_ine_price_per_square_meter[
+            (df_ine_price_per_square_meter["dim_3_t"] == "Total")
+        ]
         
-        df_fsq_places = df_external_list_dict["FSQ Places"]
+        price_per_square_meter_col_name = "housing_price_per_m2_euros"
         
-        ### TODO RASI Criminal Record
+        df_final = join_df_with_external_data(df=df_final,
+                                         df_external=df_ine_price_per_square_meter, 
+                                         old_col_name=price_per_square_meter_col_name, 
+                                         new_col_name=price_per_square_meter_col_name,
+                                         right_region_col="geodsg")
+        
+        
+        ### TODO RASI CRIMINAL RECORD
         
         df_rasi = df_external_list_dict["RASI Criminal Record"]
+        
+        
+        ### TODO FSQ OS PLACES (FACILITIES)
+        
+        df_fsq_places = df_external_list_dict["FSQ Places"]
+    
 
 
         
@@ -281,8 +359,29 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             
             # Final consumption expenditure of household
             df_gdp_final_cons_output_col,
+            
+            # Inflation (homologous variable)
+            inflation_col,
+            
+            # Average salary (euros)
+            avg_salary_col_name,
+            
+            # Housing credit rate
+            housing_credit_rate_col_name,
+            
+            # Gross disposable income (euros)
+            gross_disposable_income_col_name,
+            
+            # Unemployment rate (%)
+            unemp_rate_col_name,
+            
+            # Housing sold (number of transactions)
+            housing_sold_transactions_col_name,
+            
+            # Price per square meter (euros)
+            price_per_square_meter_col_name,
     
-            # Target
+            # Target (price)
             "Price (euros)"
         ]
         
@@ -312,14 +411,14 @@ if __name__ == "__main__":
     # but CSV format is more compatible with other tools and easier to read and edit manually
     
     # PARQUET format
-    #pt.update_datasets()
+    pt.update_datasets()
+    
+    #pt.join_and_save_data()
     
     pt.__setattr__("_datasets_format", "csv")
     
-    pt.join_and_save_data()
-    
     # CSV format
-    #pt.update_datasets() 
+    pt.update_datasets() 
     
     #pt.join_and_save_data()
     
