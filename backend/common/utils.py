@@ -3,6 +3,7 @@ import re, calendar, os
 import pandas as pd
 import numpy as np
 from pathlib import Path
+from common.constants import LOCATION_MAPPING, PROPERTY_RESIDENTIAL_TYPES, PROPERTY_STANDARD_HOUSING_TYPES, PROPERTY_SPECIAL_RESIDENTIAL_TYPES
 
 
 """
@@ -20,8 +21,7 @@ def convert_pd_df_columns_to_datetime(df, cols, format=None):
         
  
 
-""" TODO include "left_region_col" e "right_region_col" in the JOIN logic in the implementation; review if left_region_col shouldn't be some condition deciding between "City" and "Town"
-
+"""
 Generic method to join internal data (df) with external data (df_external) by date range (by default,
 "date_end" column, based on the rule "right_end_date_col < PublishDate", to use the latest available metric
 that was published in the moment that the property was published; for example, a property from 2026 is associated
@@ -39,39 +39,70 @@ to the inflation of 2025, because at the moment that property was published, the
     right_region_col: a string representing the name of the right region column in the 'df_external' dataframe; 
                     this parameter is optional but it must be specified if you want to join data based on region, where
                         left_region_col = right_region_col
-
+                        
+    house_specific: a boolean flag that indicates whether if the JOIN is only applied to houses (True), or to all types of property (False)
+    location_mapping: a boolean flag that indicates whether it's necessary to map the location names to match the original ones (True) or not (False)
+    
 """
 def join_df_with_external_data(df, df_external, old_col_name, new_col_name, 
                             left_date_col="PublishDate", 
                             right_end_date_col="date_end",
                             left_region_col="City",
-                            right_region_col=None):
+                            right_region_col=None,
+                            house_specific=False,
+                            location_mapping=False):
+
+    # TODO: review this condition
+    if house_specific:
+        pass
+        """df = df[df["Type"].isin(PROPERTY_HOUSE_TYPES)]
+        df_external = df_external[df_external["Type"].isin(PROPERTY_HOUSE_TYPES)]"""
     
-    # Prepare dates and external data
-    dates = df[left_date_col]
+    # TODO review location mapping
+    if location_mapping:
+        pass
+        """df[left_region_col] = df[left_region_col].map(LOCATION_MAPPING)
+        df_external[left_region_col] = df_external[left_region_col].map(LOCATION_MAPPING)"""
 
-    ext = df_external[[right_end_date_col, old_col_name]]
+    left = pd.DataFrame({
+        "_pos": np.arange(len(df)),
+        "_date": df[left_date_col].to_numpy(dtype="datetime64[ns]")
+    })
 
-    ext = (
-        ext.dropna(subset=[right_end_date_col, old_col_name])
-        .sort_values(right_end_date_col)
-        .reset_index(drop=True)
+    right = pd.DataFrame({
+        "_end": df_external[right_end_date_col].to_numpy(dtype="datetime64[ns]"),
+        "_value": df_external[old_col_name].to_numpy()
+    })
+
+    by = None
+
+    if right_region_col:
+        left["_region"] = df[left_region_col].to_numpy()
+        right["_region"] = df_external[right_region_col].to_numpy()
+        by = "_region"
+
+    left = left.dropna(subset=["_date"])
+    right = right.dropna(subset=["_end", "_value"])
+
+    if by is not None:
+        left = left.dropna(subset=["_region"])
+        right = right.dropna(subset=["_region"])
+
+    merged = pd.merge_asof(
+        left.sort_values("_date"),
+        right.sort_values("_end"),
+        left_on="_date",
+        right_on="_end",
+        by=by,
+        direction="backward",
+        allow_exact_matches=False,
     )
 
-    # Find the latest date_end < PublishDate
-    valid = dates.notna().to_numpy()
-    pos = np.full(len(df), -1, dtype=int)
-
-    pos[valid] = (
-        np.searchsorted(
-            ext[right_end_date_col].to_numpy(dtype="datetime64[ns]"),
-            dates[valid].to_numpy(dtype="datetime64[ns]"),
-            side="left",
-        ) - 1
+    df[new_col_name] = (
+        merged.set_index("_pos")["_value"]
+        .reindex(np.arange(len(df)))
+        .to_numpy()
     )
-
-    # Assign matching values
-    df[new_col_name] = ext[old_col_name].reindex(pos).to_numpy()
 
     return df
 
@@ -269,137 +300,3 @@ def transform_data_to_range(dt_string):
         return f"{year}-{semester_number:02d}-01", f"{year}-{semester_number + 5:02d}-{last_day}"
     
 
-
-# TODO draft to test the new version of join_df_with_external_data including region logic
-"""def normalize_region(value):
-    # Normalize region names for case- and accent-insensitive matching
-    if pd.isna(value):
-        return pd.NA
-
-    value = str(value).strip().casefold()
-
-    return "".join(
-        char
-        for char in unicodedata.normalize("NFKD", value)
-        if not unicodedata.combining(char)
-    )
-
-
-def join_df_with_external_data(
-    df,
-    df_external,
-    old_col_name,
-    new_col_name,
-    left_date_col="PublishDate",
-    right_end_date_col="date_end",
-    left_region_col="City",
-    right_region_col=None,
-):
-    
-    #Join internal and external data using the latest external observation
-    #whose end date is strictly earlier than the internal publication date.
-
-    #When right_region_col is provided, observations must also match by region.
-    
-
-    use_region = right_region_col is not None
-
-    if use_region and left_region_col is None:
-        raise ValueError(
-            "left_region_col must be provided when right_region_col is specified."
-        )
-
-    result = df.copy()
-
-    # Prepare internal data, preserving the original row order.
-    left = pd.DataFrame({
-        "__row_id": np.arange(len(result)),
-        "__left_date": pd.to_datetime(
-            result[left_date_col],
-            errors="coerce"
-        ).to_numpy(),
-    })
-
-    if use_region:
-        left["__region"] = (
-            result[left_region_col]
-            .map(normalize_region)
-            .to_numpy()
-        )
-
-    # Prepare external data.
-    right_columns = [right_end_date_col, old_col_name]
-
-    if use_region:
-        right_columns.append(right_region_col)
-
-    right = df_external[right_columns].copy()
-
-    right["__right_date"] = pd.to_datetime(
-        right[right_end_date_col],
-        errors="coerce"
-    )
-
-    right["__value"] = right[old_col_name]
-
-    if use_region:
-        right["__region"] = right[right_region_col].map(normalize_region)
-
-        # Do not match observations without a region.
-        right = right.dropna(subset=["__region"])
-
-    right = right.dropna(
-        subset=["__right_date", "__value"]
-    )
-
-    columns_to_keep = ["__right_date", "__value"]
-
-    if use_region:
-        columns_to_keep.append("__region")
-
-    right = right[columns_to_keep]
-
-    # Each date must have at most one external value per region.
-    join_keys = ["__right_date"]
-
-    if use_region:
-        join_keys.append("__region")
-
-    if right.duplicated(subset=join_keys).any():
-        raise ValueError(
-            "Duplicate external observations detected for the same "
-            "date and region. Filter the external dataset further."
-        )
-
-    # merge_asof requires valid, ascending date keys.
-    left_valid = (
-        left[left["__left_date"].notna()]
-        .sort_values("__left_date")
-    )
-
-    right = right.sort_values("__right_date")
-
-    merge_kwargs = {
-        "left_on": "__left_date",
-        "right_on": "__right_date",
-        "direction": "backward",
-        "allow_exact_matches": False,
-    }
-
-    if use_region:
-        merge_kwargs["by"] = "__region"
-
-    joined = pd.merge_asof(
-        left_valid,
-        right,
-        **merge_kwargs,
-    )
-
-    # Restore the original row order and preserve unmatched rows as NaN.
-    matched_values = joined.set_index("__row_id")["__value"]
-
-    result[new_col_name] = pd.Series(
-        np.arange(len(result))
-    ).map(matched_values).to_numpy()
-
-    return result"""

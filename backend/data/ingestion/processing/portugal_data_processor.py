@@ -14,7 +14,48 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
     def __init__(self, datasets_format="parquet"):
         super().__init__(datasets_format=datasets_format)
         self._country_code = "PT"
+  
 
+    """Method used to aggregate data with internal factors, from several data sources"""
+    def _aggregate_internal_data(self):
+        
+        # Read CSV Kaggle dataset from the local datasets
+        df_kaggle = pd.read_csv(
+            filepath_or_buffer=f"{self._get_datasets_path(data_type='internal')}/portugal_listinigs.csv", 
+            sep=",", 
+            encoding="utf-8"
+        )
+        
+        # TODO gather data from Idealista
+        df_idealista = pd.DataFrame()
+        
+        df_returned_list = [df_kaggle, df_idealista]
+        
+        df_list = [df.rename(columns=COLUMN_RENAME_MAP) for df in df_returned_list]
+        
+        # Concatenate the dataframes 
+        df_internal = pd.concat(df_list, ignore_index=True)
+    
+        # Remove duplicated entries and irrelevant attributes
+        df_internal = df_internal.drop_duplicates()
+        
+        # Convert all boolean attributes to integer
+        df_internal = df_internal.map(lambda x: int(x) if isinstance(x, bool) else x)
+        
+        # Drop redundant attribute: EnergyEfficiencyLevel
+        df_internal = df_internal.drop(columns=["EnergyEfficiencyLevel"])
+        
+        # for some negative values, transform those into positive values by applying the absolute value
+        for attr_name in ["Living Area (m2)", "Total Area (m2)", "Built Area (m2)",
+                            "NumberOfBathrooms", "NumberOfWC"]:
+            
+            df_internal[attr_name] = df_internal[attr_name].abs()
+            
+        convert_pd_df_columns_to_datetime(df=df_internal, cols=["PublishDate"], format="mixed")
+        
+        # Split the data into training and testing sets (Train-Test Split)
+        return df_internal
+        
 
     """Method used to aggregate data with external factors, from several data sources"""
     def _aggregate_external_data(self):
@@ -93,49 +134,8 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             "FSQ Places": df_fsq_os_places,
             "RASI Criminal Record": df_rasi
         }
-        
+      
 
-    """Method used to aggregate data with internal factors, from several data sources"""
-    def _aggregate_internal_data(self):
-        
-        # Read CSV Kaggle dataset from the local datasets
-        df_kaggle = pd.read_csv(
-            filepath_or_buffer=f"{self._get_datasets_path(data_type='internal')}/portugal_listinigs.csv", 
-            sep=",", 
-            encoding="utf-8"
-        )
-        
-        # TODO gather data from Idealista
-        df_idealista = pd.DataFrame()
-        
-        df_returned_list = [df_kaggle, df_idealista]
-        
-        df_list = [df.rename(columns=COLUMN_RENAME_MAP) for df in df_returned_list]
-        
-        # Concatenate the dataframes 
-        df_internal = pd.concat(df_list, ignore_index=True)
-    
-        # Remove duplicated entries and irrelevant attributes
-        df_internal = df_internal.drop_duplicates()
-        
-        # Convert all boolean attributes to integer
-        df_internal = df_internal.map(lambda x: int(x) if isinstance(x, bool) else x)
-        
-        # Drop redundant attribute: EnergyEfficiencyLevel
-        df_internal = df_internal.drop(columns=["EnergyEfficiencyLevel"])
-        
-        # for some negative values, transform those into positive values by applying the absolute value
-        for attr_name in ["Living Area (m2)", "Total Area (m2)", "Built Area (m2)",
-                            "NumberOfBathrooms", "NumberOfWC"]:
-            
-            df_internal[attr_name] = df_internal[attr_name].abs()
-            
-        convert_pd_df_columns_to_datetime(df=df_internal, cols=["PublishDate"], format="mixed")
-        
-        # Split the data into training and testing sets (Train-Test Split)
-        return df_internal
-        
-        
     """Method used to update datasets by fetching data from different sources, including APIs and Kaggle datasets"""
     def update_datasets(self):
 
@@ -212,7 +212,10 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         # Filter by geodsg=Portugal (contains results from Portugal instead of being specific
         # to the continent; the difference is almost irrelevant) and dim_3_t=Total, since
         # it aggregates the inflation results from every category
-        df_inflation = df_inflation[(df_inflation["geodsg"] == "Portugal") & (df_inflation["dim_3_t"] == "Total")]
+        df_inflation = df_inflation[
+            (df_inflation["geodsg"] == "Portugal") & 
+            (df_inflation["dim_3_t"] == "Total")
+        ]
         
         inflation_col = "inflation_growth_rate"
         
@@ -232,38 +235,43 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          df_external=df_ine_housing_credit_rate, 
                                          old_col_name=housing_credit_rate_col_name, 
                                          new_col_name=housing_credit_rate_col_name,
-                                         right_region_col="geodsg")
+                                         right_region_col="geodsg",
+                                         house_specific=True)
         
         
-        ### AVERAGE SALARY
+        ### AVERAGE SALARY (€)
         
         df_ine_avg_salary = df_external_list_dict["INE (Average salary)"]
         
-        df_ine_avg_salary = df_ine_avg_salary[(df_ine_avg_salary["dim_3_t"] == "Total") & (df_ine_avg_salary["dim_4_t"] == "Total")]
+        df_ine_avg_salary = df_ine_avg_salary[
+            (df_ine_avg_salary["dim_3_t"] == "Total") & 
+            (df_ine_avg_salary["dim_4_t"] == "Total")
+        ]
         
         avg_salary_col_name = "avg_salary_euros"
         
         df_final = join_df_with_external_data(df=df_final,
                                          df_external=df_ine_avg_salary, 
                                          old_col_name=avg_salary_col_name, 
-                                         new_col_name=avg_salary_col_name,
-                                         right_region_col="geodsg")
+                                         new_col_name=avg_salary_col_name)
         
         
-        ### GROSS DISPOSABLE INCOME (€)
+        ### GROSS DISPOSABLE INCOME (€) TODO review JOIN, district names are different
                 
         df_gross_disposable_income = df_external_list_dict["INE (Gross Disposable Income - Euros)"]
         
         gross_disposable_income_col_name = "gross_disposable_income_euros"
         
         df_final = join_df_with_external_data(df=df_final,
-                                         df_external=df_gross_disposable_income, 
-                                         old_col_name=gross_disposable_income_col_name, 
-                                         new_col_name=gross_disposable_income_col_name,
-                                         right_region_col="geodsg")
+                                            df_external=df_gross_disposable_income, 
+                                            old_col_name=gross_disposable_income_col_name, 
+                                            new_col_name=gross_disposable_income_col_name,
+                                            left_region_col="District",
+                                            right_region_col="geodsg",
+                                            location_mapping=True)
         
         
-        ### UNEMPLOYMENT RATE (%)
+        ### UNEMPLOYMENT RATE (%) 
         
         df_ine_unemployment_rate = df_external_list_dict["INE (Unemployment rate (%))"]
         
@@ -275,10 +283,12 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          df_external=df_ine_unemployment_rate, 
                                          old_col_name=unemp_rate_col_name, 
                                          new_col_name=unemp_rate_col_name,
-                                         right_region_col="geodsg")
+                                         left_region_col="District",
+                                         right_region_col="geodsg",
+                                         location_mapping=True)
         
         
-        ### HOUSING SOLD (NUMBER OF TRANSACTIONS)
+        ### HOUSING SOLD (NUMBER OF TRANSACTIONS) TODO review JOIN, district names are different
         
         df_ine_housing_sold_num_transactions = df_external_list_dict["INE (Housing sold, number of transactions)"]
         
@@ -294,7 +304,10 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          df_external=df_ine_housing_sold_num_transactions, 
                                          old_col_name=housing_sold_transactions_col_name, 
                                          new_col_name=housing_sold_transactions_col_name,
-                                         right_region_col="geodsg")
+                                         left_region_col="District",
+                                         right_region_col="geodsg",
+                                         house_specific=True,
+                                         location_mapping=True)
         
         ### PRICE PER SQUARE METER (€)
         
@@ -310,7 +323,8 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          df_external=df_ine_price_per_square_meter, 
                                          old_col_name=price_per_square_meter_col_name, 
                                          new_col_name=price_per_square_meter_col_name,
-                                         right_region_col="geodsg")
+                                         right_region_col="geodsg",
+                                         house_specific=True)
         
         
         ### TODO RASI CRIMINAL RECORD
@@ -411,16 +425,16 @@ if __name__ == "__main__":
     # but CSV format is more compatible with other tools and easier to read and edit manually
     
     # PARQUET format
-    pt.update_datasets()
+    #pt.update_datasets()
     
     #pt.join_and_save_data()
     
     pt.__setattr__("_datasets_format", "csv")
     
     # CSV format
-    pt.update_datasets() 
+    #pt.update_datasets() 
     
-    #pt.join_and_save_data()
+    pt.join_and_save_data()
     
     """scheduler = BackgroundScheduler()
 

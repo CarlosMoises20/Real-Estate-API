@@ -140,6 +140,8 @@ class INE(BaseAPIDataSource):
                                         cols=["geodsg", "dim_3_t", "dim_4_t", "dim_5_t"])
         
         # Housing price per square meter (euros)
+        # https://smi.ine.pt/Indicador/Detalhes/18371
+        
         self.__extract_data_from_varcd(varcd="0012255", 
                                         value_attr_name="housing_price_per_m2_euros",  
                                         value_attr_old_name="valor", 
