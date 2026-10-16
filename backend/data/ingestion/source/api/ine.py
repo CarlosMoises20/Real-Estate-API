@@ -81,23 +81,24 @@ class INE(BaseAPIDataSource):
                 f"{self._datasets_path}/{dataset_name}*.{self._datasets_format}"
             ) if Path(file).stem != dataset_name
         ])
-        
-        # TODO check how to remove duplicates on other datasets such as "housing_price_per_m2"
-        
-        if varcd == "0001972":  
-            
-            # Remove Lisbon samples associated to irrelevant geocod, since this has duplicated entries
-            # Only stay with code 1711106, which represents the Lisbon municipality
-            df_list = df_list[~df_list["geocod"].isin(["171", "17"])]
-            
-            # Remove "geocod" from dataframe
-            df_list = df_list.drop(columns=["geocod"])
-            
+              
+        # Remove duplicated "geocod"        
+        keys = [c for c in df_list.columns if c not in ("geocod", value_attr_name)]
+
+        df_list = (
+            df_list
+                .assign(_geocod_len=df_list["geocod"].astype(str).str.len())
+                .sort_values(["_geocod_len", "geocod"])
+                .drop_duplicates(subset=keys, keep="last")
+                .drop(columns="_geocod_len")
+                .sort_index()
+        )
             
         # Based on all columns except for "last_period_update", remove duplicated entries
         df_list = df_list.drop_duplicates()    
             
-        # Check for duplicates based on date_start, date_end and geodsg
+        # Check for duplicates based on every dataframe columns except the one that contains the 
+        # value of the metric (value_attr_name)
         duplicates = df_list[
             df_list.duplicated(
                 subset=df_list.columns.drop(value_attr_name).tolist(),
@@ -105,6 +106,7 @@ class INE(BaseAPIDataSource):
             )
         ]
 
+        # If there are duplicates, print them
         if not duplicates.empty:
             print("Duplicates found")
             print(duplicates)
@@ -126,7 +128,7 @@ class INE(BaseAPIDataSource):
         self.__extract_data_from_varcd(varcd="0014647", 
                                         value_attr_name="inflation_growth_rate",  
                                         value_attr_old_name="valor",   
-                                        cols=["geodsg", "dim_3_t"])
+                                        cols=["geocod", "geodsg", "dim_3_t"])
         
         # Housing credit rate
         # https://smi.ine.pt/Indicador/Detalhes/657
@@ -136,37 +138,36 @@ class INE(BaseAPIDataSource):
         self.__extract_data_from_varcd(varcd="0001972", 
                                         value_attr_name="housing_credit_rate",  
                                         value_attr_old_name="valor", 
-                                        cols=["geodsg", "geocod", "dim_3_t"])
+                                        cols=["geocod", "geodsg", "geocod", "dim_3_t"])
                 
         # Average salary (euros)
         self.__extract_data_from_varcd(varcd="0014751", 
                                         value_attr_name="avg_salary_euros",  
                                         value_attr_old_name="valor", 
-                                        cols=["geodsg", "dim_3_t", 
-                                            "dim_4_t"])
+                                        cols=["geocod", "geodsg", "dim_3_t", "dim_4_t"])
                 
         # Gross disposable income (euros) 
         self.__extract_data_from_varcd(varcd="0014133", 
                                         value_attr_name="gross_disposable_income_euros",  
                                         value_attr_old_name="valor",
-                                        cols=["geodsg"])
+                                        cols=["geocod", "geodsg"])
         
         # Unemployment rate (%)
         # https://smi.ine.pt/Indicador/Detalhes/17432
         self.__extract_data_from_varcd(varcd="0012136", 
                                         value_attr_name="unemployment_rate",  
                                         value_attr_old_name="valor", 
-                                        cols=["geodsg", "dim_3_t"])
+                                        cols=["geocod", "geodsg", "dim_3_t"])
               
         # Number of sold houses & transactions
         self.__extract_data_from_varcd(varcd="0012785",
                                         value_attr_name="housing_sold_num_transactions",  
                                         value_attr_old_name="valor", 
-                                        cols=["geodsg", "dim_3_t", "dim_4_t", "dim_5_t"])
+                                        cols=["geocod", "geodsg", "dim_3_t", "dim_4_t", "dim_5_t"])
         
         # Housing price per square meter (euros)
         # https://smi.ine.pt/Indicador/Detalhes/18371
         self.__extract_data_from_varcd(varcd="0012255", 
                                         value_attr_name="housing_price_per_m2_euros",  
                                         value_attr_old_name="valor", 
-                                        cols=["geodsg", "dim_3_t"])
+                                        cols=["geocod", "geodsg", "dim_3_t"])
