@@ -26,6 +26,9 @@ Environment variables that you need to set on the .env file inside the "compose"
 Datasets Source:
 
 - Internal Dataset: https://www.kaggle.com/datasets/luvathoms/portugal-real-estate-2024 (portugal_listnigs.csv)
+
+    - IMPORTANT NOTE: This dataset contains data of some properties from Brazil and Dubai
+    
     ```
     # Released under MIT License
 

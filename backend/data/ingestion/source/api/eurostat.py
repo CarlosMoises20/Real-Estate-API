@@ -102,8 +102,6 @@ class Eurostat(BaseAPIDataSource):
         
         df = df.drop_duplicates()
         
-        convert_pd_df_columns_to_datetime(df, ["date_start", "date_end"])
-        
         # Save final dataset            
         generate_dataset_from_df(df=df, 
                                 file_path_base=dataset_path,

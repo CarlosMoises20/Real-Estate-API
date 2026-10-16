@@ -2,8 +2,8 @@
 import pandas as pd
 from backend.data.ingestion.source.api.ine import INE
 from backend.data.ingestion.processing.base_country_data_processor import BaseCountryDataProcessor
-from backend.common.constants import COLUMN_RENAME_MAP
-from backend.common.utils import generate_dataset_from_df, join_df_with_external_data, convert_pd_df_columns_to_datetime
+from backend.common.constants import COLUMN_RENAME_MAP, DATASETS_PATH_BASE
+from backend.common.utils import generate_dataset_from_df, join_df_with_external_data, convert_pd_df_columns_to_datetime, build_translate_names
 from backend.common.dataset_names import *
 
 
@@ -26,10 +26,39 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             encoding="utf-8"
         )
         
+        df_kaggle = df_kaggle.drop_duplicates()
+        
+        # Remove properties outside of Portugal
+        outside_pt_mask = df_kaggle["District"] == "Z - Fora de Portugal"
+        
+        df_internal = df_kaggle[~outside_pt_mask]
+        
+        # NOTE if, in the future, this logic is implemented in another place on the project, create a generic function for this and then here we call that function
+        # Move properties outside of Portugal to separate datasets representing their corresponding country
+        # (specified on the attributes "District" and "Town")
+        df_outside_pt = df_kaggle[outside_pt_mask]
+        
+        translate_names = build_translate_names(original_language="pt")
+        
+        for district_col_value, df_prop_outside_pt in df_outside_pt.groupby("City"):
+            
+            country_name = translate_names.get(district_col_value, None)
+
+            if country_name is None:
+                print(f"Unknown country or district: {district_col_value}")
+                continue
+            
+            country_name = country_name.lower().replace(" ", "_")
+
+            generate_dataset_from_df(df=df_prop_outside_pt,
+                                     file_path_base=f"{DATASETS_PATH_BASE}/{country_name}/internal/other_properties",
+                                     dataset_format=self._datasets_format)
+        
+        
         # TODO gather data from Idealista
         df_idealista = pd.DataFrame()
         
-        df_returned_list = [df_kaggle, df_idealista]
+        df_returned_list = [df_internal, df_idealista]
         
         df_list = [df.rename(columns=COLUMN_RENAME_MAP) for df in df_returned_list]
         
@@ -82,8 +111,8 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         )
         
         ### INE data related to inflation (homologous variation) in Portugal
-        df_ine_inflation_homologous_variable = super()._read_dataset(
-            name=get_ine_dataset_name(value_attr_name="inflation_homologous_variable"), 
+        df_ine_inflation_growth_rate = super()._read_dataset(
+            name=get_ine_dataset_name(value_attr_name="inflation_growth_rate"), 
             data_type="external"
         )
         
@@ -122,8 +151,8 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             data_type="external"
         )
             
-        return {
-            "INE (Inflation - Homologous variation)": df_ine_inflation_homologous_variable,
+        result = {
+            "INE (Inflation - Homologous variation)": df_ine_inflation_growth_rate,
             "INE (Housing credit rate)": df_ine_housing_credit_rate,
             "INE (Average salary)": df_ine_avg_salary,
             "INE (Gross Disposable Income - Euros)": df_ine_gross_disposable_income,
@@ -134,6 +163,16 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             "FSQ Places": df_fsq_os_places,
             "RASI Criminal Record": df_rasi
         }
+        
+        # convert date_start and date_end to datetime format before the JOIN
+        for name, df_ext in result.items():
+            
+            if name in ["FSQ Places", "RASI Criminal Record"]:
+                continue
+            
+            convert_pd_df_columns_to_datetime(df=df_ext, cols=["date_start", "date_end"])
+        
+        return result
       
 
     """Method used to update datasets by fetching data from different sources, including APIs and Kaggle datasets"""
@@ -205,7 +244,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          new_col_name=df_gdp_final_cons_output_col)
         
         
-        ### INFLATION (Homologous variation)
+        ### INFLATION GROWTH RATE (Homologous variation)
         
         df_inflation = df_external_list_dict["INE (Inflation - Homologous variation)"]
         
@@ -221,7 +260,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         df_final = join_df_with_external_data(df=df_final,
                                          df_external=df_inflation, 
-                                         old_col_name="inflation_homologous_variable", 
+                                         old_col_name="inflation_growth_rate", 
                                          new_col_name=inflation_col)
         
         
@@ -236,7 +275,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          old_col_name=housing_credit_rate_col_name, 
                                          new_col_name=housing_credit_rate_col_name,
                                          right_region_col="geodsg",
-                                         house_specific=True)
+                                         property_specific=True)
         
         
         ### AVERAGE SALARY (€)
@@ -256,7 +295,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          new_col_name=avg_salary_col_name)
         
         
-        ### GROSS DISPOSABLE INCOME (€) TODO review JOIN, district names are different
+        ### GROSS DISPOSABLE INCOME (€)
                 
         df_gross_disposable_income = df_external_list_dict["INE (Gross Disposable Income - Euros)"]
         
@@ -266,7 +305,6 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                             df_external=df_gross_disposable_income, 
                                             old_col_name=gross_disposable_income_col_name, 
                                             new_col_name=gross_disposable_income_col_name,
-                                            left_region_col="District",
                                             right_region_col="geodsg",
                                             location_mapping=True)
         
@@ -283,12 +321,11 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          df_external=df_ine_unemployment_rate, 
                                          old_col_name=unemp_rate_col_name, 
                                          new_col_name=unemp_rate_col_name,
-                                         left_region_col="District",
                                          right_region_col="geodsg",
                                          location_mapping=True)
         
         
-        ### HOUSING SOLD (NUMBER OF TRANSACTIONS) TODO review JOIN, district names are different
+        ### HOUSING SOLD (NUMBER OF TRANSACTIONS)
         
         df_ine_housing_sold_num_transactions = df_external_list_dict["INE (Housing sold, number of transactions)"]
         
@@ -304,9 +341,8 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          df_external=df_ine_housing_sold_num_transactions, 
                                          old_col_name=housing_sold_transactions_col_name, 
                                          new_col_name=housing_sold_transactions_col_name,
-                                         left_region_col="District",
                                          right_region_col="geodsg",
-                                         house_specific=True,
+                                         property_specific=True,
                                          location_mapping=True)
         
         ### PRICE PER SQUARE METER (€)
@@ -323,8 +359,9 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          df_external=df_ine_price_per_square_meter, 
                                          old_col_name=price_per_square_meter_col_name, 
                                          new_col_name=price_per_square_meter_col_name,
+                                         left_region_col="Town",
                                          right_region_col="geodsg",
-                                         house_specific=True)
+                                         property_specific=True)
         
         
         ### TODO RASI CRIMINAL RECORD
@@ -432,9 +469,9 @@ if __name__ == "__main__":
     pt.__setattr__("_datasets_format", "csv")
     
     # CSV format
-    #pt.update_datasets() 
+    pt.update_datasets() 
     
-    pt.join_and_save_data()
+    #pt.join_and_save_data()
     
     """scheduler = BackgroundScheduler()
 

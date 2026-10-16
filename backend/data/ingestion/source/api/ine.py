@@ -82,10 +82,32 @@ class INE(BaseAPIDataSource):
             ) if Path(file).stem != dataset_name
         ])
         
-        convert_pd_df_columns_to_datetime(df_list, ["date_start", "date_end"])
+        # TODO check how to remove duplicates on other datasets such as "housing_price_per_m2"
         
+        if varcd == "0001972":  
+            
+            # Remove Lisbon samples associated to irrelevant geocod, since this has duplicated entries
+            # Only stay with code 1711106, which represents the Lisbon municipality
+            df_list = df_list[~df_list["geocod"].isin(["171", "17"])]
+            
+            # Remove "geocod" from dataframe
+            df_list = df_list.drop(columns=["geocod"])
+            
+            
         # Based on all columns except for "last_period_update", remove duplicated entries
-        df_list = df_list.drop_duplicates()
+        df_list = df_list.drop_duplicates()    
+            
+        # Check for duplicates based on date_start, date_end and geodsg
+        duplicates = df_list[
+            df_list.duplicated(
+                subset=df_list.columns.drop(value_attr_name).tolist(),
+                keep=False
+            )
+        ]
+
+        if not duplicates.empty:
+            print("Duplicates found")
+            print(duplicates)
         
         # Save the merged dataset
         generate_dataset_from_df(df=df_list, 
@@ -100,18 +122,21 @@ class INE(BaseAPIDataSource):
         # https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_api_db
         # https://smi.ine.pt/Indicador
 
-        # Inflation (homologous variation)
+        # Inflation (homologous variation; growth rate)
         self.__extract_data_from_varcd(varcd="0014647", 
-                                        value_attr_name="inflation_homologous_variable",  
+                                        value_attr_name="inflation_growth_rate",  
                                         value_attr_old_name="valor",   
                                         cols=["geodsg", "dim_3_t"])
         
         # Housing credit rate
         # https://smi.ine.pt/Indicador/Detalhes/657
+        # 17, "Lisboa": a região (NUTS II)
+        # 171, "Grande Lisboa": NUTS III
+        # 1711106, "Lisboa": o município
         self.__extract_data_from_varcd(varcd="0001972", 
                                         value_attr_name="housing_credit_rate",  
                                         value_attr_old_name="valor", 
-                                        cols=["geodsg", "dim_3_t"])
+                                        cols=["geodsg", "geocod", "dim_3_t"])
                 
         # Average salary (euros)
         self.__extract_data_from_varcd(varcd="0014751", 
@@ -141,7 +166,6 @@ class INE(BaseAPIDataSource):
         
         # Housing price per square meter (euros)
         # https://smi.ine.pt/Indicador/Detalhes/18371
-        
         self.__extract_data_from_varcd(varcd="0012255", 
                                         value_attr_name="housing_price_per_m2_euros",  
                                         value_attr_old_name="valor", 

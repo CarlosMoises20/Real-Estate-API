@@ -4,8 +4,9 @@ from dotenv import load_dotenv
 from backend.data.ingestion.source.api.eurostat import Eurostat
 from backend.data.ingestion.source.duckdb.fsq_os_places import FSQOSPlaces
 from backend.data.ingestion.source.api.idealista import Idealista
-import kagglehub
+import kagglehub, pycountry
 from backend.common.utils import generate_df_from_dataset
+from backend.common.constants import DATASETS_PATH_BASE
 
 
 """
@@ -41,7 +42,7 @@ class BaseCountryDataProcessor(ABC):
         if data_type not in ["internal", "external", "final"]:
             raise ValueError("data_type must be 'internal', 'external' or 'final'")
         
-        return f"./backend/datasets/{self._get_country_code().lower()}/{data_type}" 
+        return f"{DATASETS_PATH_BASE}/{self._get_country_name().lower().replace(' ', '_')}/{data_type}" 
     
     """
     Generic method to update data from the Eurostat API
@@ -89,7 +90,6 @@ class BaseCountryDataProcessor(ABC):
 
     """Generic method to generate a pandas dataframe from a dataset"""
     def _read_dataset(self, name, data_type):
-        
         return generate_df_from_dataset(
             file_path_base=f"{self._get_datasets_path(data_type)}/{name}",
             dataset_format=self._datasets_format
@@ -103,6 +103,11 @@ class BaseCountryDataProcessor(ABC):
     """    
     def _get_country_code(self):
         return self._country_code
+    
+    
+    """Generic method to get the country name based on the country code (2-letter format always)"""
+    def _get_country_name(self):
+        return pycountry.countries.get(alpha_2=self._get_country_code()).name
     
     
     """
@@ -133,6 +138,7 @@ class BaseCountryDataProcessor(ABC):
     @abstractmethod
     def _aggregate_internal_data(self):
         """..."""
+    
     
     """
     Abstract method to join and save data in a final dataset representing the specific country's 

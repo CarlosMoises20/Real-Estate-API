@@ -24,58 +24,48 @@ COLUMN_RENAME_MAP = {
 CATEGORICAL_COLUMNS = ["Type", "District", "City", "Town", 
                        "EnergyCertificate", "ConservationStatus", "Floor"]
 
-
+# Residential Properties
 PROPERTY_RESIDENTIAL_TYPES = [
-    "Apartment",
-    "House",
-    "Duplex",
-    "Other - Residential",
-    "Studio",
-    "Farm",
-    "Mansion",
-    "Manor",
+    "Apartment", "House", "Duplex", "Studio",
+    "Mansion", "Manor", "Other - Residential",
+    "Investment"
 ]
 
-PROPERTY_STANDARD_HOUSING_TYPES = [
-    "Apartment",
-    "House",
-    "Duplex",
-    "Studio",
-    "Other - Residential",
-]
+# Oath base of every datasets of the project
+DATASETS_PATH_BASE = "./backend/datasets"
 
-PROPERTY_SPECIAL_RESIDENTIAL_TYPES = [
-    "Farm",
-    "Mansion",
-    "Manor",
-]
+# Dictionary to map cities to its corresponding countries. This
+# dictionary can be updated as necessary
+CITY_TO_COUNTRY_CODE = {
+    "Dubai": "AE"
+}
 
-# Mapping Portuguese subregions to their parent regions on the dataset
+# Mapping Portuguese districts (values) to their parent regions (keys)
 LOCATION_MAPPING = {
     # North of Portugal
     "Norte": [
-        "Vila Real",
-        "Porto",
+        "Viana do Castelo",
         "Braga",
-        "Bragança",
-        "Viana do Castelo"
+        "Porto",
+        "Vila Real",
+        "Bragança"
     ],
 
     # Center of Portugal
     "Centro": [
-        "Leiria",
-        "Guarda",
+        "Aveiro",
         "Coimbra",
+        "Leiria",
         "Viseu",
-        "Castelo Branco",
-        "Aveiro"
+        "Guarda",
+        "Castelo Branco"
     ],
 
-    # Lisbom Regions
+    # Lisbon Regions
     "Grande Lisboa": [
         "Lisboa"
     ],
-    
+
     "Península de Setúbal": [
         "Setúbal"
     ],
@@ -97,19 +87,23 @@ LOCATION_MAPPING = {
         "Faro"
     ],
 
-    # Automonous regions
+    # Autonomous regions (not mainland districts)
     "Região Autónoma dos Açores": [
         "Ilha Terceira",
         "Ilha de São Miguel",
         "Ilha de Santa Maria",
-        "Ilha de São Jorge",
         "Ilha do Faial",
         "Ilha das Flores",
-        "Ilha do Pico"
+        "Ilha do Pico",
+        "Ilha Graciosa",
+        "Ilha de São Jorge",
+        "Ilha do Corvo"
     ],
 
     "Região Autónoma da Madeira": [
         "Ilha da Madeira",
-        "Ilha de Porto Santo"
+        "Ilha de Porto Santo",
+        "Ilhas Desertas",
+        "Ilhas Selvagens"
     ]
 }

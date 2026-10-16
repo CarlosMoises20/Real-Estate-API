@@ -1,9 +1,10 @@
 
-import re, calendar, os
+import re, calendar, os, pycountry
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from common.constants import LOCATION_MAPPING, PROPERTY_RESIDENTIAL_TYPES, PROPERTY_STANDARD_HOUSING_TYPES, PROPERTY_SPECIAL_RESIDENTIAL_TYPES
+from babel import Locale
+from backend.common.constants import LOCATION_MAPPING, CITY_TO_COUNTRY_CODE, PROPERTY_RESIDENTIAL_TYPES
 
 
 """
@@ -16,9 +17,41 @@ Generic methods to convert columns from a Pandas dataframe, to datetime format
 """
 def convert_pd_df_columns_to_datetime(df, cols, format=None):
     for col in cols:
-        if not pd.api.types.is_datetime64_any_dtype(df[col]):
-            df[col] = pd.to_datetime(df[col], format=format)
+        if col not in df.columns:
+            raise KeyError(
+                f"Column '{col}' does not exist in the dataframe. "
+                f"Columns list: {df.columns.tolist()}"
+            )
+            
+        df[col] = pd.to_datetime(df[col], format=format)
         
+ 
+"""
+Auxiliary method to translate names of cities and countries
+
+    original_language: the language in which the city / country is in; must be specified in the country-code 2-letter format in lowercase (for example, "pt" for portuguese and "en" for english)
+    
+    target_language: the language in which the city / country will be translated to; must be specified in the country-code 2-letter format in lowercase (for example, "pt" for portuguese and "en" for english); by default, it's english ("en")
+    
+""" 
+def build_translate_names(original_language, target_language="en"): 
+
+    original = Locale.parse(original_language).territories
+    translated = Locale.parse(target_language).territories
+
+    translate_names = {
+        name.title(): translated[code]
+        for code, name in original.items()
+        if code in translated and pycountry.countries.get(alpha_2=code)
+    }
+    
+    translate_names.update({
+        city.title(): translated[code]
+        for city, code in CITY_TO_COUNTRY_CODE.items()
+        if code in translated and pycountry.countries.get(alpha_2=code)
+    })
+    
+    return translate_names
  
 
 """
@@ -40,51 +73,102 @@ to the inflation of 2025, because at the moment that property was published, the
                     this parameter is optional but it must be specified if you want to join data based on region, where
                         left_region_col = right_region_col
                         
-    house_specific: a boolean flag that indicates whether if the JOIN is only applied to houses (True), or to all types of property (False)
+    property_specific: a boolean flag that indicates whether if the JOIN is only applied to houses (True), or to all types of property (False)
+    
+    property_types: an optional list of strings; it represents the types of properties to be considered on the JOIN, and it must be 
+                    specified if property_specific is set to True
+    
     location_mapping: a boolean flag that indicates whether it's necessary to map the location names to match the original ones (True) or not (False)
+                        This mapping will consider that the values of df_external[right_region_col] are keys of LOCATION_MAPPING ("Norte", "Centro", "Grande Lisboa", etc) 
+                        and the values of df[left_region_col] are values of LOCATION_MAPPING ("Vila Real", "Porto", etc)
     
 """
 def join_df_with_external_data(df, df_external, old_col_name, new_col_name, 
-                            left_date_col="PublishDate", 
-                            right_end_date_col="date_end",
-                            left_region_col="City",
-                            right_region_col=None,
-                            house_specific=False,
-                            location_mapping=False):
-
-    # TODO: review this condition
-    if house_specific:
-        pass
-        """df = df[df["Type"].isin(PROPERTY_HOUSE_TYPES)]
-        df_external = df_external[df_external["Type"].isin(PROPERTY_HOUSE_TYPES)]"""
+                                left_date_col="PublishDate", 
+                                right_end_date_col="date_end",
+                                left_region_col="City",
+                                right_region_col=None,
+                                property_specific=False,
+                                property_types=PROPERTY_RESIDENTIAL_TYPES,
+                                location_mapping=False):
     
-    # TODO review location mapping
-    if location_mapping:
-        pass
-        """df[left_region_col] = df[left_region_col].map(LOCATION_MAPPING)
-        df_external[left_region_col] = df_external[left_region_col].map(LOCATION_MAPPING)"""
+    # If location_mapping is set to True and right_region_col is not specified, raise an exception
+    if location_mapping and not right_region_col:
+        raise ValueError("When 'location_mapping' is True, 'right_region_col' must be specified")
+    
+    left_region_col = "District" if location_mapping else left_region_col
 
+    # dt.normalize() -> Sets the time to midnight (00:00:00), preserving the timezone,
+    # so that the comparison considers only the calendar date, not the time.
+    # For example, if dt is 2025-12-31 00:00:00 and PublishDate is 2025-12-31 15:30:00,
+    # normalizing PublishDate gives 2025-12-31 00:00:00, so both dates are equal
     left = pd.DataFrame({
         "_pos": np.arange(len(df)),
-        "_date": df[left_date_col].to_numpy(dtype="datetime64[ns]")
+        "_date": df[left_date_col].dt.normalize().to_numpy(dtype="datetime64[ns]")   
     })
 
     right = pd.DataFrame({
-        "_end": df_external[right_end_date_col].to_numpy(dtype="datetime64[ns]"),
+        "_end": df_external[right_end_date_col].dt.normalize().to_numpy(dtype="datetime64[ns]"),
         "_value": df_external[old_col_name].to_numpy()
     })
 
     by = None
-
+    
+    # JOIN based on region if right_region_col is specified
     if right_region_col:
-        left["_region"] = df[left_region_col].to_numpy()
+        
+        # Location Mapping is only applied if location_mapping is set to True and right_region_col is specified
+        # because if there is no region-based JOIN, there is no location-based JOIN and location mapping, since
+        # location mapping is a part of the region-based JOIN 
+        if location_mapping:
+            
+            # Dictionary that maps each district to its corresponding region
+            # For example, Porto -> Norte; Lisboa -> Grande Lisboa; Braga -> Norte; Leiria -> Centro
+            district_to_region = {
+                district: region
+                for region, districts in LOCATION_MAPPING.items()
+                for district in districts
+            }
+            
+            # confirm that there are no unmapped districts (len(unmapped) must be 0; otherwise LOCATION_MAPPING must be updated with
+            # the unmapped cities)
+            districts = df[left_region_col]
+            
+            unmapped = districts[~districts.isin(district_to_region) & districts.notna()].unique()
+            
+            if len(unmapped) > 0:
+                print(f"Unmapped districts in LOCATION_MAPPING: {list(unmapped)}")
+
+            left["_region"] = df[left_region_col].map(district_to_region).to_numpy()
+            
+        else:
+            left["_region"] = df[left_region_col].to_numpy()
+        
+        
         right["_region"] = df_external[right_region_col].to_numpy()
         by = "_region"
+        
+    # Condition related to JOIN which only includes properties corresponding to some types
+    # If the condition is true, properties such as stores, warehouses and offices might be excluded from the JOIN
+    if property_specific:
+        
+        if property_types is None:
+            raise ValueError("When 'property_specific' is True, 'property_types' must be specified as an array of strings")
+        
+        has_dwelling = df["NumberOfBedrooms"].gt(0) | df["NumberOfBathrooms"].gt(0)
+        
+        # Include only residential properties and farms/estates that have a dwelling (at least 1 bedroom or 1 bathroom)
+        housing_mask = (
+            df["Type"].isin(property_types)
+            | (df["Type"].isin(["Farm", "Estate"]) & has_dwelling)
+        )
+        
+        left = left[housing_mask.to_numpy()]
 
     left = left.dropna(subset=["_date"])
     right = right.dropna(subset=["_end", "_value"])
 
-    if by is not None:
+    if by:
         left = left.dropna(subset=["_region"])
         right = right.dropna(subset=["_region"])
 
@@ -94,7 +178,6 @@ def join_df_with_external_data(df, df_external, old_col_name, new_col_name,
         left_on="_date",
         right_on="_end",
         by=by,
-        direction="backward",
         allow_exact_matches=False,
     )
 
@@ -148,10 +231,14 @@ def generate_df_from_dataset(file_path_base, dataset_format):
         return pd.read_parquet(file_path)
 
 
+"""
+Generic method to transform data rage in a specific format and return two strings with the start date and the end date
 
-# dt_string = "Janeiro de 2022" (example)
-# returns two dates: the first day of the month and the last day of the month
-# for example; '2022-01-01' and '2022-01-31'
+    dt_string = "Janeiro de 2022" (example)
+    returns two dates: the first day of the month and the last day of the month
+    for example; '2022-01-01' and '2022-01-31'
+    
+"""
 def transform_data_to_range(dt_string):
     
     ### FOR MONTHLY FORMATS
@@ -201,7 +288,6 @@ def transform_data_to_range(dt_string):
     
     
     
-    
     ### FOR YEAR FORMATS
     
     # Pattern 'Year'; example: "2023"
@@ -210,7 +296,6 @@ def transform_data_to_range(dt_string):
     if match_year:
         year = int(match_year.group())
         return f"{year}-01-01", f"{year}-12-31"
-    
     
     
     
@@ -256,7 +341,6 @@ def transform_data_to_range(dt_string):
         last_day = calendar.monthrange(year, trimester_number + 2)[1]
         
         return f"{year}-{trimester_number:02d}-01", f"{year}-{trimester_number + 2:02d}-{last_day}"
-    
     
     
     
