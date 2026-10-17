@@ -195,6 +195,8 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         ine.get_api_data()
         
+        # TODO Banco de Portugal
+        
         # API Reference: https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-detailed-guidelines/api-statistics
         # SMDX-2.0 CSV
         super()._update_eurostat(
@@ -345,7 +347,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          property_specific=True,
                                          location_mapping=True)
         
-        ### PRICE PER SQUARE METER (€)
+        ### PRICE PER SQUARE METER (€) # TODO review mapping
         
         df_ine_price_per_square_meter = df_external_list_dict["INE (Housing price per square meter - Euros)"]
         
@@ -359,7 +361,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          df_external=df_ine_price_per_square_meter, 
                                          old_col_name=price_per_square_meter_col_name, 
                                          new_col_name=price_per_square_meter_col_name,
-                                         left_region_col="Town",
+                                         #left_region_col="Town",       # TODO review, some values are in Town, others in City
                                          right_region_col="geodsg",
                                          property_specific=True)
         

@@ -19,7 +19,7 @@ class Idealista(BaseAPIDataSource):
         )
     
     """Retrive JSON data from the API of INE and return dataframe with relevant data"""
-    def get_source_data(self):
+    def get_api_data(self):
         data = super().get_source_data().json()
         
         # TODO extract relevant parameters from the data

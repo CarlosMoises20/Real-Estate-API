@@ -40,6 +40,17 @@ CITY_TO_COUNTRY_CODE = {
     "Dubai": "AE"
 }
 
+CITY_REGION_OVERRIDES = {
+    **dict.fromkeys(["Arouca", "Castelo de Paiva", "Espinho", "Oliveira de Azeméis", "Santa Maria da Feira",
+                     "São João da Madeira", "Vale de Cambra",      # Aveiro district
+                     "Vila Nova de Foz Côa",                       # Guarda
+                     "Cinfães", "Penedono"], "Norte"),             # Viseu
+    **dict.fromkeys(["Alcobaça", "Bombarral", "Caldas da Rainha", "Nazaré", "Peniche", "Óbidos",   # Leiria
+                     "Alenquer", "Arruda dos Vinhos", "Azambuja", "Cadaval", "Lourinhã",
+                     "Sobral de Monte Agraço", "Torres Vedras"], "Oeste e Vale do Tejo"),          # Lisboa
+    **dict.fromkeys(["Alcácer do Sal", "Grândola", "Santiago do Cacém", "Sines"], "Alentejo"),    # Setúbal
+}
+
 # Mapping Portuguese districts (values) to their parent regions (keys)
 LOCATION_MAPPING = {
     # North of Portugal

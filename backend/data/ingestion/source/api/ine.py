@@ -81,35 +81,9 @@ class INE(BaseAPIDataSource):
                 f"{self._datasets_path}/{dataset_name}*.{self._datasets_format}"
             ) if Path(file).stem != dataset_name
         ])
-              
-        # Remove duplicated "geocod"        
-        keys = [c for c in df_list.columns if c not in ("geocod", value_attr_name)]
-
-        df_list = (
-            df_list
-                .assign(_geocod_len=df_list["geocod"].astype(str).str.len())
-                .sort_values(["_geocod_len", "geocod"])
-                .drop_duplicates(subset=keys, keep="last")
-                .drop(columns="_geocod_len")
-                .sort_index()
-        )
             
-        # Based on all columns except for "last_period_update", remove duplicated entries
-        df_list = df_list.drop_duplicates()    
-            
-        # Check for duplicates based on every dataframe columns except the one that contains the 
-        # value of the metric (value_attr_name)
-        duplicates = df_list[
-            df_list.duplicated(
-                subset=df_list.columns.drop(value_attr_name).tolist(),
-                keep=False
-            )
-        ]
-
-        # If there are duplicates, print them
-        if not duplicates.empty:
-            print("Duplicates found")
-            print(duplicates)
+        # Based on all columns, remove duplicated entries
+        df_list = df_list.drop_duplicates()
         
         # Save the merged dataset
         generate_dataset_from_df(df=df_list, 

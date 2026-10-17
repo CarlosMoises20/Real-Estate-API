@@ -75,9 +75,6 @@ to the inflation of 2025, because at the moment that property was published, the
                         
     property_specific: a boolean flag that indicates whether if the JOIN is only applied to houses (True), or to all types of property (False)
     
-    property_types: an optional list of strings; it represents the types of properties to be considered on the JOIN, and it must be 
-                    specified if property_specific is set to True
-    
     location_mapping: a boolean flag that indicates whether it's necessary to map the location names to match the original ones (True) or not (False)
                         This mapping will consider that the values of df_external[right_region_col] are keys of LOCATION_MAPPING ("Norte", "Centro", "Grande Lisboa", etc) 
                         and the values of df[left_region_col] are values of LOCATION_MAPPING ("Vila Real", "Porto", etc)
@@ -89,7 +86,6 @@ def join_df_with_external_data(df, df_external, old_col_name, new_col_name,
                                 left_region_col="City",
                                 right_region_col=None,
                                 property_specific=False,
-                                property_types=PROPERTY_RESIDENTIAL_TYPES,
                                 location_mapping=False):
     
     # If location_mapping is set to True and right_region_col is not specified, raise an exception
@@ -152,14 +148,11 @@ def join_df_with_external_data(df, df_external, old_col_name, new_col_name,
     # If the condition is true, properties such as stores, warehouses and offices might be excluded from the JOIN
     if property_specific:
         
-        if property_types is None:
-            raise ValueError("When 'property_specific' is True, 'property_types' must be specified as an array of strings")
-        
         has_dwelling = df["NumberOfBedrooms"].gt(0) | df["NumberOfBathrooms"].gt(0)
         
         # Include only residential properties and farms/estates that have a dwelling (at least 1 bedroom or 1 bathroom)
         housing_mask = (
-            df["Type"].isin(property_types)
+            df["Type"].isin(PROPERTY_RESIDENTIAL_TYPES)
             | (df["Type"].isin(["Farm", "Estate"]) & has_dwelling)
         )
         

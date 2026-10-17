@@ -1,6 +1,7 @@
 
 from backend.data.ingestion.source.base_data_source import BaseDataSource
 import time, requests
+from abc import abstractmethod
 
 
 """
@@ -31,7 +32,7 @@ class BaseAPIDataSource(BaseDataSource):
         self._headers = headers
     
     
-    """Implement abstract method to retrieve data from an indicated API, using the url, parameters and headers indicated in the constructor"""
+    """Implement method to retrieve data from an indicated API, using the url, parameters and headers indicated in the constructor"""
     def get_source_data(self, retries=10):
         
         for attempt in range(retries):
@@ -47,3 +48,9 @@ class BaseAPIDataSource(BaseDataSource):
                 wait = 2 ** attempt
                 print(f"Request failed. New attempt in {wait}s...")
                 time.sleep(wait)
+                
+                
+    """Get API Data: Abstract method"""
+    @abstractmethod
+    def get_api_data(self):
+        pass
