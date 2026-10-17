@@ -227,7 +227,7 @@ def generate_df_from_dataset(file_path_base, dataset_format):
 """
 Generic method to transform data rage in a specific format and return two strings with the start date and the end date
 
-    dt_string = "Janeiro de 2022" (example)
+    dt_string = "January 2022" (example)
     returns two dates: the first day of the month and the last day of the month
     for example; '2022-01-01' and '2022-01-31'
     
@@ -236,10 +236,10 @@ def transform_data_to_range(dt_string):
     
     ### FOR MONTHLY FORMATS
     
-    # Pattern ('Month' de 'Year'); example: "Janeiro de 2022"
+    # Pattern ('Month' 'Year'); example: "January 2022"
     match_month_year = re.fullmatch(
-        r"(Janeiro|Fevereiro|Março|Abril|Maio|Junho|Julho|Agosto|"
-        r"Setembro|Outubro|Novembro|Dezembro) de (\d{4})",
+        r"(January|February|March|April|May|June|July|August|"
+        r"September|October|November|December) (\d{4})",
         dt_string
     )
     
@@ -253,18 +253,18 @@ def transform_data_to_range(dt_string):
             month_name, year = match_month_year.groups()
         
             month_number = {
-                "Janeiro": 1,
-                "Fevereiro": 2,
-                "Março": 3,
-                "Abril": 4,
-                "Maio": 5,
-                "Junho": 6,
-                "Julho": 7,
-                "Agosto": 8,
-                "Setembro": 9,
-                "Outubro": 10,
-                "Novembro": 11,
-                "Dezembro": 12
+                "January": 1,
+                "February": 2,
+                "March": 3,
+                "April": 4,
+                "May": 5,
+                "June": 6,
+                "July": 7,
+                "August": 8,
+                "September": 9,
+                "October": 10,
+                "November": 11,
+                "December": 12
             }
             
             month = month_number[month_name]
@@ -294,9 +294,9 @@ def transform_data_to_range(dt_string):
     
     ### FOR TRIMESTER FORMATS
     
-    # "1.\u00ba Trimestre de 2026"
+    # "1st Quarter 2026"
     match_extended_trimester = re.fullmatch(
-        r"(1.\u00ba Trimestre|2.\u00ba Trimestre|3.\u00ba Trimestre|4.\u00ba Trimestre) de (\d{4})",
+        r"(1st|2nd|3rd|4th) Quarter (\d{4})",
         dt_string
     )
     
@@ -310,10 +310,10 @@ def transform_data_to_range(dt_string):
             trimester, year = match_extended_trimester.groups()
         
             trimester_number = {
-                "1.\u00ba Trimestre": 1,
-                "2.\u00ba Trimestre": 4,
-                "3.\u00ba Trimestre": 7,
-                "4.\u00ba Trimestre": 10
+                "1st": 1,
+                "2nd": 4,
+                "3rd": 7,
+                "4th": 10
             }
             
         elif match_yyyy_qq:
@@ -339,9 +339,9 @@ def transform_data_to_range(dt_string):
     
     ### FOR SEMESTER FORMATS
     
-    # For format "1.\u00ba Semestre de 2026"
+    # For format "1st Semester 2026"
     match_semester = re.fullmatch(
-        r"(1.\u00ba Semestre|2.\u00ba Semestre) de (\d{4})",
+        r"(1st|2nd) Semester (\d{4})",
         dt_string
     )
     
@@ -355,8 +355,8 @@ def transform_data_to_range(dt_string):
             semester, year = match_semester.groups()
         
             semester_number = {
-                "1.\u00ba Semestre": 1,
-                "2.\u00ba Semestre": 7
+                "1st": 1,
+                "2nd": 7
             }
         
         if match_yyyy_ss:

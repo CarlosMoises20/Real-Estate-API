@@ -8,11 +8,14 @@ def get_fsq_places_dataset_name(country_code):
     return f"fsq_{country_code.lower()}_places"
 
 def get_ine_dataset_name(value_attr_name):
-    return f"ine_data_{value_attr_name}"
+    return f"ine_{value_attr_name}"
 
 # TODO review this after implementing Idealista API
 def get_idealista_dataset_name(country_code):
-    return f"ine_data_{country_code}"
+    return f"idealista_{country_code.lower()}_properties"
+
+def get_geoapify_dataset_name(country_code):
+    return f"geoapify_{country_code.lower()}_places"
 
 def get_final_dataset_name(country_code):
     return f"real_estate_{country_code.lower()}_data"

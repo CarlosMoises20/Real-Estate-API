@@ -93,16 +93,12 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         ### because the oldest property in the Kaggle dataset with Portugal data is from 2010
         df_eurostat = super()._read_dataset(
             name=get_eurostat_dataset_name(
-                dataset_code="nama_10_gdp", 
+                dataset_code="namq_10_gdp", 
                 country_code=self._get_country_code(), 
-                time_period="ge:2010"
+                time_period="ge:2009"
             ), 
             data_type="external"
         )
-        
-        ### RASI dataset (with data related to criminal records from 2024 and 2025)
-        # TODO try to find a way to dynamically download the RASI dataset from a data source
-        df_rasi = super()._read_dataset(name="rasi_data_2024_2025", data_type="external")
         
         ### FSQ Places        
         df_fsq_os_places = super()._read_dataset(
@@ -140,14 +136,21 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             data_type="external"
         )
         
-        ### INE data related to housing price per square meter (euros) in Portugal
+        ### INE data related to number of housing transactions in Portugal
         df_ine_housing_sold_num_transactions = super()._read_dataset(
             name=get_ine_dataset_name("housing_sold_num_transactions"), 
             data_type="external"
         )
         
+        ### INE data related to housing price per square meter (euros) in Portugal
         df_ine_housing_price_per_m2_euros = super()._read_dataset(
             name=get_ine_dataset_name("housing_price_per_m2_euros"), 
+            data_type="external"
+        )
+        
+        ### INE data related to crime rate in Portugal
+        df_ine_crime_rate = super()._read_dataset(
+            name=get_ine_dataset_name("crime_rate"), 
             data_type="external"
         )
             
@@ -159,15 +162,15 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             "INE (Unemployment rate (%))": df_ine_unemployment_rate,
             "INE (Housing sold, number of transactions)": df_ine_housing_sold_num_transactions,
             "INE (Housing price per square meter - Euros)": df_ine_housing_price_per_m2_euros,
+            "INE (Crime rate)": df_ine_crime_rate,
             "Eurostat GDP": df_eurostat,
-            "FSQ Places": df_fsq_os_places,
-            "RASI Criminal Record": df_rasi
+            "FSQ Places": df_fsq_os_places
         }
         
         # convert date_start and date_end to datetime format before the JOIN
         for name, df_ext in result.items():
             
-            if name in ["FSQ Places", "RASI Criminal Record"]:
+            if name == "FSQ Places":
                 continue
             
             convert_pd_df_columns_to_datetime(df=df_ext, cols=["date_start", "date_end"])
@@ -199,10 +202,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         # API Reference: https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-detailed-guidelines/api-statistics
         # SMDX-2.0 CSV
-        super()._update_eurostat(
-            time_period="ge:2010", 
-            dataset_code="nama_10_gdp"
-        )
+        super()._update_eurostat(time_period="ge:2009")
         
 
         # Foursquare OS Places API Reference: https://docs.foursquare.com/data-products/docs/fsq-places-open-source
@@ -253,10 +253,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         # Filter by geodsg=Portugal (contains results from Portugal instead of being specific
         # to the continent; the difference is almost irrelevant) and dim_3_t=Total, since
         # it aggregates the inflation results from every category
-        df_inflation = df_inflation[
-            (df_inflation["geodsg"] == "Portugal") & 
-            (df_inflation["dim_3_t"] == "Total")
-        ]
+        df_inflation = df_inflation[df_inflation["geodsg"] == "Portugal"]
         
         inflation_col = "inflation_growth_rate"
         
@@ -284,11 +281,6 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         df_ine_avg_salary = df_external_list_dict["INE (Average salary)"]
         
-        df_ine_avg_salary = df_ine_avg_salary[
-            (df_ine_avg_salary["dim_3_t"] == "Total") & 
-            (df_ine_avg_salary["dim_4_t"] == "Total")
-        ]
-        
         avg_salary_col_name = "avg_salary_euros"
         
         df_final = join_df_with_external_data(df=df_final,
@@ -315,8 +307,6 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         df_ine_unemployment_rate = df_external_list_dict["INE (Unemployment rate (%))"]
         
-        df_ine_unemployment_rate = df_ine_unemployment_rate[df_ine_unemployment_rate["dim_3_t"] == "HM"]
-        
         unemp_rate_col_name = "unemployment_rate"
         
         df_final = join_df_with_external_data(df=df_final,
@@ -330,12 +320,6 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         ### HOUSING SOLD (NUMBER OF TRANSACTIONS)
         
         df_ine_housing_sold_num_transactions = df_external_list_dict["INE (Housing sold, number of transactions)"]
-        
-        df_ine_housing_sold_num_transactions = df_ine_housing_sold_num_transactions[
-            (df_ine_housing_sold_num_transactions["dim_3_t"] == "Total") & 
-            (df_ine_housing_sold_num_transactions["dim_4_t"] == "Total") & 
-            (df_ine_housing_sold_num_transactions["dim_5_t"] == "Total")
-        ]
         
         housing_sold_transactions_col_name = "housing_sold_num_transactions"
         
@@ -351,10 +335,6 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         df_ine_price_per_square_meter = df_external_list_dict["INE (Housing price per square meter - Euros)"]
         
-        df_ine_price_per_square_meter = df_ine_price_per_square_meter[
-            (df_ine_price_per_square_meter["dim_3_t"] == "Total")
-        ]
-        
         price_per_square_meter_col_name = "housing_price_per_m2_euros"
         
         df_final = join_df_with_external_data(df=df_final,
@@ -366,10 +346,19 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          property_specific=True)
         
         
-        ### TODO RASI CRIMINAL RECORD
+        ### CRIME RATE
         
-        df_rasi = df_external_list_dict["RASI Criminal Record"]
+        df_ine_crime_rate = df_external_list_dict["INE (Crime rate)"]
         
+        crime_rate_col_name = "crime_rate"
+        
+        df_final = join_df_with_external_data(df=df_final,
+                                                 df_external=df_ine_crime_rate, 
+                                                 old_col_name=crime_rate_col_name, 
+                                                 new_col_name=crime_rate_col_name,
+                                                 #left_region_col="Town",       # TODO review, some values are in Town, others in City
+                                                 right_region_col="geodsg",
+                                                 property_specific=True)
         
         ### TODO FSQ OS PLACES (FACILITIES)
         
@@ -433,6 +422,11 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             
             # Price per square meter (euros)
             price_per_square_meter_col_name,
+            
+            # Crime rate
+            crime_rate_col_name,
+            
+            # TODO FSQ OS Places (Facilities)
     
             # Target (price)
             "Price (euros)"

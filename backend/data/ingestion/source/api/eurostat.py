@@ -2,7 +2,7 @@
 from backend.data.ingestion.source.api.base_api_data_source import BaseAPIDataSource
 import pandas as pd
 from io import StringIO
-from backend.common.utils import generate_dataset_from_df, transform_data_to_range, convert_pd_df_columns_to_datetime
+from backend.common.utils import generate_dataset_from_df, transform_data_to_range
 from backend.common.dataset_names import get_eurostat_dataset_name
 
 
@@ -20,8 +20,7 @@ class Eurostat(BaseAPIDataSource):
                 "compress": "false"      
             },
             headers={
-                "User-Agent": "Mozilla/5.0",
-                "Content-Type": "application/json"
+                "User-Agent": "Mozilla/5.0"
             },
             datasets_format=datasets_format, 
             datasets_path=datasets_path
@@ -47,7 +46,7 @@ class Eurostat(BaseAPIDataSource):
     Source: https://ec.europa.eu/eurostat/fr/web/user-guides/data-browser/api-data-access/api-getting-started/sdmx3.0
     
     """
-    def get_api_data(self, country_code, time_period, dataset_code):
+    def __extract_data_from_dataset(self, country_code, time_period, dataset_code, unit_list, na_item_list):
         
         self._params["c[GEO]"] = country_code
         
@@ -69,20 +68,26 @@ class Eurostat(BaseAPIDataSource):
         dataset_path = f"{self._datasets_path}/{get_eurostat_dataset_name(dataset_code, country_code, time_period)}"
         
         # NOTE uncomment if you want to generate CSV with the dataframe before pre-processing
-        #df.to_csv(dataset_path, index=False)
+        df.to_csv(f"{dataset_path}_v0.csv", index=False)
         
-        # Remove samples where confidential status is C (confidential), N (not for publication) or P (information under non-statistical secrecy arrangements)
-        # since this means that the information cannot be published in another API
-        df = df[~df["CONF_STATUS"].isin(["C", "N", "P"])]
+        if "CONF_STATUS" in df.columns:
+        
+            # Remove samples where confidential status is C (confidential), N (not for publication) or P (information under non-statistical secrecy arrangements)
+            # since this means that the information cannot be published in another API
+            df = df[~df["CONF_STATUS"].isin(["C", "N", "P"])]
         
         # Keep samples with "unit" attribute with values representing relevant metrics
-        # CLV_PCH_PRE: Chain linked volumes, percentage change on previous period
-        df = df[df["unit"] == "CLV_PCH_PRE"]
+        if "unit" in df.columns:
+        
+            # CLV_PCH_PRE: Chain linked volumes, percentage change on previous period
+            df = df[df["unit"].isin(unit_list)]
         
         # Keep samples with "na_item" attribute with values representing relevant metrics
-        # B1GQ: Gross domestic product at market prices
-        # P31_S14: Final consumption expenditure of household
-        df = df[df["na_item"].isin(["B1GQ", "P31_S14"])]
+        if "na_item" in df.columns:
+        
+            # B1GQ: Gross domestic product at market prices
+            # P31_S14: Final consumption expenditure of household
+            df = df[df["na_item"].isin(na_item_list)]
         
         # Remove empty columns
         df = df.dropna(axis=1, how="all")
@@ -98,7 +103,7 @@ class Eurostat(BaseAPIDataSource):
     
         # Remove irrelevant attributes
         df = df.drop(columns=["STRUCTURE", "STRUCTURE_ID", "freq", 
-                              "TIME_PERIOD", "OBS_FLAG", "unit", "geo"])
+                              "TIME_PERIOD", "OBS_FLAG", "s_adj", "geo"])
         
         df = df.drop_duplicates()
         
@@ -108,3 +113,31 @@ class Eurostat(BaseAPIDataSource):
                                 dataset_format=self._datasets_format)
         
         return df
+        
+        
+        
+    """
+    Method to retrieve data from API from a specific country (country_code) and
+    a period of time (time_period)
+    
+    Parameters:
+    - country_code: A country code or list of country codes for which to retrieve data 
+                    (e.g., "PT,ES" for Portugal and Spain or "PT" for Portugal only)
+    
+    - time_period: The time period for which to retrieve data. Examples:
+        "ge:2010" for data from 2010 to the current year
+        "eq:2020" for data from 2020 only
+        "gt:2015" for data from 2015 onwards (greater than 2015)
+        "lt:2018" for data until 2018 (less than 2018)
+        "ge:2010,lt:2018" for data from 2010 to 2018
+    
+    
+    """ 
+    def get_api_data(self, country_code, time_period):
+        
+        # Gross domestic product and Final consumption expenditure of household
+        self.__extract_data_from_dataset(country_code=country_code, 
+                                        time_period=time_period,
+                                        dataset_code="namq_10_gdp",
+                                        unit_list=["CLV_PCH_PRE"],
+                                        na_item_list=["B1GQ", "P31_S14"])

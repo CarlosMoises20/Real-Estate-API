@@ -48,13 +48,12 @@ class BaseCountryDataProcessor(ABC):
     Generic method to update data from the Eurostat API
     
     """
-    def _update_eurostat(self, time_period, dataset_code):
+    def _update_eurostat(self, time_period):
         Eurostat(
             datasets_format=self._datasets_format,
             datasets_path=self._get_datasets_path(data_type="external")
         ).get_api_data(country_code=self._get_country_code(), 
-                       time_period=time_period,
-                       dataset_code=dataset_code)
+                       time_period=time_period)
         
     
     """
