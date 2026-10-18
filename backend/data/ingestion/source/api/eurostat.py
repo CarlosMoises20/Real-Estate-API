@@ -56,6 +56,9 @@ class Eurostat(BaseAPIDataSource):
                 
         self._url += f"{dataset_code}/1.0"
         
+        # StringIO is a module in Python that allows you to treat strings as file-like objects
+        # This allows you to read a string as a file; as a result, when the resulting dataframe
+        # is saved in a new file, the data will be written to the file with the appropriate format and encoding
         df = pd.read_csv(StringIO(super().get_source_data().text))
         
         self._url = url_base
@@ -68,7 +71,7 @@ class Eurostat(BaseAPIDataSource):
         dataset_path = f"{self._datasets_path}/{get_eurostat_dataset_name(dataset_code, country_code, time_period)}"
         
         # NOTE uncomment if you want to generate CSV with the dataframe before pre-processing
-        df.to_csv(f"{dataset_path}_v0.csv", index=False)
+        #df.to_csv(f"{dataset_path}_v0.csv", index=False)
         
         if "CONF_STATUS" in df.columns:
         
@@ -102,9 +105,12 @@ class Eurostat(BaseAPIDataSource):
         )
     
         # Remove irrelevant attributes
+        # Remove "TIME_PERIOD" column after applying the data transformation and 
+        # saving it in "date_start" and "date_end"
         df = df.drop(columns=["STRUCTURE", "STRUCTURE_ID", "freq", 
                               "TIME_PERIOD", "OBS_FLAG", "s_adj", "geo"])
         
+        # Remove duplicated entries from the dataset
         df = df.drop_duplicates()
         
         # Save final dataset            

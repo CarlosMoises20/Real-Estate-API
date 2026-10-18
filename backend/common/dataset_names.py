@@ -10,6 +10,9 @@ def get_fsq_places_dataset_name(country_code):
 def get_ine_dataset_name(value_attr_name):
     return f"ine_{value_attr_name}"
 
+def get_ecb_dataset_name(value_attr_name):
+    return f"ecb_{value_attr_name}"
+
 # TODO review this after implementing Idealista API
 def get_idealista_dataset_name(country_code):
     return f"idealista_{country_code.lower()}_properties"

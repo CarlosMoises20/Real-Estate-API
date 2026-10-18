@@ -86,7 +86,8 @@ def join_df_with_external_data(df, df_external, old_col_name, new_col_name,
                                 left_region_col="City",
                                 right_region_col=None,
                                 property_specific=False,
-                                location_mapping=False):
+                                location_mapping=False,
+                                publication_lag_days=None):
     
     # If location_mapping is set to True and right_region_col is not specified, raise an exception
     if location_mapping and not right_region_col:

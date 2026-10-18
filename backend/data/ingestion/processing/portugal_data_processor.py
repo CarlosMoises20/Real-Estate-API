@@ -1,6 +1,7 @@
 
 import pandas as pd
 from backend.data.ingestion.source.api.ine import INE
+from backend.data.ingestion.source.api.ecb import EuropeanCentralBank
 from backend.data.ingestion.processing.base_country_data_processor import BaseCountryDataProcessor
 from backend.common.constants import COLUMN_RENAME_MAP, DATASETS_PATH_BASE
 from backend.common.utils import generate_dataset_from_df, join_df_with_external_data, convert_pd_df_columns_to_datetime, build_translate_names
@@ -89,9 +90,9 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
     """Method used to aggregate data with external factors, from several data sources"""
     def _aggregate_external_data(self):
         
-        ### Eurostat GDP dataset with data related to GDP per capita in Portugal since 2010
+        ### Eurostat GDP dataset with data related to GDP per capita in Portugal since 2009
         ### because the oldest property in the Kaggle dataset with Portugal data is from 2010
-        df_eurostat = super()._read_dataset(
+        df_gdp = super()._read_dataset(
             name=get_eurostat_dataset_name(
                 dataset_code="namq_10_gdp", 
                 country_code=self._get_country_code(), 
@@ -101,70 +102,113 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         )
         
         ### FSQ Places        
-        df_fsq_os_places = super()._read_dataset(
+        df_fsq_places = super()._read_dataset(
             name=get_fsq_places_dataset_name(country_code=self._get_country_code()), 
             data_type="external"
         )
         
+        ### ECB data related to housing credit rate in Portugal
+        df_housing_credit_rate = super()._read_dataset(
+            name=get_ecb_dataset_name(value_attr_name="housing_credit_rate"), 
+            data_type="external"
+        )
+        
+        ### ECB gross disposable income (Growth rate)
+        df_gross_disposable_income = super()._read_dataset(
+            name=get_ecb_dataset_name(value_attr_name="gross_disposable_income_growth_rate"), 
+            data_type="external"
+        )
+        
         ### INE data related to inflation (homologous variation) in Portugal
-        df_ine_inflation_growth_rate = super()._read_dataset(
+        df_inflation = super()._read_dataset(
             name=get_ine_dataset_name(value_attr_name="inflation_growth_rate"), 
             data_type="external"
         )
         
-        ### INE data related to housing credit rate in Portugal
-        df_ine_housing_credit_rate = super()._read_dataset(
-            name=get_ine_dataset_name(value_attr_name="housing_credit_rate"), 
-            data_type="external"
-        )
-        
         ### INE data related to average salary in Portugal
-        df_ine_avg_salary = super()._read_dataset(
+        df_avg_salary = super()._read_dataset(
             name=get_ine_dataset_name(value_attr_name="avg_salary_euros"), 
             data_type="external"
         )
         
-        ### INE gross disposable income (€)
-        df_ine_gross_disposable_income = super()._read_dataset(
-            name=get_ine_dataset_name(value_attr_name="gross_disposable_income_euros"), 
-            data_type="external"
-        )
-        
         ### INE data related to unemployment rate in Portugal   
-        df_ine_unemployment_rate = super()._read_dataset(
+        df_unemployment_rate = super()._read_dataset(
             name=get_ine_dataset_name("unemployment_rate"), 
             data_type="external"
         )
         
         ### INE data related to number of housing transactions in Portugal
-        df_ine_housing_sold_num_transactions = super()._read_dataset(
-            name=get_ine_dataset_name("housing_sold_num_transactions"), 
+        df_housing_transactions = super()._read_dataset(
+            name=get_ine_dataset_name("housing_num_transactions"), 
             data_type="external"
         )
         
         ### INE data related to housing price per square meter (euros) in Portugal
-        df_ine_housing_price_per_m2_euros = super()._read_dataset(
+        df_housing_price_per_m2 = super()._read_dataset(
             name=get_ine_dataset_name("housing_price_per_m2_euros"), 
             data_type="external"
         )
         
         ### INE data related to crime rate in Portugal
-        df_ine_crime_rate = super()._read_dataset(
-            name=get_ine_dataset_name("crime_rate"), 
+        
+        ## Retrieve data from 1998 to 2013
+        df_crime_rate_1998_2013 = super()._read_dataset(
+            name=get_ine_dataset_name("crime_rate_from_1998_to_2013"), 
             data_type="external"
         )
+        
+        # Filter that data to keep only the data from 2009 to 2010
+        df_crime_rate_2009_2010 = df_crime_rate_1998_2013[
+            (pd.to_datetime(df_crime_rate_1998_2013["date_start"]) >= "2009-01-01") &
+            (pd.to_datetime(df_crime_rate_1998_2013["date_end"]) <= "2010-12-31")
+        ]
+        
+        ## Retrieve data from 2011 to 2022
+        df_crime_rate_2011_2022 = super()._read_dataset(
+            name=get_ine_dataset_name("crime_rate_from_2011_to_2022"), 
+            data_type="external"
+        )
+        
+        # Filter that data to keep only the data from 2011 to 2020
+        df_crime_rate_2011_2020 = df_crime_rate_2011_2022[
+            pd.to_datetime(df_crime_rate_2011_2022["date_end"]) <= "2020-12-31"
+        ]
+        
+        ## Retrieve data from 2021 to 2025
+        df_crime_rate_2021_2025 = super()._read_dataset(
+            name=get_ine_dataset_name("crime_rate_from_2021_to_2025"), 
+            data_type="external"
+        )
+        
+        # Join crime data in a single dataset (from 2009 to 2025)
+        df_crime_rate = pd.concat([
+            df_crime_rate_2009_2010, 
+            df_crime_rate_2011_2020, 
+            df_crime_rate_2021_2025
+        ], ignore_index=True)
+        
+        ### Generate final crime dataset
+        generate_dataset_from_df(df=df_crime_rate, 
+                                 file_path_base=f"{self._get_datasets_path(data_type='external')}/{get_ine_dataset_name('crime_rate')}", 
+                                 dataset_format=self._datasets_format)
+        
+        # TODO observe the final dataset before applying these changes
+        """g = df_ine_crime_rate["geocod"].astype(str)
+        df_ine_crime_rate.loc[g.str.startswith("200") & df_ine_crime_rate.geodsg.isin(["Calheta", "Lagoa"]), "geodsg"] += ' (R.A.A.)'
+        df_ine_crime_rate.loc[g.str.startswith("300") & (df_ine_crime_rate.geodsg == "Calheta"), "geodsg"] = 'Calheta (R.A.M.)'
+        df_ine_crime_rate.loc[g.str.startswith("150") & (df_ine_crime_rate.geodsg == "Lagoa"), "geodsg"] = 'Lagoa (Algarve)'"""
             
         result = {
-            "INE (Inflation - Homologous variation)": df_ine_inflation_growth_rate,
-            "INE (Housing credit rate)": df_ine_housing_credit_rate,
-            "INE (Average salary)": df_ine_avg_salary,
-            "INE (Gross Disposable Income - Euros)": df_ine_gross_disposable_income,
-            "INE (Unemployment rate (%))": df_ine_unemployment_rate,
-            "INE (Housing sold, number of transactions)": df_ine_housing_sold_num_transactions,
-            "INE (Housing price per square meter - Euros)": df_ine_housing_price_per_m2_euros,
-            "INE (Crime rate)": df_ine_crime_rate,
-            "Eurostat GDP": df_eurostat,
-            "FSQ Places": df_fsq_os_places
+            "Inflation": df_inflation,
+            "Average Salary (€)": df_avg_salary,
+            "Unemployment Rate": df_unemployment_rate,
+            "Number of Housing Transactions": df_housing_transactions,
+            "Housing Price per m2 (€)": df_housing_price_per_m2,
+            "Crime rate": df_crime_rate,
+            "Gross Disposable Income (Growth Rate)": df_gross_disposable_income,
+            "Housing credit rate": df_housing_credit_rate,
+            "GDP": df_gdp,
+            "FSQ Places": df_fsq_places
         }
         
         # convert date_start and date_end to datetime format before the JOIN
@@ -198,7 +242,8 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         ine.get_api_data()
         
-        # TODO Banco de Portugal
+        # Europan Central Bank (ECB)
+        super()._update_ecb()
         
         # API Reference: https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-detailed-guidelines/api-statistics
         # SMDX-2.0 CSV
@@ -207,7 +252,6 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
 
         # Foursquare OS Places API Reference: https://docs.foursquare.com/data-products/docs/fsq-places-open-source
         super()._update_fsq_places()
-        
         
         # update API with final dataset
         self.join_and_save_data()
@@ -225,7 +269,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         ### Join GDP data from Eurostat with final dataset
         
-        df_gdp = df_external_list_dict["Eurostat GDP"]
+        df_gdp = df_external_list_dict["GDP"]
         
         df_gdp_market_prices = df_gdp[df_gdp["na_item"] == "B1GQ"]
         
@@ -248,7 +292,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         ### INFLATION GROWTH RATE (Homologous variation)
         
-        df_inflation = df_external_list_dict["INE (Inflation - Homologous variation)"]
+        df_inflation = df_external_list_dict["Inflation"]
         
         # Filter by geodsg=Portugal (contains results from Portugal instead of being specific
         # to the continent; the difference is almost irrelevant) and dim_3_t=Total, since
@@ -265,66 +309,63 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         ### HOUSING CREDIT RATE
         
-        df_ine_housing_credit_rate = df_external_list_dict["INE (Housing credit rate)"]
+        df_housing_credit_rate = df_external_list_dict["Housing credit rate"]
         
         housing_credit_rate_col_name = "housing_credit_rate"
         
         df_final = join_df_with_external_data(df=df_final,
-                                         df_external=df_ine_housing_credit_rate, 
+                                         df_external=df_housing_credit_rate, 
                                          old_col_name=housing_credit_rate_col_name, 
                                          new_col_name=housing_credit_rate_col_name,
-                                         right_region_col="geodsg",
                                          property_specific=True)
         
         
         ### AVERAGE SALARY (€)
         
-        df_ine_avg_salary = df_external_list_dict["INE (Average salary)"]
+        df_avg_salary = df_external_list_dict["Average Salary (€)"]
         
         avg_salary_col_name = "avg_salary_euros"
         
         df_final = join_df_with_external_data(df=df_final,
-                                         df_external=df_ine_avg_salary, 
+                                         df_external=df_avg_salary, 
                                          old_col_name=avg_salary_col_name, 
                                          new_col_name=avg_salary_col_name)
         
         
-        ### GROSS DISPOSABLE INCOME (€)
+        ### GROSS DISPOSABLE INCOME (Growth Rate)
                 
-        df_gross_disposable_income = df_external_list_dict["INE (Gross Disposable Income - Euros)"]
+        df_gross_disposable_income = df_external_list_dict["Gross Disposable Income (Growth Rate)"]
         
-        gross_disposable_income_col_name = "gross_disposable_income_euros"
+        gross_disposable_income_col_name = "gross_disposable_income_growth_rate"
         
         df_final = join_df_with_external_data(df=df_final,
                                             df_external=df_gross_disposable_income, 
                                             old_col_name=gross_disposable_income_col_name, 
-                                            new_col_name=gross_disposable_income_col_name,
-                                            right_region_col="geodsg",
-                                            location_mapping=True)
+                                            new_col_name=gross_disposable_income_col_name)
         
         
-        ### UNEMPLOYMENT RATE (%) 
+        ### UNEMPLOYMENT RATE (%) # TODO review mapping
         
-        df_ine_unemployment_rate = df_external_list_dict["INE (Unemployment rate (%))"]
+        df_unemployment_rate = df_external_list_dict["Unemployment Rate"]
         
         unemp_rate_col_name = "unemployment_rate"
         
         df_final = join_df_with_external_data(df=df_final,
-                                         df_external=df_ine_unemployment_rate, 
+                                         df_external=df_unemployment_rate, 
                                          old_col_name=unemp_rate_col_name, 
                                          new_col_name=unemp_rate_col_name,
                                          right_region_col="geodsg",
                                          location_mapping=True)
         
         
-        ### HOUSING SOLD (NUMBER OF TRANSACTIONS)
+        ### NUMBER OF HOUSING TRANSACTIONS
         
-        df_ine_housing_sold_num_transactions = df_external_list_dict["INE (Housing sold, number of transactions)"]
+        df_housing_transactions = df_external_list_dict["Number of Housing Transactions"]
         
-        housing_sold_transactions_col_name = "housing_sold_num_transactions"
+        housing_sold_transactions_col_name = "housing_num_transactions"
         
         df_final = join_df_with_external_data(df=df_final,
-                                         df_external=df_ine_housing_sold_num_transactions, 
+                                         df_external=df_housing_transactions, 
                                          old_col_name=housing_sold_transactions_col_name, 
                                          new_col_name=housing_sold_transactions_col_name,
                                          right_region_col="geodsg",
@@ -333,32 +374,32 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         ### PRICE PER SQUARE METER (€) # TODO review mapping
         
-        df_ine_price_per_square_meter = df_external_list_dict["INE (Housing price per square meter - Euros)"]
+        df_price_per_m2 = df_external_list_dict["Housing Price per m2 (€)"]
         
         price_per_square_meter_col_name = "housing_price_per_m2_euros"
         
         df_final = join_df_with_external_data(df=df_final,
-                                         df_external=df_ine_price_per_square_meter, 
-                                         old_col_name=price_per_square_meter_col_name, 
-                                         new_col_name=price_per_square_meter_col_name,
-                                         #left_region_col="Town",       # TODO review, some values are in Town, others in City
-                                         right_region_col="geodsg",
-                                         property_specific=True)
+                                            df_external=df_price_per_m2, 
+                                            old_col_name=price_per_square_meter_col_name, 
+                                            new_col_name=price_per_square_meter_col_name,
+                                            #left_region_col="Town",       # TODO review, some values are in Town, others in City
+                                            right_region_col="geodsg",
+                                            property_specific=True)
         
         
-        ### CRIME RATE
+        ### CRIME RATE # TODO review mapping
         
-        df_ine_crime_rate = df_external_list_dict["INE (Crime rate)"]
+        df_crime_rate = df_external_list_dict["Crime rate"]
         
         crime_rate_col_name = "crime_rate"
         
         df_final = join_df_with_external_data(df=df_final,
-                                                 df_external=df_ine_crime_rate, 
-                                                 old_col_name=crime_rate_col_name, 
-                                                 new_col_name=crime_rate_col_name,
-                                                 #left_region_col="Town",       # TODO review, some values are in Town, others in City
-                                                 right_region_col="geodsg",
-                                                 property_specific=True)
+                                            df_external=df_crime_rate, 
+                                            old_col_name=crime_rate_col_name, 
+                                            new_col_name=crime_rate_col_name,
+                                            #left_region_col="Town",       # TODO review, some values are in Town, others in City
+                                            right_region_col="geodsg",
+                                            property_specific=True)
         
         ### TODO FSQ OS PLACES (FACILITIES)
         
@@ -414,7 +455,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             # Gross disposable income (euros)
             gross_disposable_income_col_name,
             
-            # Unemployment rate (%)
+            # Unemployment Rate (%)
             unemp_rate_col_name,
             
             # Housing sold (number of transactions)

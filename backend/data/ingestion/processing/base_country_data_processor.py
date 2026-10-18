@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from backend.data.ingestion.source.api.eurostat import Eurostat
 from backend.data.ingestion.source.duckdb.fsq_os_places import FSQOSPlaces
 from backend.data.ingestion.source.api.idealista import Idealista
+from backend.data.ingestion.source.api.ecb import EuropeanCentralBank
 import kagglehub, pycountry
 from backend.common.utils import generate_df_from_dataset
 from backend.common.constants import DATASETS_PATH_BASE
@@ -55,6 +56,18 @@ class BaseCountryDataProcessor(ABC):
         ).get_api_data(country_code=self._get_country_code(), 
                        time_period=time_period)
         
+        
+        
+    """
+    Generic method to update data from the European Central Bank
+    
+    """
+    def _update_ecb(self):
+        EuropeanCentralBank(
+            datasets_format=self._datasets_format,
+            datasets_path=self._get_datasets_path(data_type="external")
+        ).get_api_data()
+    
     
     """
     Generic method to update data from Idealista
