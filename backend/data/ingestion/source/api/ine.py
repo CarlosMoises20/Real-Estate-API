@@ -58,11 +58,16 @@ class INE(BaseAPIDataSource):
         # Instead, we will extract relevant data from the JSON and then convert it to dataframe
         data = super().get_source_data().json()
         
+        # Case of error retrieving INE data
+        if data[0]["Sucesso"] != {'Verdadeiro': [{'Msg': 'OK'}]}:
+            raise Exception("There was an error retrieving INE data")
+           
+        
         dataset_name = get_ine_dataset_name(dataset_name if dataset_name else value_attr_name)
         
         # NOTE uncomment this if you want to save the data in raw format
-        with open(f"{self._datasets_path}/{dataset_name}.json", "w") as f:
-            json.dump(data, f, indent=2)
+        """with open(f"{self._datasets_path}/{dataset_name}.json", "w") as f:
+            json.dump(data, f, indent=2)"""
         
         final_data = []
         
@@ -106,7 +111,10 @@ class INE(BaseAPIDataSource):
                                         value_attr_old_name="valor",   
                                         cols=["geocod", "geodsg", "dim_3_t"])
                 
-        # Average salary (euros); from March 2014 to June 2026
+        # Average salary (euros); quarterly; from March 2014 to June 2026
+        # NOTE: quarterly allows you to capture more updated data and also salary variations 
+        # during months where subsidies are included, these details are relevant for the model to learn;
+        # but in case of changing the idea, varcd for yearly salary is "0011138"
         self.__extract_data_from_varcd(varcd="0011132", 
                                         value_attr_name="avg_salary_euros",  
                                         value_attr_old_name="valor", 

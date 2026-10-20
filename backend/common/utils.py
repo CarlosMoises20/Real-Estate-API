@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 from babel import Locale
-from backend.common.constants import LOCATION_MAPPING, CITY_TO_COUNTRY_CODE, PROPERTY_RESIDENTIAL_TYPES
+from backend.common.constants import LOCATION_MAPPING, CITY_GEOCOD_NAMES, CITY_TO_COUNTRY_CODE, PROPERTY_RESIDENTIAL_TYPES, CITY_REGION_OVERRIDES
 
 
 """
@@ -52,7 +52,17 @@ def build_translate_names(original_language, target_language="en"):
     })
     
     return translate_names
- 
+
+
+"""
+Helper for price per square meter and crime dataframes
+
+"""
+def keep_city_level(df_external):
+    df_external = df_external[df_external["geocod"].astype(str).str.len() == 7].copy()
+    df_external["geodsg"] = df_external["geocod"].astype(str).map(CITY_GEOCOD_NAMES).fillna(df_external["geodsg"])
+    return df_external.drop_duplicates(["geodsg", "date_end"], keep="last") 
+
 
 """
 Generic method to join internal data (df) with external data (df_external) by date range (by default,
@@ -78,6 +88,10 @@ to the inflation of 2025, because at the moment that property was published, the
     location_mapping: a boolean flag that indicates whether it's necessary to map the location names to match the original ones (True) or not (False)
                         This mapping will consider that the values of df_external[right_region_col] are keys of LOCATION_MAPPING ("Norte", "Centro", "Grande Lisboa", etc) 
                         and the values of df[left_region_col] are values of LOCATION_MAPPING ("Vila Real", "Porto", etc)
+                        
+    publication_lag_days: an optional integer which indicates how many days it takes for the metric to be published after "right_end_date_col"
+                        For example, if 'date_end' is '2025-12-31' and the data is only published at '2026-01-15', the publication_lag_days must be set as 15; 
+                        if it's published at '2026-02-28', publication_lag_days is 59 (31 + 28 = 59)
     
 """
 def join_df_with_external_data(df, df_external, old_col_name, new_col_name, 
@@ -93,6 +107,9 @@ def join_df_with_external_data(df, df_external, old_col_name, new_col_name,
     if location_mapping and not right_region_col:
         raise ValueError("When 'location_mapping' is True, 'right_region_col' must be specified")
     
+    if publication_lag_days and publication_lag_days < 0:
+        raise ValueError("'publication_lag_days' must be >= 0")
+    
     left_region_col = "District" if location_mapping else left_region_col
 
     # dt.normalize() -> Sets the time to midnight (00:00:00), preserving the timezone,
@@ -103,9 +120,11 @@ def join_df_with_external_data(df, df_external, old_col_name, new_col_name,
         "_pos": np.arange(len(df)),
         "_date": df[left_date_col].dt.normalize().to_numpy(dtype="datetime64[ns]")   
     })
+    
+    lag = np.timedelta64(int(publication_lag_days or 0), "D")
 
     right = pd.DataFrame({
-        "_end": df_external[right_end_date_col].dt.normalize().to_numpy(dtype="datetime64[ns]"),
+        "_end": df_external[right_end_date_col].dt.normalize().to_numpy(dtype="datetime64[ns]") + lag,
         "_value": df_external[old_col_name].to_numpy()
     })
 
@@ -127,22 +146,20 @@ def join_df_with_external_data(df, df_external, old_col_name, new_col_name,
                 for district in districts
             }
             
-            # confirm that there are no unmapped districts (len(unmapped) must be 0; otherwise LOCATION_MAPPING must be updated with
-            # the unmapped cities)
-            districts = df[left_region_col]
+            region = df["City"].map(CITY_REGION_OVERRIDES).fillna(df[left_region_col].map(district_to_region))
             
-            unmapped = districts[~districts.isin(district_to_region) & districts.notna()].unique()
+            unmapped = df.loc[region.isna() & df["District"].notna(), "District"].unique()
             
             if len(unmapped) > 0:
                 print(f"Unmapped districts in LOCATION_MAPPING: {list(unmapped)}")
 
-            left["_region"] = df[left_region_col].map(district_to_region).to_numpy()
+            left["_region"] = region.to_numpy()
             
         else:
             left["_region"] = df[left_region_col].to_numpy()
         
-        
         right["_region"] = df_external[right_region_col].to_numpy()
+        
         by = "_region"
         
     # Condition related to JOIN which only includes properties corresponding to some types

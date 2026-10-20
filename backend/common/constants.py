@@ -20,10 +20,6 @@ COLUMN_RENAME_MAP = {
     "BuiltArea": "Built Area (m2)"
 }
 
-# Columns that represent categorical attributes
-CATEGORICAL_COLUMNS = ["Type", "District", "City", "Town", 
-                       "EnergyCertificate", "ConservationStatus", "Floor"]
-
 # Residential Properties
 PROPERTY_RESIDENTIAL_TYPES = [
     "Apartment", "House", "Duplex", "Studio",
@@ -40,6 +36,54 @@ CITY_TO_COUNTRY_CODE = {
     "Dubai": "AE"
 }
 
+# NOTE this is for pre-processing before creating ML models
+CATEGORICAL_COL_MAPPING = {
+
+    # Give each floor a numeric number 
+    "Floor": {
+        "Basement Level": -1,
+        "Basement": -1,
+        "Ground Level": 0,
+        "1st Floor": 1,
+        "2nd Floor": 2,
+        "3rd Floor": 3,
+        "4th Floor": 4,
+        "5th Floor": 5,
+        "6th Floor": 6,
+        "7th Floor": 7,
+        "8th Floor": 8,
+        "9th Floor": 9,
+        "10th Floor": 10,
+        "Above 10th Floor": 11
+    },
+    
+    # TODO for "FloorType", review the best approach before implementing ML models;
+    # For 'Duplex', 'Top Floor', 'Triplex', 'Attic', 'Mezzanine', 'Service Floor'
+    
+    # Greater numeric values represent better energy efficiency
+    "EnergyCertificate": {
+        "A+": 8,
+        "A": 7,
+        "B": 6,
+        "B-": 5,
+        "C": 4,
+        "D": 3,
+        "E": 2,
+        "F": 1,
+        "G": 0
+    },
+    
+    # Greater values indicate better conservation status
+    "ConservationStatus": {
+        "Needs renovation": 0,
+        "Reasonable": 1,
+        "Good condition": 2,
+        "Like new": 3,
+        "New": 4
+    }
+
+}
+
 CITY_REGION_OVERRIDES = {
     **dict.fromkeys(["Arouca", "Castelo de Paiva", "Espinho", "Oliveira de Azeméis", "Santa Maria da Feira",
                      "São João da Madeira", "Vale de Cambra",      # Aveiro district
@@ -49,6 +93,13 @@ CITY_REGION_OVERRIDES = {
                      "Alenquer", "Arruda dos Vinhos", "Azambuja", "Cadaval", "Lourinhã",
                      "Sobral de Monte Agraço", "Torres Vedras"], "Oeste e Vale do Tejo"),          # Lisboa
     **dict.fromkeys(["Alcácer do Sal", "Grândola", "Santiago do Cacém", "Sines"], "Alentejo"),    # Setúbal
+}
+
+CITY_GEOCOD_NAMES = {
+    "1500806": "Lagoa (Algarve)",
+    "2004201": "Lagoa (São Miguel)",
+    "2004302": "Praia da Vitória",        # INE: "Vila da Praia da Vitória"
+    "2004501": "Calheta de S. Jorge",     # INE: "Calheta (R.A.A.)" / "Calheta"
 }
 
 # Mapping Portuguese districts (values) to their parent regions (keys)

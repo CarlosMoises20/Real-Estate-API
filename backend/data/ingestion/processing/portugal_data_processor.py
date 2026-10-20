@@ -1,10 +1,9 @@
 
 import pandas as pd
 from backend.data.ingestion.source.api.ine import INE
-from backend.data.ingestion.source.api.ecb import EuropeanCentralBank
 from backend.data.ingestion.processing.base_country_data_processor import BaseCountryDataProcessor
 from backend.common.constants import COLUMN_RENAME_MAP, DATASETS_PATH_BASE
-from backend.common.utils import generate_dataset_from_df, join_df_with_external_data, convert_pd_df_columns_to_datetime, build_translate_names
+from backend.common.utils import generate_dataset_from_df, join_df_with_external_data, convert_pd_df_columns_to_datetime, build_translate_names, keep_city_level
 from backend.common.dataset_names import *
 
 
@@ -69,15 +68,12 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         # Remove duplicated entries and irrelevant attributes
         df_internal = df_internal.drop_duplicates()
         
-        # Convert all boolean attributes to integer
-        df_internal = df_internal.map(lambda x: int(x) if isinstance(x, bool) else x)
-        
         # Drop redundant attribute: EnergyEfficiencyLevel
         df_internal = df_internal.drop(columns=["EnergyEfficiencyLevel"])
         
         # for some negative values, transform those into positive values by applying the absolute value
-        for attr_name in ["Living Area (m2)", "Total Area (m2)", "Built Area (m2)",
-                            "NumberOfBathrooms", "NumberOfWC"]:
+        for attr_name in ["Living Area (m2)", "Total Area (m2)", 
+                            "Built Area (m2)", "NumberOfBathrooms", "NumberOfWC"]:
             
             df_internal[attr_name] = df_internal[attr_name].abs()
             
@@ -278,7 +274,8 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         df_final = join_df_with_external_data(df=df_final, 
                                          df_external=df_gdp_market_prices, 
                                          old_col_name="OBS_VALUE", 
-                                         new_col_name=df_gdp_market_growth_output_col)
+                                         new_col_name=df_gdp_market_growth_output_col,
+                                         publication_lag_days=30)
         
         df_gdp_final_consumption = df_gdp[df_gdp["na_item"] == "P31_S14"]
         
@@ -303,8 +300,9 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         df_final = join_df_with_external_data(df=df_final,
                                          df_external=df_inflation, 
-                                         old_col_name="inflation_growth_rate", 
-                                         new_col_name=inflation_col)
+                                         old_col_name=inflation_col, 
+                                         new_col_name=inflation_col,
+                                         publication_lag_days=15)
         
         
         ### HOUSING CREDIT RATE
@@ -317,19 +315,43 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          df_external=df_housing_credit_rate, 
                                          old_col_name=housing_credit_rate_col_name, 
                                          new_col_name=housing_credit_rate_col_name,
-                                         property_specific=True)
+                                         property_specific=True,
+                                         publication_lag_days=35)
         
         
         ### AVERAGE SALARY (€)
         
         df_avg_salary = df_external_list_dict["Average Salary (€)"]
         
+        # We will keep this only for the API
         avg_salary_col_name = "avg_salary_euros"
         
         df_final = join_df_with_external_data(df=df_final,
                                          df_external=df_avg_salary, 
                                          old_col_name=avg_salary_col_name, 
-                                         new_col_name=avg_salary_col_name)
+                                         new_col_name=avg_salary_col_name,
+                                         publication_lag_days=45)
+        
+        s = df_avg_salary["avg_salary_euros"]
+        
+        # Calculates the variation of the average salary, ignoring the sazonal variations
+        df_avg_salary["avg_salary_euros_12m_avg"] = (s + s.shift(3) + s.shift(6) + s.shift(9)) / 4
+        
+        df_avg_salary = df_avg_salary.drop(columns=["avg_salary_euros"]) \
+                                     .dropna(subset=["avg_salary_euros_12m_avg"])
+        
+        # NOTE only for testing
+        df_avg_salary.to_csv(f"{self._get_datasets_path(data_type='external')}/{get_ine_dataset_name('avg_salary_euros_12_month_average')}.csv",
+                                            index=False)
+        
+        # We will keep this only for the Machine Learning models, not the API
+        avg_salary_hom_var_col_name = "avg_salary_euros_12m_avg"
+        
+        df_final = join_df_with_external_data(df=df_final,
+                                                df_external=df_avg_salary, 
+                                                old_col_name=avg_salary_hom_var_col_name, 
+                                                new_col_name=avg_salary_hom_var_col_name,
+                                                publication_lag_days=45)
         
         
         ### GROSS DISPOSABLE INCOME (Growth Rate)
@@ -342,20 +364,6 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                             df_external=df_gross_disposable_income, 
                                             old_col_name=gross_disposable_income_col_name, 
                                             new_col_name=gross_disposable_income_col_name)
-        
-        
-        ### UNEMPLOYMENT RATE (%) # TODO review mapping
-        
-        df_unemployment_rate = df_external_list_dict["Unemployment Rate"]
-        
-        unemp_rate_col_name = "unemployment_rate"
-        
-        df_final = join_df_with_external_data(df=df_final,
-                                         df_external=df_unemployment_rate, 
-                                         old_col_name=unemp_rate_col_name, 
-                                         new_col_name=unemp_rate_col_name,
-                                         right_region_col="geodsg",
-                                         location_mapping=True)
         
         
         ### NUMBER OF HOUSING TRANSACTIONS
@@ -372,34 +380,54 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          property_specific=True,
                                          location_mapping=True)
         
-        ### PRICE PER SQUARE METER (€) # TODO review mapping
+        
+        ### UNEMPLOYMENT RATE (%)
+        
+        df_unemployment_rate = df_external_list_dict["Unemployment Rate"]
+        
+        unemp_rate_col_name = "unemployment_rate"
+        
+        df_final = join_df_with_external_data(df=df_final,
+                                         df_external=df_unemployment_rate, 
+                                         old_col_name=unemp_rate_col_name, 
+                                         new_col_name=unemp_rate_col_name,
+                                         right_region_col="geodsg",
+                                         location_mapping=True,
+                                         publication_lag_days=40)
+        
+        
+        ### PRICE PER SQUARE METER (€)
         
         df_price_per_m2 = df_external_list_dict["Housing Price per m2 (€)"]
         
         price_per_square_meter_col_name = "housing_price_per_m2_euros"
+
+        df_price_per_m2 = keep_city_level(df_price_per_m2)
         
         df_final = join_df_with_external_data(df=df_final,
                                             df_external=df_price_per_m2, 
                                             old_col_name=price_per_square_meter_col_name, 
                                             new_col_name=price_per_square_meter_col_name,
-                                            #left_region_col="Town",       # TODO review, some values are in Town, others in City
                                             right_region_col="geodsg",
-                                            property_specific=True)
+                                            property_specific=True,
+                                            publication_lag_days=60)
         
         
-        ### CRIME RATE # TODO review mapping
+        ### CRIME RATE
         
         df_crime_rate = df_external_list_dict["Crime rate"]
         
         crime_rate_col_name = "crime_rate"
+
+        df_crime_rate = keep_city_level(df_crime_rate)
         
         df_final = join_df_with_external_data(df=df_final,
                                             df_external=df_crime_rate, 
                                             old_col_name=crime_rate_col_name, 
                                             new_col_name=crime_rate_col_name,
-                                            #left_region_col="Town",       # TODO review, some values are in Town, others in City
                                             right_region_col="geodsg",
-                                            property_specific=True)
+                                            publication_lag_days=60)
+        
         
         ### TODO FSQ OS PLACES (FACILITIES)
         
@@ -449,6 +477,9 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             # Average salary (euros)
             avg_salary_col_name,
             
+            # Average salary 12-month average (euros)
+            avg_salary_hom_var_col_name,
+            
             # Housing credit rate
             housing_credit_rate_col_name,
             
@@ -472,18 +503,12 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             # Target (price)
             "Price (euros)"
         ]
-        
-        dropped = [c for c in df_final.columns if c not in COLUMN_ORDER]
-        
-        if dropped:
-            print(f"Colunas descartadas pelo COLUMN_ORDER: {dropped}")
             
         df_final = df_final[COLUMN_ORDER]
         
-        # Save the final dataframe in the format indicated by 'datasets_format' (CSV or Parquet)         
-        # TODO check "v1" in the end to remove, this is only for testing and to not remove the original one   
+        # Save the final dataframe in the format indicated by 'datasets_format' (CSV or Parquet)
         generate_dataset_from_df(df=df_final, 
-                                file_path_base=f"{self._get_datasets_path(data_type='final')}/{get_final_dataset_name(self._get_country_code())}_v1",
+                                file_path_base=f"{self._get_datasets_path(data_type='final')}/{get_final_dataset_name(self._get_country_code())}",
                                 dataset_format=self._datasets_format)
         
         return df_final
@@ -506,9 +531,9 @@ if __name__ == "__main__":
     pt.__setattr__("_datasets_format", "csv")
     
     # CSV format
-    pt.update_datasets() 
+    #pt.update_datasets() 
     
-    #pt.join_and_save_data()
+    pt.join_and_save_data()
     
     """scheduler = BackgroundScheduler()
 
