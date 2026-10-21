@@ -1,5 +1,4 @@
 
-import json
 import pandas as pd
 from io import StringIO
 from backend.data.ingestion.source.api.base_api_data_source import BaseAPIDataSource
@@ -114,19 +113,11 @@ class EuropeanCentralBank(BaseAPIDataSource):
     """Retrieve CSV data from the API of ECB and return dataframe with relevant data"""
     def get_api_data(self):
         
-        # Gross disposable income (Growth Rate)
-        # Annual, Portugal, gross disposable income (B6G), growth rate over one year (GY).
+        # Housing credit rate
+        # Annual, Portugal, loans to households for house purchase, new business.
         self.__extract_data_from_dataset(cols=["TIME_PERIOD", "OBS_VALUE", "OBS_STATUS"],
                                          value_attr_old_name="OBS_VALUE",
-                                         value_attr_name="gross_disposable_income_growth_rate",
+                                         value_attr_name="housing_credit_rate",
                                          flow_ref="MIR",
                                          series_key="M.PT.B.A2C.A.R.A.2250.EUR.N")
-        
-        # Housing credit rate
-        # Monthly, Portugal, loans to households for house purchase, new business.
-        self.__extract_data_from_dataset(cols=["TIME_PERIOD", "OBS_VALUE"],
-                                        value_attr_old_name="OBS_VALUE",
-                                        value_attr_name="housing_credit_rate",
-                                        flow_ref="QSA",
-                                        series_key="A.N.PT.W0.S1M.S1._Z.B.B6G._Z._Z._Z.XDC._T.S.V.GY._T")
         

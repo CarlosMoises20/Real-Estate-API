@@ -112,8 +112,7 @@ class INE(BaseAPIDataSource):
                                         cols=["geocod", "geodsg", "dim_3_t"])
                 
         # Average salary (euros); quarterly; from March 2014 to June 2026
-        # NOTE: quarterly allows you to capture more updated data and also salary variations 
-        # during months where subsidies are included, these details are relevant for the model to learn;
+        # NOTE: quarterly allows you to capture more updated data and also salary variations
         # but in case of changing the idea, varcd for yearly salary is "0011138"
         self.__extract_data_from_varcd(varcd="0011132", 
                                         value_attr_name="avg_salary_euros",  

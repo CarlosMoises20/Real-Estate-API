@@ -109,12 +109,6 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             data_type="external"
         )
         
-        ### ECB gross disposable income (Growth rate)
-        df_gross_disposable_income = super()._read_dataset(
-            name=get_ecb_dataset_name(value_attr_name="gross_disposable_income_growth_rate"), 
-            data_type="external"
-        )
-        
         ### INE data related to inflation (homologous variation) in Portugal
         df_inflation = super()._read_dataset(
             name=get_ine_dataset_name(value_attr_name="inflation_growth_rate"), 
@@ -201,7 +195,6 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             "Number of Housing Transactions": df_housing_transactions,
             "Housing Price per m2 (€)": df_housing_price_per_m2,
             "Crime rate": df_crime_rate,
-            "Gross Disposable Income (Growth Rate)": df_gross_disposable_income,
             "Housing credit rate": df_housing_credit_rate,
             "GDP": df_gdp,
             "FSQ Places": df_fsq_places
@@ -267,24 +260,59 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         df_gdp = df_external_list_dict["GDP"]
         
-        df_gdp_market_prices = df_gdp[df_gdp["na_item"] == "B1GQ"]
         
-        df_gdp_market_growth_output_col = "gdp_growth_rate"
+        # GDP (Quarterly Variation)
         
-        df_final = join_df_with_external_data(df=df_final, 
-                                         df_external=df_gdp_market_prices, 
-                                         old_col_name="OBS_VALUE", 
-                                         new_col_name=df_gdp_market_growth_output_col,
-                                         publication_lag_days=30)
+        df_gdp_qoq = df_gdp[(df_gdp["na_item"] == "B1GQ") & (df_gdp["unit"] == "CLV_PCH_PRE")]      
         
-        df_gdp_final_consumption = df_gdp[df_gdp["na_item"] == "P31_S14"]
-        
-        df_gdp_final_cons_output_col = "household_consumption_growth_rate"
+        df_gdp_qoq_col = "GDP_QoQ"
         
         df_final = join_df_with_external_data(df=df_final, 
-                                         df_external=df_gdp_final_consumption, 
+                                            df_external=df_gdp_qoq, 
+                                            old_col_name="OBS_VALUE", 
+                                            new_col_name=df_gdp_qoq_col,
+                                            publication_lag_days=45)
+        
+        
+        # GDP (Homologous Variation)
+        # NOTE: Homologous variation is important to capture sazonal changes without the noise 
+        # of the quarterly variation; This metric is more stable and it's the way how the main numbers are published
+        
+        df_gdp_yoy = df_gdp[(df_gdp["na_item"] == "B1GQ") & (df_gdp["unit"] == "CLV_PCH_SM")]
+        
+        df_gdp_yoy_col = "GDP_yoy"
+        
+        df_final = join_df_with_external_data(df=df_final, 
+                                         df_external=df_gdp_yoy, 
                                          old_col_name="OBS_VALUE", 
-                                         new_col_name=df_gdp_final_cons_output_col)
+                                         new_col_name=df_gdp_yoy_col,
+                                         publication_lag_days=45)
+        
+        
+        # Final consumption expenditure of household (Quarterly Variation)
+                
+        df_hh_cons_qoq = df_gdp[(df_gdp["na_item"] == "P31_S14") & (df_gdp["unit"] == "CLV_PCH_PRE")]
+                
+        df_hh_cons_qoq_col = "HouseholdConsumption_QoQ"
+        
+        df_final = join_df_with_external_data(df=df_final, 
+                                            df_external=df_hh_cons_qoq, 
+                                            old_col_name="OBS_VALUE", 
+                                            new_col_name=df_hh_cons_qoq_col,
+                                            publication_lag_days=65)
+        
+        
+        # Final consumption expenditure of household (Homologous Variation)
+        
+        df_hh_cons_yoy = df_gdp[(df_gdp["na_item"] == "P31_S14") & (df_gdp["unit"] == "CLV_PCH_SM")]
+        
+        df_hh_cons_yoy_col = "HouseholdConsumption_YoY"
+        
+        df_final = join_df_with_external_data(df=df_final, 
+                                         df_external=df_hh_cons_yoy, 
+                                         old_col_name="OBS_VALUE", 
+                                         new_col_name=df_hh_cons_yoy_col,
+                                         publication_lag_days=65)
         
         
         ### INFLATION GROWTH RATE (Homologous variation)
@@ -296,7 +324,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         # it aggregates the inflation results from every category
         df_inflation = df_inflation[df_inflation["geodsg"] == "Portugal"]
         
-        inflation_col = "inflation_growth_rate"
+        inflation_col = "InflationGrowthRate"
         
         df_final = join_df_with_external_data(df=df_final,
                                          df_external=df_inflation, 
@@ -309,12 +337,12 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         df_housing_credit_rate = df_external_list_dict["Housing credit rate"]
         
-        housing_credit_rate_col_name = "housing_credit_rate"
+        housing_credit_rate_col = "HousingCreditRate"
         
         df_final = join_df_with_external_data(df=df_final,
                                          df_external=df_housing_credit_rate, 
-                                         old_col_name=housing_credit_rate_col_name, 
-                                         new_col_name=housing_credit_rate_col_name,
+                                         old_col_name=housing_credit_rate_col, 
+                                         new_col_name=housing_credit_rate_col,
                                          property_specific=True,
                                          publication_lag_days=35)
         
@@ -324,73 +352,94 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         df_avg_salary = df_external_list_dict["Average Salary (€)"]
         
         # We will keep this only for the API
-        avg_salary_col_name = "avg_salary_euros"
+        avg_salary_col = "AvgSalary_Euros"
         
         df_final = join_df_with_external_data(df=df_final,
                                          df_external=df_avg_salary, 
-                                         old_col_name=avg_salary_col_name, 
-                                         new_col_name=avg_salary_col_name,
+                                         old_col_name=avg_salary_col, 
+                                         new_col_name=avg_salary_col,
                                          publication_lag_days=45)
         
-        s = df_avg_salary["avg_salary_euros"]
+        s = df_avg_salary["AvgSalary_Euros"]
         
         # Calculates the variation of the average salary, ignoring the sazonal variations
-        df_avg_salary["avg_salary_euros_12m_avg"] = (s + s.shift(3) + s.shift(6) + s.shift(9)) / 4
+        df_avg_salary["AvgSalary_12m_avg_Euros"] = (s + s.shift(3) + s.shift(6) + s.shift(9)) / 4
         
         df_avg_salary = df_avg_salary.drop(columns=["avg_salary_euros"]) \
-                                     .dropna(subset=["avg_salary_euros_12m_avg"])
+                                     .dropna(subset=["AvgSalary_12m_avg_Euros"])
         
         # NOTE only for testing
         df_avg_salary.to_csv(f"{self._get_datasets_path(data_type='external')}/{get_ine_dataset_name('avg_salary_euros_12_month_average')}.csv",
                                             index=False)
         
         # We will keep this only for the Machine Learning models, not the API
-        avg_salary_hom_var_col_name = "avg_salary_euros_12m_avg"
+        avg_salary_hom_var_col = "AvgSalary_12m_avg_Euros"
         
         df_final = join_df_with_external_data(df=df_final,
                                                 df_external=df_avg_salary, 
-                                                old_col_name=avg_salary_hom_var_col_name, 
-                                                new_col_name=avg_salary_hom_var_col_name,
+                                                old_col_name=avg_salary_hom_var_col, 
+                                                new_col_name=avg_salary_hom_var_col,
                                                 publication_lag_days=45)
         
-        
-        ### GROSS DISPOSABLE INCOME (Growth Rate)
-                
-        df_gross_disposable_income = df_external_list_dict["Gross Disposable Income (Growth Rate)"]
-        
-        gross_disposable_income_col_name = "gross_disposable_income_growth_rate"
-        
-        df_final = join_df_with_external_data(df=df_final,
-                                            df_external=df_gross_disposable_income, 
-                                            old_col_name=gross_disposable_income_col_name, 
-                                            new_col_name=gross_disposable_income_col_name)
         
         
         ### NUMBER OF HOUSING TRANSACTIONS
         
         df_housing_transactions = df_external_list_dict["Number of Housing Transactions"]
         
-        housing_sold_transactions_col_name = "housing_num_transactions"
+        housing_num_trans_col = "HousingNumTransactions"
         
         df_final = join_df_with_external_data(df=df_final,
                                          df_external=df_housing_transactions, 
-                                         old_col_name=housing_sold_transactions_col_name, 
-                                         new_col_name=housing_sold_transactions_col_name,
+                                         old_col_name=housing_num_trans_col, 
+                                         new_col_name=housing_num_trans_col,
                                          right_region_col="geodsg",
                                          property_specific=True,
-                                         location_mapping=True)
+                                         location_mapping=True,
+                                         publication_lag_days=85)
+        
+        
+        
+        # HOUSING TRANSACTIONS (Homologous Variation of the last 4 quarters)
+
+        housing_num_trans_yoy_col = "HousingNumTransactions_4Q_YoY"
+
+        # Remove duplicated regions (e.g. Açores appears with geocod 2 and 20 with the same values)
+        df_housing_transactions = df_housing_transactions.drop_duplicates(["geodsg", "date_end"]) \
+                                                        .sort_values(["geodsg", "date_end"])
+
+        # Number of transactions in the last 4 quarters (last 12 months), per region, removing seasonality
+        trans_4q_sum = df_housing_transactions.groupby("geodsg")[housing_num_trans_col] \
+                                            .transform(lambda s: s.rolling(4).sum())
+
+        # Year-on-year growth rate (%) of the last 4 quarters compared with the 4 quarters before
+        trans_4q_sum_prev_year = trans_4q_sum.groupby(df_housing_transactions["geodsg"]).shift(4)
+
+        df_housing_transactions[housing_num_trans_yoy_col] = (trans_4q_sum / trans_4q_sum_prev_year - 1) * 100
+
+        df_housing_transactions = df_housing_transactions.dropna(subset=[housing_num_trans_yoy_col])
+
+        df_final = join_df_with_external_data(df=df_final,
+                                        df_external=df_housing_transactions, 
+                                        old_col_name=housing_num_trans_yoy_col, 
+                                        new_col_name=housing_num_trans_yoy_col,
+                                        right_region_col="geodsg",
+                                        property_specific=True,
+                                        location_mapping=True,
+                                        publication_lag_days=85)
+
         
         
         ### UNEMPLOYMENT RATE (%)
         
         df_unemployment_rate = df_external_list_dict["Unemployment Rate"]
         
-        unemp_rate_col_name = "unemployment_rate"
+        unemp_rate_col = "UnemploymentRate"
         
         df_final = join_df_with_external_data(df=df_final,
                                          df_external=df_unemployment_rate, 
-                                         old_col_name=unemp_rate_col_name, 
-                                         new_col_name=unemp_rate_col_name,
+                                         old_col_name=unemp_rate_col, 
+                                         new_col_name=unemp_rate_col,
                                          right_region_col="geodsg",
                                          location_mapping=True,
                                          publication_lag_days=40)
@@ -400,33 +449,33 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         df_price_per_m2 = df_external_list_dict["Housing Price per m2 (€)"]
         
-        price_per_square_meter_col_name = "housing_price_per_m2_euros"
+        price_per_m2_col = "HousingPricePerM2_Euros"
 
         df_price_per_m2 = keep_city_level(df_price_per_m2)
         
         df_final = join_df_with_external_data(df=df_final,
                                             df_external=df_price_per_m2, 
-                                            old_col_name=price_per_square_meter_col_name, 
-                                            new_col_name=price_per_square_meter_col_name,
+                                            old_col_name=price_per_m2_col, 
+                                            new_col_name=price_per_m2_col,
                                             right_region_col="geodsg",
                                             property_specific=True,
-                                            publication_lag_days=60)
+                                            publication_lag_days=115)
         
         
         ### CRIME RATE
         
         df_crime_rate = df_external_list_dict["Crime rate"]
         
-        crime_rate_col_name = "crime_rate"
+        crime_rate_col = "CrimeRate"
 
         df_crime_rate = keep_city_level(df_crime_rate)
         
         df_final = join_df_with_external_data(df=df_final,
                                             df_external=df_crime_rate, 
-                                            old_col_name=crime_rate_col_name, 
-                                            new_col_name=crime_rate_col_name,
+                                            old_col_name=crime_rate_col, 
+                                            new_col_name=crime_rate_col,
                                             right_region_col="geodsg",
-                                            publication_lag_days=60)
+                                            publication_lag_days=185)
         
         
         ### TODO FSQ OS PLACES (FACILITIES)
@@ -441,6 +490,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         # Keeping a fixed order makes the resulting dataset easier to inspect,
         # process, and use consistently throughout the machine learning pipeline.
         COLUMN_ORDER = [
+            
             # Property type
             "Type",
     
@@ -465,43 +515,49 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             # Publish date
             "PublishDate",
             
-            # GDP growth rate
-            df_gdp_market_growth_output_col,
+            # GDP (quarterly variation)
+            df_gdp_qoq_col,
             
-            # Final consumption expenditure of household
-            df_gdp_final_cons_output_col,
+            # GDP (homologous variation)
+            df_gdp_yoy_col,
+            
+            # Final consumption expenditure of household (quarterly variation)
+            df_hh_cons_qoq_col,
+            
+            # Final consumption expenditure of household (homologous variation)
+            df_hh_cons_yoy_col,
             
             # Inflation (homologous variable)
             inflation_col,
             
             # Average salary (euros)
-            avg_salary_col_name,
+            avg_salary_col,
             
             # Average salary 12-month average (euros)
-            avg_salary_hom_var_col_name,
+            avg_salary_hom_var_col,
             
             # Housing credit rate
-            housing_credit_rate_col_name,
-            
-            # Gross disposable income (euros)
-            gross_disposable_income_col_name,
+            housing_credit_rate_col,
             
             # Unemployment Rate (%)
-            unemp_rate_col_name,
+            unemp_rate_col,
             
-            # Housing sold (number of transactions)
-            housing_sold_transactions_col_name,
+            # Number of housing transactions
+            housing_num_trans_col,
+            
+            # Number of housing transactions (homologous variation)
+            housing_num_trans_yoy_col,
             
             # Price per square meter (euros)
-            price_per_square_meter_col_name,
+            price_per_m2_col,
             
             # Crime rate
-            crime_rate_col_name,
+            crime_rate_col,
             
             # TODO FSQ OS Places (Facilities)
     
             # Target (price)
-            "Price (euros)"
+            "Price_Euros"
         ]
             
         df_final = df_final[COLUMN_ORDER]
@@ -531,9 +587,9 @@ if __name__ == "__main__":
     pt.__setattr__("_datasets_format", "csv")
     
     # CSV format
-    #pt.update_datasets() 
+    pt.update_datasets() 
     
-    pt.join_and_save_data()
+    #pt.join_and_save_data()
     
     """scheduler = BackgroundScheduler()
 

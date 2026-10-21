@@ -42,11 +42,17 @@ class Eurostat(BaseAPIDataSource):
             "ge:2010,lt:2018" for data from 2010 to 2018
             
         - dataset_code: The dataset code for the specific data to retrieve (e.g., "nama_10_gdp" for GDP data)
+        
+        - unit_list: A list of unit values (e.g., ["CLV_PCH_SM"]) to filter the data by
+        
+        - s_adj_list: A list of seasonal adjustment values (e.g., ["SCA"]) to filter the data by
+        
+        - na_item_list: A list of non-aggregated item values (e.g., ["B1GQ", "P31_S14"]) to filter the data by
     
     Source: https://ec.europa.eu/eurostat/fr/web/user-guides/data-browser/api-data-access/api-getting-started/sdmx3.0
     
     """
-    def __extract_data_from_dataset(self, country_code, time_period, dataset_code, unit_list, na_item_list):
+    def __extract_data_from_dataset(self, country_code, time_period, dataset_code, unit_list, s_adj_list, na_item_list):
         
         self._params["c[GEO]"] = country_code
         
@@ -81,15 +87,14 @@ class Eurostat(BaseAPIDataSource):
         
         # Keep samples with "unit" attribute with values representing relevant metrics
         if "unit" in df.columns:
-        
-            # CLV_PCH_PRE: Chain linked volumes, percentage change on previous period
             df = df[df["unit"].isin(unit_list)]
+            
+        # Keep samples with "s_adj" attribute with values representing relevant metrics
+        if "s_adj" in df.columns:
+            df = df[df["s_adj"].isin(s_adj_list)]
         
         # Keep samples with "na_item" attribute with values representing relevant metrics
         if "na_item" in df.columns:
-        
-            # B1GQ: Gross domestic product at market prices
-            # P31_S14: Final consumption expenditure of household
             df = df[df["na_item"].isin(na_item_list)]
         
         # Remove empty columns
@@ -142,8 +147,14 @@ class Eurostat(BaseAPIDataSource):
     def get_api_data(self, country_code, time_period):
         
         # Gross domestic product and Final consumption expenditure of household
+        # CLV_PCH_PRE: Chain linked volumes, percentage change on previous period (quarter)
+        # CLV_PCH_SM: Chain linked volumes, percentage change compared to same period (quarter) in previous year
+        # SCA: Seasonally and calendar adjusted data
+        # B1GQ: Gross domestic product at market prices
+        # P31_S14: Final consumption expenditure of household
         self.__extract_data_from_dataset(country_code=country_code, 
                                         time_period=time_period,
                                         dataset_code="namq_10_gdp",
-                                        unit_list=["CLV_PCH_PRE"],
+                                        unit_list=["CLV_PCH_SM", "CLV_PCH_PRE"],
+                                        s_adj_list=["SCA"],
                                         na_item_list=["B1GQ", "P31_S14"])

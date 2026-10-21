@@ -14,10 +14,10 @@ standardized column name.
 
 """
 COLUMN_RENAME_MAP = {
-    "Price": "Price (euros)",
-    "LivingArea": "Living Area (m2)",
-    "TotalArea": "Total Area (m2)",
-    "BuiltArea": "Built Area (m2)"
+    "Price": "Price_Euros",
+    "LivingArea": "LivingArea_M2",
+    "TotalArea": "TotalArea_M2",
+    "BuiltArea": "BuiltArea_M2"
 }
 
 # Residential Properties
