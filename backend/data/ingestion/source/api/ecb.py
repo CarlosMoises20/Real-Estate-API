@@ -38,6 +38,9 @@ class EuropeanCentralBank(BaseAPIDataSource):
         
         value_attr_name: 
             Name of the column that will be used to store the data
+            
+        value_dataset_attr_name:
+            Name of the column that will be used to create the attribute in the dataset
         
         flow_ref:
             Identifier of the ECB dataflow (dataset) containing the requested
@@ -62,7 +65,7 @@ class EuropeanCentralBank(BaseAPIDataSource):
         {base_url}/{flow_ref}/{series_key}?format=csvdata
     
     """
-    def __extract_data_from_dataset(self, cols, value_attr_old_name, value_attr_name, flow_ref, series_key):
+    def __extract_data_from_dataset(self, cols, value_attr_old_name, value_attr_name, value_dataset_attr_name, flow_ref, series_key):
         
         base_url = self._url
         
@@ -85,7 +88,7 @@ class EuropeanCentralBank(BaseAPIDataSource):
         # Remove irrelevant attributes from the dataset
         df = df[cols]
         
-        df = df.rename(columns={value_attr_old_name: value_attr_name})
+        df = df.rename(columns={value_attr_old_name: value_dataset_attr_name})
         
         # Convert "TIME_PERIOD" column to string type to avoid issues when applying the function 
         # "transform_data_to_range"
@@ -118,6 +121,7 @@ class EuropeanCentralBank(BaseAPIDataSource):
         self.__extract_data_from_dataset(cols=["TIME_PERIOD", "OBS_VALUE", "OBS_STATUS"],
                                          value_attr_old_name="OBS_VALUE",
                                          value_attr_name="housing_credit_rate",
+                                         value_dataset_attr_name="HousingCreditRate",
                                          flow_ref="MIR",
                                          series_key="M.PT.B.A2C.A.R.A.2250.EUR.N")
         

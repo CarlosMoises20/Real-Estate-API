@@ -28,13 +28,14 @@ class INE(BaseAPIDataSource):
         cols: List of columns to extract from the data
         value_attr_old_name: Name of the column that contains the value of the data
         value_attr_name: Name of the column that will be used to store the data
+        value_dataset_attr_name: Name of the column that will be used to add the attribute on the dataset
         dim_3_total_code: Code of the total of the Dim3 column
         dim_4_total_code: Code of the total of the Dim4 column
         dim_5_total_code: Code of the total of the Dim5 column
         dataset_name: Name of the dataset (by default, it is set as None and the name of the dataset is passed as 'value_attr_name')
     
     """
-    def __extract_data_from_varcd(self, varcd, cols, value_attr_old_name, value_attr_name,
+    def __extract_data_from_varcd(self, varcd, cols, value_attr_old_name, value_attr_name, value_dataset_attr_name,
                                   dim_3_total_code="T", dim_4_total_code="T", dim_5_total_code="T",
                                   dataset_name=None):
         
@@ -85,8 +86,8 @@ class INE(BaseAPIDataSource):
                     "date_end": last_period_end,
                     **{col: elem.get(col) for col in cols if elem.get(col)},
                     
-                    # Convert to float or integer because "value_attr_name" is originally a string
-                    value_attr_name: float(elem.get(value_attr_old_name)) if "." in elem.get(value_attr_old_name) \
+                    # Convert to float or integer because "value_dataset_attr_name" is originally a string
+                    value_dataset_attr_name: float(elem.get(value_attr_old_name)) if "." in elem.get(value_attr_old_name) \
                                                                         else int(elem.get(value_attr_old_name))
                 })
             
@@ -107,7 +108,8 @@ class INE(BaseAPIDataSource):
 
         # Inflation (homologous variation; growth rate)
         self.__extract_data_from_varcd(varcd="0014647", 
-                                        value_attr_name="inflation_growth_rate",  
+                                        value_attr_name="inflation_growth_rate",
+                                        value_dataset_attr_name="InflationGrowthRate",  
                                         value_attr_old_name="valor",   
                                         cols=["geocod", "geodsg", "dim_3_t"])
                 
@@ -116,19 +118,22 @@ class INE(BaseAPIDataSource):
         # but in case of changing the idea, varcd for yearly salary is "0011138"
         self.__extract_data_from_varcd(varcd="0011132", 
                                         value_attr_name="avg_salary_euros",  
+                                        value_dataset_attr_name="AvgSalary_Euros",
                                         value_attr_old_name="valor", 
                                         cols=["geocod", "geodsg", "dim_3_t", "dim_4_t"])
         
         # Unemployment rate (%)
         # https://smi.ine.pt/Indicador/Detalhes/17432
         self.__extract_data_from_varcd(varcd="0012136", 
-                                        value_attr_name="unemployment_rate",  
+                                        value_attr_name="unemployment_rate",
+                                        value_dataset_attr_name="UnemploymentRate",  
                                         value_attr_old_name="valor", 
                                         cols=["geocod", "geodsg", "dim_3_t"])
               
         # Number of sold houses & transactions
         self.__extract_data_from_varcd(varcd="0012785",
-                                        value_attr_name="housing_num_transactions",  
+                                        value_attr_name="housing_num_transactions",
+                                        value_dataset_attr_name="HousingNumTransactions",  
                                         value_attr_old_name="valor", 
                                         cols=["geocod", "geodsg", "dim_3_t", "dim_4_t", "dim_5_t"],
                                         dim_3_total_code="H1")
@@ -136,14 +141,16 @@ class INE(BaseAPIDataSource):
         # Housing price per square meter (euros)
         # https://smi.ine.pt/Indicador/Detalhes/18371
         self.__extract_data_from_varcd(varcd="0012255", 
-                                        value_attr_name="housing_price_per_m2_euros",  
+                                        value_attr_name="housing_price_per_m2_euros",
+                                        value_dataset_attr_name="HousingPricePerM2_Euros",  
                                         value_attr_old_name="valor", 
                                         cols=["geocod", "geodsg", "dim_3_t"],
                                         dim_3_total_code="H1")
         
         # Crime rate per region (from 1998 to 2013)
         self.__extract_data_from_varcd(varcd="0000849",
-                                        value_attr_name="crime_rate",  
+                                        value_attr_name="crime_rate",
+                                        value_dataset_attr_name="CrimeRate",  
                                         value_attr_old_name="valor", 
                                         cols=["geocod", "geodsg", "dim_3_t"],
                                         dataset_name="crime_rate_from_1998_to_2013")
@@ -151,6 +158,7 @@ class INE(BaseAPIDataSource):
         # Crime rate per region (from 2011 to 2022)
         self.__extract_data_from_varcd(varcd="0008074",
                                         value_attr_name="crime_rate",  
+                                        value_dataset_attr_name="CrimeRate",  
                                         value_attr_old_name="valor", 
                                         cols=["geocod", "geodsg", "dim_3_t"],
                                         dataset_name="crime_rate_from_2011_to_2022")
@@ -158,6 +166,7 @@ class INE(BaseAPIDataSource):
         # Crime rate per region (from 2021 to 2025)
         self.__extract_data_from_varcd(varcd="0012260",
                                         value_attr_name="crime_rate",  
+                                        value_dataset_attr_name="CrimeRate",  
                                         value_attr_old_name="valor", 
                                         cols=["geocod", "geodsg", "dim_3_t"],
                                         dataset_name="crime_rate_from_2021_to_2025")

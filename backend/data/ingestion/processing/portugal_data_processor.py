@@ -72,8 +72,8 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         df_internal = df_internal.drop(columns=["EnergyEfficiencyLevel"])
         
         # for some negative values, transform those into positive values by applying the absolute value
-        for attr_name in ["Living Area (m2)", "Total Area (m2)", 
-                            "Built Area (m2)", "NumberOfBathrooms", "NumberOfWC"]:
+        for attr_name in ["LivingArea_m2", "TotalArea_m2", 
+                            "BuiltArea_m2", "NumberOfBathrooms", "NumberOfWC"]:
             
             df_internal[attr_name] = df_internal[attr_name].abs()
             
@@ -280,7 +280,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         df_gdp_yoy = df_gdp[(df_gdp["na_item"] == "B1GQ") & (df_gdp["unit"] == "CLV_PCH_SM")]
         
-        df_gdp_yoy_col = "GDP_yoy"
+        df_gdp_yoy_col = "GDP_YoY"
         
         df_final = join_df_with_external_data(df=df_final, 
                                          df_external=df_gdp_yoy, 
@@ -360,25 +360,24 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                          new_col_name=avg_salary_col,
                                          publication_lag_days=45)
         
-        s = df_avg_salary["AvgSalary_Euros"]
+        s = df_avg_salary[avg_salary_col]
+        
+        avg_salary_12m_col = "AvgSalary_12m_avg_Euros"
         
         # Calculates the variation of the average salary, ignoring the sazonal variations
-        df_avg_salary["AvgSalary_12m_avg_Euros"] = (s + s.shift(3) + s.shift(6) + s.shift(9)) / 4
+        df_avg_salary[avg_salary_12m_col] = (s + s.shift(3) + s.shift(6) + s.shift(9)) / 4
         
-        df_avg_salary = df_avg_salary.drop(columns=["avg_salary_euros"]) \
-                                     .dropna(subset=["AvgSalary_12m_avg_Euros"])
+        df_avg_salary = df_avg_salary.drop(columns=[avg_salary_col]) \
+                                     .dropna(subset=[avg_salary_12m_col])
         
         # NOTE only for testing
         df_avg_salary.to_csv(f"{self._get_datasets_path(data_type='external')}/{get_ine_dataset_name('avg_salary_euros_12_month_average')}.csv",
                                             index=False)
         
-        # We will keep this only for the Machine Learning models, not the API
-        avg_salary_hom_var_col = "AvgSalary_12m_avg_Euros"
-        
         df_final = join_df_with_external_data(df=df_final,
                                                 df_external=df_avg_salary, 
-                                                old_col_name=avg_salary_hom_var_col, 
-                                                new_col_name=avg_salary_hom_var_col,
+                                                old_col_name=avg_salary_12m_col, 
+                                                new_col_name=avg_salary_12m_col,
                                                 publication_lag_days=45)
         
         
@@ -501,7 +500,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             "NumberOfBedrooms", "NumberOfBathrooms", "NumberOfWC", "TotalRooms",
     
             # Areas
-            "Built Area (m2)", "Living Area (m2)", "Total Area (m2)", "LotSize",
+            "BuiltArea_m2", "LivingArea_m2", "TotalArea_m2", "LotSize",
     
             # Building characteristics
             "Floor", "Elevator", "Garage", "ConstructionYear", "Parking",
@@ -534,7 +533,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             avg_salary_col,
             
             # Average salary 12-month average (euros)
-            avg_salary_hom_var_col,
+            avg_salary_12m_col,
             
             # Housing credit rate
             housing_credit_rate_col,
@@ -587,9 +586,9 @@ if __name__ == "__main__":
     pt.__setattr__("_datasets_format", "csv")
     
     # CSV format
-    pt.update_datasets() 
+    #pt.update_datasets() 
     
-    #pt.join_and_save_data()
+    pt.join_and_save_data()
     
     """scheduler = BackgroundScheduler()
 
