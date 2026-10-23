@@ -1,9 +1,11 @@
 
 import pandas as pd
 from backend.data.ingestion.source.api.ine import INE
+from backend.data.ingestion.source.duckdb.caop import CAOP
 from backend.data.ingestion.processing.base_country_data_processor import BaseCountryDataProcessor
-from backend.common.constants import COLUMN_RENAME_MAP, DATASETS_PATH_BASE
-from backend.common.utils import generate_dataset_from_df, join_df_with_external_data, convert_pd_df_columns_to_datetime, build_translate_names, keep_city_level
+from backend.common.constants import COLUMN_RENAME_MAP, DATASETS_PATH_BASE, FSQ_CATEGORY_GROUPS
+from backend.common.utils import generate_dataset_from_df, join_df_with_external_data, convert_pd_df_columns_to_datetime, build_translate_names, keep_city_level, \
+                                map_listings_to_dicofre, assign_category_groups
 from backend.common.dataset_names import *
 
 
@@ -83,6 +85,14 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         return df_internal
         
 
+    """Method used to get the CAOP data source (parish boundaries), used to download it and to assign places to parishes"""
+    def _get_caop(self):
+        return CAOP(
+            datasets_format=self._datasets_format,
+            datasets_path=self._get_datasets_path(data_type="external")
+        )
+
+
     """Method used to aggregate data with external factors, from several data sources"""
     def _aggregate_external_data(self):
         
@@ -97,12 +107,31 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             data_type="external"
         )
         
-        ### FSQ Places        
-        df_fsq_places = super()._read_dataset(
-            name=get_fsq_places_dataset_name(country_code=self._get_country_code()), 
+        ### CAOP parishes (freguesias): code (DICOFRE), names and area of each parish
+        df_parishes = super()._read_dataset(
+            name=get_caop_dataset_name(year=self._get_caop().year),
             data_type="external"
         )
-        
+
+        # Keep the leading zeros of the parish codes (e.g. "080602"), lost when the dataset is read as numbers
+        df_parishes["dicofre"] = df_parishes["dicofre"].astype(str).str.zfill(6)
+
+        ### FSQ Places
+        df_fsq_places = super()._read_dataset(
+            name=get_fsq_places_dataset_name(country_code=self._get_country_code()),
+            data_type="external"
+        )
+
+        convert_pd_df_columns_to_datetime(df=df_fsq_places, cols=["date_created", "date_closed"])
+
+        # Keep only the places of FSQ_CATEGORY_GROUPS (one row per place and group), and
+        # assign each place to the parish that contains it, through the CAOP polygons
+        df_fsq_places = assign_category_groups(df=df_fsq_places,
+                                               label_col="fsq_category_labels",
+                                               category_groups=FSQ_CATEGORY_GROUPS)
+
+        df_fsq_places = self._get_caop().assign_parishes(df=df_fsq_places)
+
         ### ECB data related to housing credit rate in Portugal
         df_housing_credit_rate = super()._read_dataset(
             name=get_ecb_dataset_name(value_attr_name="housing_credit_rate"), 
@@ -181,13 +210,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         generate_dataset_from_df(df=df_crime_rate, 
                                  file_path_base=f"{self._get_datasets_path(data_type='external')}/{get_ine_dataset_name('crime_rate')}", 
                                  dataset_format=self._datasets_format)
-        
-        # TODO observe the final dataset before applying these changes
-        """g = df_ine_crime_rate["geocod"].astype(str)
-        df_ine_crime_rate.loc[g.str.startswith("200") & df_ine_crime_rate.geodsg.isin(["Calheta", "Lagoa"]), "geodsg"] += ' (R.A.A.)'
-        df_ine_crime_rate.loc[g.str.startswith("300") & (df_ine_crime_rate.geodsg == "Calheta"), "geodsg"] = 'Calheta (R.A.M.)'
-        df_ine_crime_rate.loc[g.str.startswith("150") & (df_ine_crime_rate.geodsg == "Lagoa"), "geodsg"] = 'Lagoa (Algarve)'"""
-            
+               
         result = {
             "Inflation": df_inflation,
             "Average Salary (€)": df_avg_salary,
@@ -197,13 +220,15 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             "Crime rate": df_crime_rate,
             "Housing credit rate": df_housing_credit_rate,
             "GDP": df_gdp,
-            "FSQ Places": df_fsq_places
+            "FSQ Places": df_fsq_places,
+            "Parishes": df_parishes
         }
-        
+
         # convert date_start and date_end to datetime format before the JOIN
         for name, df_ext in result.items():
-            
-            if name == "FSQ Places":
+
+            # Datasets that are not time series
+            if name in ["FSQ Places", "Parishes"]:
                 continue
             
             convert_pd_df_columns_to_datetime(df=df_ext, cols=["date_start", "date_end"])
@@ -241,7 +266,11 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
 
         # Foursquare OS Places API Reference: https://docs.foursquare.com/data-products/docs/fsq-places-open-source
         super()._update_fsq_places()
-        
+
+        # Parish (freguesia) boundaries from CAOP (Direção-Geral do Território)
+        # https://www.dgterritorio.gov.pt/cartografia/cartografia-tematica/caop
+        self._get_caop().get_source_data()
+
         # update API with final dataset
         self.join_and_save_data()
         
@@ -275,7 +304,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         
         # GDP (Homologous Variation)
-        # NOTE: Homologous variation is important to capture sazonal changes without the noise 
+        # NOTE: Homologous variation is important to remove seasonal changes
         # of the quarterly variation; This metric is more stable and it's the way how the main numbers are published
         
         df_gdp_yoy = df_gdp[(df_gdp["na_item"] == "B1GQ") & (df_gdp["unit"] == "CLV_PCH_SM")]
@@ -364,6 +393,8 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
         
         avg_salary_12m_col = "AvgSalary_12m_avg_Euros"
         
+        df_avg_salary.sort_values("date_end")
+        
         # Calculates the variation of the average salary, ignoring the sazonal variations
         df_avg_salary[avg_salary_12m_col] = (s + s.shift(3) + s.shift(6) + s.shift(9)) / 4
         
@@ -409,7 +440,7 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
 
         # Number of transactions in the last 4 quarters (last 12 months), per region, removing seasonality
         trans_4q_sum = df_housing_transactions.groupby("geodsg")[housing_num_trans_col] \
-                                            .transform(lambda s: s.rolling(4).sum())
+                                                .transform(lambda s: s.rolling(4).sum())
 
         # Year-on-year growth rate (%) of the last 4 quarters compared with the 4 quarters before
         trans_4q_sum_prev_year = trans_4q_sum.groupby(df_housing_transactions["geodsg"]).shift(4)
@@ -477,10 +508,57 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
                                             publication_lag_days=185)
         
         
-        ### TODO FSQ OS PLACES (FACILITIES)
-        
+        ### FSQ OS PLACES (FACILITIES)
+        # Density of places of each group of FSQ_CATEGORY_GROUPS (places per km2) in the listing's parish (freguesia),
+        # since the listings have no coordinates; only the places open at the listing's publish date are counted
+
+        # Places with "dicofre" (parish code) and "category_group" (see _aggregate_external_data)
         df_fsq_places = df_external_list_dict["FSQ Places"]
-    
+
+        df_parishes = df_external_list_dict["Parishes"]
+
+        area_km2_by_dicofre = df_parishes.set_index("dicofre")["area_km2"]
+
+        # Parish code of each listing, matched by the names of the district, city and town;
+        # this column is only used for the JOIN, so it is dropped later by COLUMN_ORDER
+        dicofre_col = "Dicofre"
+
+        df_final[dicofre_col] = map_listings_to_dicofre(df=df_final, df_parishes=df_parishes)
+
+        poi_cols = []
+
+        for group in FSQ_CATEGORY_GROUPS:
+
+            poi_col = f"POI_{group}_per_km2"
+
+            poi_cols.append(poi_col)
+
+            df_group = df_fsq_places[(df_fsq_places["category_group"] == group) & df_fsq_places["dicofre"].notna()]
+
+            # Each place counts +1 when it was created and -1 when it was closed
+            opened = df_group[["dicofre", "date_created"]].rename(columns={"date_created": "date_end"}).assign(delta=1)
+            closed = df_group.dropna(subset=["date_closed"])[["dicofre", "date_closed"]] \
+                             .rename(columns={"date_closed": "date_end"}).assign(delta=-1)
+
+            df_events = pd.concat([opened, closed]) \
+                          .groupby(["dicofre", "date_end"], as_index=False)["delta"].sum() \
+                          .sort_values(["dicofre", "date_end"])
+
+            # Number of places open at each date, per parish, divided by the parish area
+            df_events[poi_col] = df_events.groupby("dicofre")["delta"].cumsum() / df_events["dicofre"].map(area_km2_by_dicofre)
+
+            # No publication lag, since a place is available in FSQ from the moment it is created
+            df_final = join_df_with_external_data(df=df_final,
+                                                  df_external=df_events,
+                                                  old_col_name=poi_col,
+                                                  new_col_name=poi_col,
+                                                  left_region_col=dicofre_col,
+                                                  right_region_col="dicofre")
+
+            # Parishes with no places of this group (yet) have 0 places, not missing values
+            known = df_final[dicofre_col].notna() & df_final["PublishDate"].notna()
+
+            df_final.loc[known, poi_col] = df_final.loc[known, poi_col].fillna(0)
 
 
         
@@ -553,7 +631,8 @@ class PortugalDataProcessor(BaseCountryDataProcessor):
             # Crime rate
             crime_rate_col,
             
-            # TODO FSQ OS Places (Facilities)
+            # Density of places per group of FSQ_CATEGORY_GROUPS (places per km2 in the listing's parish)
+            *poi_cols,
     
             # Target (price)
             "Price_Euros"
@@ -586,9 +665,9 @@ if __name__ == "__main__":
     pt.__setattr__("_datasets_format", "csv")
     
     # CSV format
-    #pt.update_datasets() 
+    pt.update_datasets() 
     
-    pt.join_and_save_data()
+    #pt.join_and_save_data()
     
     """scheduler = BackgroundScheduler()
 

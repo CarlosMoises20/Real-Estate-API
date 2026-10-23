@@ -3,8 +3,7 @@ from backend.data.ingestion.source.api.base_api_data_source import BaseAPIDataSo
 from backend.common.utils import *
 from backend.common.dataset_names import get_ine_dataset_name
 import pandas as pd
-import json, glob
-from pathlib import Path
+import json
 
 """This class is used to retrieve relevant data from the API of INE (Instituto Nacional de Estatística)"""
 class INE(BaseAPIDataSource):
@@ -114,8 +113,7 @@ class INE(BaseAPIDataSource):
                                         cols=["geocod", "geodsg", "dim_3_t"])
                 
         # Average salary (euros); quarterly; from March 2014 to June 2026
-        # NOTE: quarterly allows you to capture more updated data and also salary variations
-        # but in case of changing the idea, varcd for yearly salary is "0011138"
+        # NOTE: Quarterly data allows you to capture more updated data and also salary average
         self.__extract_data_from_varcd(varcd="0011132", 
                                         value_attr_name="avg_salary_euros",  
                                         value_dataset_attr_name="AvgSalary_Euros",

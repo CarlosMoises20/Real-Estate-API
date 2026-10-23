@@ -117,7 +117,7 @@ class EuropeanCentralBank(BaseAPIDataSource):
     def get_api_data(self):
         
         # Housing credit rate
-        # Annual, Portugal, loans to households for house purchase, new business.
+        # Monthly, Portugal, loans to households for house purchase, new business.
         self.__extract_data_from_dataset(cols=["TIME_PERIOD", "OBS_VALUE", "OBS_STATUS"],
                                          value_attr_old_name="OBS_VALUE",
                                          value_attr_name="housing_credit_rate",

@@ -1,10 +1,10 @@
 
-import re, calendar, os, pycountry
+import re, calendar, os, pycountry, unicodedata
 import pandas as pd
 import numpy as np
 from pathlib import Path
 from babel import Locale
-from backend.common.constants import LOCATION_MAPPING, CITY_GEOCOD_NAMES, CITY_TO_COUNTRY_CODE, PROPERTY_RESIDENTIAL_TYPES, CITY_REGION_OVERRIDES
+from backend.common.constants import LOCATION_MAPPING, CITY_GEOCOD_NAMES, CITY_TO_COUNTRY_CODE, PROPERTY_RESIDENTIAL_TYPES, CITY_REGION_OVERRIDES, PARISH_DICOFRE_OVERRIDES
 
 
 """
@@ -52,6 +52,138 @@ def build_translate_names(original_language, target_language="en"):
     })
     
     return translate_names
+
+
+
+"""
+Normalize a parish (freguesia) name to match listings with CAOP
+(removes the "União das freguesias de" prefix, accents and case)
+
+"""
+def normalize_parish_name(name):
+    name = re.sub(r"^Uni[ãa]o d[ae]s? freguesias d[eao]s? ", "", str(name), flags=re.IGNORECASE)
+    name = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode()
+    name = re.sub(r"\s+", " ", name).strip().lower()
+
+    # Expand the abbreviation "S." (e.g. "Calheta de S. Jorge" -> "calheta de sao jorge")
+    return re.sub(r"\bs\.\s*", "sao ", name)
+
+
+"""
+Split a normalized place name into a set of words, ignoring punctuation and connectors ("e", "de", "do", ...),
+so that names written differently match (e.g. "Costa de Caparica" and "Costa da Caparica",
+"Santiago (Sesimbra)" and "Sesimbra (Santiago)")
+
+"""
+def get_name_tokens(name):
+    return set(re.sub(r"[^a-z0-9]+", " ", normalize_parish_name(name)).split()) - {"e", "de", "da", "do", "das", "dos", "d"}
+
+
+"""
+Map each listing to the code of its parish (freguesia) in the CAOP (DICOFRE), based on the names of
+the district, municipality (City) and parish (Town), since the listings have no coordinates
+
+The parish names are compared within the same district and municipality, in 3 steps:
+    1. Same normalized name
+    2. Same set of words, ignoring the municipality name (e.g. "São Sebastião" and "Setúbal (São Sebastião)")
+    3. The words of one name are contained in the other, and only one parish of the municipality matches
+       (e.g. a parish that existed before 2013, "Coruche", and its current union "Coruche, Fajarda e Erra")
+
+Exceptions that are not solved by these steps are defined in PARISH_DICOFRE_OVERRIDES
+
+    df: Pandas dataframe with the listings ("District", "City" and "Town" columns)
+    df_parishes: Pandas dataframe with the CAOP parishes ("dicofre", "parish", "municipality", "district_island")
+    returns: a Pandas series with the DICOFRE code of each listing (NaN when there is no match)
+
+"""
+def map_listings_to_dicofre(df, df_parishes):
+
+    # Remove the suffixes used to disambiguate municipality names (e.g. "Lagoa (Algarve)" -> "Lagoa")
+    strip_suffix = lambda city: re.sub(r"\s*\(.*\)$", "", str(city))
+
+    municipality_key = lambda district, city: normalize_parish_name(district) + "|" + normalize_parish_name(strip_suffix(city))
+
+    # Parishes of each municipality: (dicofre, normalized name, words, words without the municipality name)
+    parishes_by_municipality = {}
+
+    for row in df_parishes.itertuples():
+        municipality_tokens = get_name_tokens(row.municipality)
+        tokens = get_name_tokens(row.parish)
+        parishes_by_municipality.setdefault(municipality_key(row.district_island, row.municipality), []).append(
+            (row.dicofre, normalize_parish_name(row.parish), tokens, (tokens - municipality_tokens) or tokens)
+        )
+
+
+    """Find the DICOFRE code of a single (district, city, town) combination"""
+    def match_parish(district, city, town):
+
+        if (city, town) in PARISH_DICOFRE_OVERRIDES:
+            return PARISH_DICOFRE_OVERRIDES[(city, town)]
+
+        candidates = parishes_by_municipality.get(municipality_key(district, city), [])
+
+        name = normalize_parish_name(town)
+        tokens = get_name_tokens(town)
+        tokens_no_municipality = (tokens - get_name_tokens(strip_suffix(city))) or tokens
+
+        # 1. Same normalized name
+        for dicofre, parish_name, _, _ in candidates:
+            if parish_name == name:
+                return dicofre
+
+        # 2. Same set of words, ignoring the municipality name
+        matches = [dicofre for dicofre, _, _, parish_tokens in candidates if parish_tokens == tokens_no_municipality]
+
+        if len(matches) == 1:
+            return matches[0]
+
+        # 3. The words of one name are contained in the other (only accepted if there is a single match)
+        matches = [dicofre for dicofre, _, parish_tokens, _ in candidates
+                   if tokens and (tokens <= parish_tokens or parish_tokens <= tokens)]
+
+        return matches[0] if len(matches) == 1 else np.nan
+
+
+    # Match each distinct combination only once, since there are many listings per parish
+    combinations = df[["District", "City", "Town"]].drop_duplicates().dropna()
+
+    combinations["dicofre"] = [match_parish(*row) for row in combinations.itertuples(index=False)]
+
+    unmatched = combinations[combinations["dicofre"].isna()]
+
+    if len(unmatched) > 0:
+        print(f"Parishes without a match in CAOP ({len(unmatched)}); add them to PARISH_DICOFRE_OVERRIDES if needed:")
+        print(unmatched[["District", "City", "Town"]].to_string(index=False))
+
+    return df.merge(combinations, on=["District", "City", "Town"], how="left")["dicofre"].set_axis(df.index)
+
+
+"""
+Assign each place to the category groups defined in 'category_groups' (e.g. FSQ_CATEGORY_GROUPS)
+A place belongs to a group if any of its category labels starts with one of the group's prefixes;
+a place can belong to several groups, so the returned dataframe has one row per (place, group)
+
+    df: Pandas dataframe with the places
+    label_col: name of the column with the category labels, separated by 'separator'
+    category_groups: dictionary {group name: list of category label prefixes}
+
+"""
+def assign_category_groups(df, label_col, category_groups, separator="|"):
+
+    df_labels = df.assign(_label=df[label_col].str.split(separator)).explode("_label")
+    df_labels["_label"] = df_labels["_label"].str.strip()
+
+    df_groups = []
+
+    for group, prefixes in category_groups.items():
+        mask = df_labels["_label"].str.startswith(tuple(prefixes), na=False)
+        df_groups.append(df_labels[mask].assign(category_group=group))
+
+    df_groups = pd.concat(df_groups, ignore_index=True).drop(columns=["_label"])
+
+    # A place with several labels of the same group counts only once in that group
+    return df_groups.drop_duplicates(subset=[c for c in df.columns if c != label_col] + ["category_group"])
+
 
 
 """

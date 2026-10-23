@@ -29,6 +29,8 @@ class FSQOSPlaces(BaseDuckDBDataSource):
         
         self._connection.execute("INSTALL iceberg; LOAD iceberg;")      # Install and load the iceberg extension
         
+        self._connection.execute("INSTALL spatial; LOAD spatial;")      # Install and load the spatial extension; Spatial Joins are used to combine data based on location
+        
         self._connection.execute("LOAD httpfs;")                        # Load the httpfs extension to enable HTTP access to files in DuckDB
         
         # Create a secret for FSQ OS Places using the Iceberg extension and the temporary access token from the .env file 
@@ -48,6 +50,7 @@ class FSQOSPlaces(BaseDuckDBDataSource):
         except:
             print("Failed to connect to FSQ OS Places API. Please check your access token from your .env file and try again.")  
             raise
+
         
     """
     This method is used to update the dataset with data from Foursquare OS Places
@@ -63,10 +66,11 @@ class FSQOSPlaces(BaseDuckDBDataSource):
         os.makedirs(self._datasets_path, exist_ok=True)
         
         query = f"""
-            COPY (SELECT p.name, p.latitude, p.longitude, p.address,
-                    p.country, p.date_created, p.fsq_category_labels
+            COPY (SELECT p.fsq_place_id, p.name, p.latitude, p.longitude,
+                    p.date_created, p.date_closed,
+                    array_to_string(p.fsq_category_labels, '|') AS fsq_category_labels
                 FROM fsq.datasets.places_os AS p
-                WHERE p.country = '{country_code}') 
+                WHERE p.country = '{country_code}' AND p.latitude IS NOT NULL)
                 TO '{dataset_full_path}'
         """
 

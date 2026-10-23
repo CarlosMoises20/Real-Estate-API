@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from backend.app.routes.items import router as items_router
+from backend.app.routes.sources import router as sources_router
 from backend.app.middleware.timer import timer_middleware
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
@@ -17,6 +18,7 @@ app.add_middleware(
 )
 
 app.include_router(items_router)
+app.include_router(sources_router)
 
 if __name__ == "__main__":
     

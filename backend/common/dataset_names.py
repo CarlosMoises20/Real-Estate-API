@@ -20,5 +20,8 @@ def get_idealista_dataset_name(country_code):
 def get_geoapify_dataset_name(country_code):
     return f"geoapify_{country_code.lower()}_places"
 
+def get_caop_dataset_name(year):
+    return f"dgt_caop_{year}_parishes"
+
 def get_final_dataset_name(country_code):
     return f"real_estate_{country_code.lower()}_data"
